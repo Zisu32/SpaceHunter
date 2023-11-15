@@ -6,7 +6,7 @@
 
 - Der weiße Rahmen ist die Kamera/Bildschirmauflösung -> Kamera moved mit
 - Gegener sollen außerhalb der Kamera spawnen
-- Maincharakter mit Idol-, Attack-, Spring- und Gehanimation ![MainCHar](../Assets/Sprites/main_characters/cyberpunk_characters/3_Cyborg/Cyborg_idle.png)
+- Maincharakter mit Idol-, Attack-, Spring- und Gehanimation ![MainCHar](../Assets/Sprites/main_characters/cyberpunk_character/3_Cyborg/Cyborg_idle.png)
 - Maincharakter soll springen können
 - wenn Maincharacter auf Gegner springt verliert man leben
 - wenn alle Gegener tot dann geht Portal auf zum nächten Level ![Portal](../Assets/Level1/Portal.png)
