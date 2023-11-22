@@ -27,9 +27,14 @@ public class WorldHandler
 
     public void Update()
     {
+        MovePlayer();
+    }
+
+    private void MovePlayer()
+    {
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
-        
+
         switch (_playerKeys.LastPressed)
         {
             // case Keys.Up:
@@ -41,10 +46,24 @@ public class WorldHandler
             //     playerBoxMax.Y -= 0.1f;
             //     break;
             case Keys.Left:
+
+                if (playerBoxMin.X <= 0)
+                {
+                    return;
+                }
+
                 playerBoxMin.X -= 0.2f;
                 playerBoxMax.X -= 0.2f;
                 break;
             case Keys.Right:
+                
+                // 16f is value from background draw
+                // 5f is size of player Box
+                if (playerBoxMax.X >= 16f + 5f / 2)
+                {
+                    return;
+                }
+                
                 playerBoxMin.X += 0.2f;
                 playerBoxMax.X += 0.2f;
                 break;
@@ -52,8 +71,18 @@ public class WorldHandler
             default:
                 return;
         }
-        
+
+        Console.WriteLine($"PlayerPosMin: {playerBoxMin}");
+        Console.WriteLine($"PlayerPosMax: {playerBoxMax}");
+        Console.WriteLine();
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
         _playerKeys.LastPressed = null;
+        
+        
+        // move camera
+        Vector2 cameraCenter = _camera.Center;
+        cameraCenter.X = -1 - playerBoxMin.X / 6;
+        _camera.Center = cameraCenter;
+
     }
 }
