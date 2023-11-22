@@ -1,11 +1,10 @@
-﻿using CameraTest.Models;
-using OpenTK.Core.Exceptions;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTKLib;
+using SpaceHunter.Models;
 
-namespace CameraTest;
+namespace SpaceHunter;
 
 internal static class Program
 {

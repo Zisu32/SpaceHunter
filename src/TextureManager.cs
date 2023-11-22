@@ -1,9 +1,8 @@
-using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTKLib;
 using Zenseless.OpenTK;
 
-namespace CameraTest;
+namespace SpaceHunter;
 
 public class TextureManager
 {
@@ -26,7 +25,7 @@ public class TextureManager
         TextureHelper.InitalizeOpenGLTextures();
 
         // Textures can only be loaded when a window is already being displayed (for some reason)
-        _background = TextureHelper.LoadNonFilteringTexture("CameraTest.Assets.BG-1.jpg");
-        _player = TextureHelper.LoadNonFilteringTexture("CameraTest.Assets.Character_Single.png");
+        _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.BG-1.jpg");
+        _player = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Character_Single.png");
     }
 }

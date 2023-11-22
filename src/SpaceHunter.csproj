@@ -9,6 +9,10 @@
 
     <ItemGroup>
       <EmbeddedResource Include="Assets\*.jpg" />
+      <None Remove="Assets\BG-1.png" />
+      <EmbeddedResource Include="Assets\BG-1.png" />
+      <None Remove="Assets\Character_Single.png" />
+      <EmbeddedResource Include="Assets\Character_Single.png" />
     </ItemGroup>
 
     <ItemGroup>

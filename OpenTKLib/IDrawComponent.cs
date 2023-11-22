@@ -1,6 +1,6 @@
 using OpenTK.Windowing.Common;
 
-namespace RWU_Snakes;
+namespace OpenTKLib;
 
 public interface IDrawComponent
 {

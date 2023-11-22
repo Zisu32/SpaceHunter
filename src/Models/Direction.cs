@@ -1,4 +1,4 @@
-namespace CameraTest.Models;
+namespace SpaceHunter.Models;
 
 public enum Direction
 {

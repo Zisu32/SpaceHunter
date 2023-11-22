@@ -1,14 +1,13 @@
 using System.Drawing;
-using CameraTest.Models;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTKLib;
-using RWU_Snakes;
+using SpaceHunter.Models;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 
-namespace CameraTest;
+namespace SpaceHunter;
 
 public class DrawComponent : IDrawComponent
 {

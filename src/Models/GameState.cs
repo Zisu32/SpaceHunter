@@ -1,6 +1,6 @@
 using OpenTK.Mathematics;
 
-namespace CameraTest.Models;
+namespace SpaceHunter.Models;
 
 public class GameState
 {
