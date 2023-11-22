@@ -1,0 +1,138 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\src\\SpaceHunter.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\OpenTKLib\\OpenTKLib.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\OpenTKLib\\OpenTKLib.csproj",
+        "projectName": "OpenTKLib",
+        "projectPath": "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\OpenTKLib\\OpenTKLib.csproj",
+        "packagesPath": "C:\\Users\\leonm\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\OpenTKLib\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\leonm\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "OpenTK": {
+              "target": "Package",
+              "version": "[4.8.1, )"
+            },
+            "Zenseless.OpenTK": {
+              "target": "Package",
+              "version": "[0.1.81, )"
+            },
+            "Zenseless.OpenTK.GUI": {
+              "target": "Package",
+              "version": "[0.1.24, )"
+            },
+            "Zenseless.Resources": {
+              "target": "Package",
+              "version": "[0.2.15, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\src\\SpaceHunter.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\src\\SpaceHunter.csproj",
+        "projectName": "SpaceHunter",
+        "projectPath": "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\src\\SpaceHunter.csproj",
+        "packagesPath": "C:\\Users\\leonm\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\src\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\leonm\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\OpenTKLib\\OpenTKLib.csproj": {
+                "projectPath": "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\OpenTKLib\\OpenTKLib.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

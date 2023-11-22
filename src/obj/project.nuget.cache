@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "dgSpecHash": "e55KrqHYW1TS0YvkSS59nWC6hfDx4YRJv012rt9EEFFPaIe9ThfcMrOf4NJjtY5TZrY1WxrQHxJPZA3J44YGoA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\leonm\\OneDrive\\Dokumente\\GitHub\\SpaceHunter\\src\\SpaceHunter.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\leonm\\.nuget\\packages\\imgui.net\\1.89.9.2\\imgui.net.1.89.9.2.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\magick.net-q8-anycpu\\13.3.0\\magick.net-q8-anycpu.13.3.0.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\magick.net.core\\13.3.0\\magick.net.core.13.3.0.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\opentk\\4.8.1\\opentk.4.8.1.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\opentk.audio.openal\\4.8.1\\opentk.audio.openal.4.8.1.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\opentk.compute\\4.8.1\\opentk.compute.4.8.1.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\opentk.core\\4.8.1\\opentk.core.4.8.1.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\opentk.graphics\\4.8.1\\opentk.graphics.4.8.1.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\opentk.input\\4.8.1\\opentk.input.4.8.1.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\opentk.mathematics\\4.8.1\\opentk.mathematics.4.8.1.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\opentk.redist.glfw\\3.3.8.39\\opentk.redist.glfw.3.3.8.39.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\opentk.windowing.common\\4.8.1\\opentk.windowing.common.4.8.1.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\opentk.windowing.desktop\\4.8.1\\opentk.windowing.desktop.4.8.1.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\opentk.windowing.graphicslibraryframework\\4.8.1\\opentk.windowing.graphicslibraryframework.4.8.1.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\system.buffers\\4.4.0\\system.buffers.4.4.0.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\system.numerics.vectors\\4.4.0\\system.numerics.vectors.4.4.0.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\5.0.0\\system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\zenseless.opentk\\0.1.81\\zenseless.opentk.0.1.81.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\zenseless.opentk.gui\\0.1.24\\zenseless.opentk.gui.0.1.24.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\zenseless.patterns\\0.6.35\\zenseless.patterns.0.6.35.nupkg.sha512",
+    "C:\\Users\\leonm\\.nuget\\packages\\zenseless.resources\\0.2.15\\zenseless.resources.0.2.15.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,13 @@
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\bin\Debug\net6.0\OpenTKLib.deps.json
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\bin\Debug\net6.0\OpenTKLib.dll
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\bin\Debug\net6.0\OpenTKLib.pdb
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\obj\Debug\net6.0\OpenTKLib.csproj.AssemblyReference.cache
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\obj\Debug\net6.0\OpenTKLib.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\obj\Debug\net6.0\OpenTKLib.AssemblyInfoInputs.cache
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\obj\Debug\net6.0\OpenTKLib.AssemblyInfo.cs
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\obj\Debug\net6.0\OpenTKLib.csproj.CoreCompileInputs.cache
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\obj\Debug\net6.0\OpenTKLib.sourcelink.json
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\obj\Debug\net6.0\OpenTKLib.dll
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\obj\Debug\net6.0\refint\OpenTKLib.dll
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\obj\Debug\net6.0\OpenTKLib.pdb
+C:\Users\leonm\OneDrive\Dokumente\GitHub\SpaceHunter\OpenTKLib\obj\Debug\net6.0\ref\OpenTKLib.dll
