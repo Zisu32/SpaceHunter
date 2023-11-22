@@ -8,17 +8,19 @@ namespace SpaceHunter;
 
 internal static class Program
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private static Camera _camera;
     private static BufferedKeyGroup _translationKeys;
     private static BufferedKeyGroup _rotationKeys;
     private static BufferedKeyGroup _scaleKeys;
     private static BufferedKeyGroup _playerKeys;
     private static GameState _state;
+    private static WorldHandler _worldHandler;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     public static void Main(string[] args)
     {
         _state = new GameState();
-
 
         OpenTKManager manager = new OpenTKManager(new DrawComponent(_state));
 
@@ -27,23 +29,25 @@ internal static class Program
             Keys.A, Keys.D, Keys.W, Keys.S
         });
 
-        _rotationKeys = new BufferedKeyGroup(new List<Keys>()
+        _rotationKeys = new BufferedKeyGroup(new List<Keys>
         {
             Keys.Q, Keys.E
         });
 
-        _scaleKeys = new BufferedKeyGroup(new List<Keys>()
+        _scaleKeys = new BufferedKeyGroup(new List<Keys>
         {
             Keys.Z, Keys.X
         });
 
-        _playerKeys = new BufferedKeyGroup(new List<Keys>()
+        _playerKeys = new BufferedKeyGroup(new List<Keys>
         {
-            Keys.Up, Keys.Right, Keys.Down, Keys.Left
+            Keys.Up, Keys.Right, Keys.Down, Keys.Left, Keys.Space
         });
 
         _camera = manager.Camera;
-        _camera.Center = new Vector2(-1, 0);
+
+        _worldHandler = new WorldHandler(_camera, _state, _playerKeys);
+
         manager.Keyboard.AddKeyGroup(_translationKeys);
         manager.Keyboard.AddKeyGroup(_rotationKeys);
         manager.Keyboard.AddKeyGroup(_scaleKeys);
@@ -55,44 +59,13 @@ internal static class Program
 
     private static void GameUpdate(object? sender, FrameEventArgs e)
     {
-        Translation();
-        Rotation();
-        Scale();
-        PlayerMove();
+        _worldHandler.Update();
+        // Translation();
+        // Rotation();
+        // Scale();
+        // PlayerMove();
     }
-
-    private static void PlayerMove()
-    {
-        Vector2 playerBoxMin = _state.PlayerBox.Min;
-        Vector2 playerBoxMax = _state.PlayerBox.Max;
-
-        switch (_playerKeys.LastPressed)
-        {
-            case Keys.Up:
-                playerBoxMin.Y += 0.1f;
-                playerBoxMax.Y += 0.1f;
-                break;
-            case Keys.Down:
-                playerBoxMin.Y -= 0.1f;
-                playerBoxMax.Y -= 0.1f;
-                break;
-            case Keys.Left:
-                playerBoxMin.X -= 0.1f;
-                playerBoxMax.X -= 0.1f;
-                break;
-            case Keys.Right:
-                playerBoxMin.X += 0.1f;
-                playerBoxMax.X += 0.1f;
-                break;
-
-            default:
-                return;
-        }
-
-        _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
-        _playerKeys.LastPressed = null;
-    }
-
+    
     private static void Scale()
     {
         switch (_scaleKeys.LastPressed)
@@ -107,6 +80,7 @@ internal static class Program
                 return;
         }
 
+        Console.WriteLine($"Scale = {_camera.Scale}");
         _scaleKeys.LastPressed = null;
     }
 
@@ -124,6 +98,7 @@ internal static class Program
                 return;
         }
 
+        Console.WriteLine($"Rotation = {_camera.Rotation}");
         _rotationKeys.LastPressed = null;
     }
 
@@ -150,6 +125,7 @@ internal static class Program
                 return;
         }
 
+        Console.WriteLine($"Center = {_camera.Center}");
         _translationKeys.LastPressed = null;
         _camera.Center = cameraCenter;
     }
