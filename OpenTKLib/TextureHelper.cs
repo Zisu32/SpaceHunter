@@ -3,6 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Zenseless.OpenTK;
 using Zenseless.Patterns;
+using SpaceHunter;
 
 namespace OpenTKLib;
 
@@ -20,7 +21,7 @@ public static class TextureHelper
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         GL.Enable(EnableCap.Blend);
     }
-    
+
     public static void DrawRectangularTexture(Box2 rectangle, Handle<Texture> texture)
     {
         GL.BindTexture(TextureTarget.Texture2D, texture);
@@ -41,6 +42,39 @@ public static class TextureHelper
         GL.Vertex2(rectangle.Max);
         // top left
         GL.TexCoord2(DefaultBox.Min.X, DefaultBox.Max.Y);
+        GL.Vertex2(rectangle.Min.X, rectangle.Max.Y);
+
+        GL.End();
+    }
+
+    public static void DrawSpriteRun(Box2 rectangle, Handle<Texture> texture, uint spriteId)
+    {
+        GL.BindTexture(TextureTarget.Texture2D, texture);
+
+        // how many sprites are in each column and row
+        const uint columns = 6;
+        const uint rows = 1;
+        // calculate the current frame of an animation
+        // var spriteId = (uint)MathF.Round(texture.NormalizedAnimationTime * (columns * rows - 1));
+        var texCoords = SpriteSheetTools.CalcTexCoords(spriteId, columns, rows);
+        //Draw(texture.Bounds, texCoords);
+
+        // prevent color problems
+        GL.Color4(Color.White);
+
+        GL.Begin(PrimitiveType.Quads);
+
+        // bottom left
+        GL.TexCoord2(texCoords.Min);
+        GL.Vertex2(rectangle.Min);
+        // bottom right
+        GL.TexCoord2(texCoords.Max.X, texCoords.Min.Y);
+        GL.Vertex2(rectangle.Max.X, rectangle.Min.Y);
+        // top right
+        GL.TexCoord2(texCoords.Max);
+        GL.Vertex2(rectangle.Max);
+        // top left
+        GL.TexCoord2(texCoords.Min.X, texCoords.Max.Y);
         GL.Vertex2(rectangle.Min.X, rectangle.Max.Y);
 
         GL.End();
