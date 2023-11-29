@@ -19,10 +19,9 @@ public class WorldHandler
         _camera = camera;
         _state = state;
         _playerKeys = playerKeys;
-        
+
         // setup initial camera parameters
-        _camera.Scale = 6.0f;
-        _camera.Center = new Vector2(-1, -1);
+        _camera.Scale = 4.0f;
     }
 
     public void Update()
@@ -47,7 +46,8 @@ public class WorldHandler
             //     break;
             case Keys.Left:
 
-                if (playerBoxMin.X <= 0)
+                // TODO: get floated, this somehow allows player to move camera out of bounds
+                if (playerBoxMin.X < 0)
                 {
                     return;
                 }
@@ -56,14 +56,14 @@ public class WorldHandler
                 playerBoxMax.X -= 0.2f;
                 break;
             case Keys.Right:
-                
-                // 16f is value from background draw
+
+                // TODO: where do the 5f come from?
                 // 5f is size of player Box
-                if (playerBoxMax.X >= 16f + 5f / 2)
+                if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + 5f / 2)
                 {
                     return;
                 }
-                
+
                 playerBoxMin.X += 0.2f;
                 playerBoxMax.X += 0.2f;
                 break;
@@ -74,15 +74,22 @@ public class WorldHandler
 
         Console.WriteLine($"PlayerPosMin: {playerBoxMin}");
         Console.WriteLine($"PlayerPosMax: {playerBoxMax}");
-        Console.WriteLine();
+
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
         _playerKeys.LastPressed = null;
-        
-        
+
+
         // move camera
         Vector2 cameraCenter = _camera.Center;
-        cameraCenter.X = -1 - playerBoxMin.X / 6;
-        _camera.Center = cameraCenter;
 
+        // prevent the camera from moving outside of background
+        if (playerBoxMin.X + _camera.ScreenWidth < TextureManager.BackgroundRectangle.Max.X)
+        {
+            cameraCenter.X = -playerBoxMin.X;
+            _camera.Center = cameraCenter;
+        }
+
+        Console.WriteLine($"Camera: {cameraCenter.X}");
+        Console.WriteLine("");
     }
 }

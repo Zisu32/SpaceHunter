@@ -9,10 +9,11 @@ public class TextureManager
     private Texture2D _background;
     private Texture2D _player;
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
+    public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 20f, 20f);
 
     public void DrawBackground()
     {
-        TextureHelper.DrawRectangularTexture(new Box2(0f, 0f, 16f, 16f), _background.Handle);
+        TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background.Handle);
     }
 
     public void DrawPlayer(Box2 position)
