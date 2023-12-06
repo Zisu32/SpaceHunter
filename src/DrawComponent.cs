@@ -28,10 +28,10 @@ public class DrawComponent : IDrawComponent
         // DrawBlockGrid();
         
         _textureManager.DrawBackground();
-        _textureManager.DrawPlayer(_state.PlayerBox);
+        // _textureManager.DrawPlayer(_state.PlayerBox);
         
-        // DrawBall();
-        // DrawPlayer();
+        DrawPlayer();
+        
         // DrawDebugLine(_state.DebugLineHeight);
 
         ErrorCode errorCode = GL.GetError();
@@ -102,27 +102,6 @@ public class DrawComponent : IDrawComponent
 
     private void DrawPlayer()
     {
-        const float playerLength = GameState.PlayerLength;
-        const float playerHeight = 2.0f / 16;
-        const float playerStartX = -1f;
-        const float playerEndX = playerStartX + playerLength;
-        float playerPos = _state.PlayerPosition * (2.0f - playerLength);
-
-        GenericDrawFunctions.DrawLineX(playerPos + playerStartX, Color.Red);
-
-        GL.Begin(BeginMode.Quads);
-
-        GL.Color4(Color.White);
-
-        // bottom left
-        GL.Vertex2(playerStartX + playerPos, -1f);
-        // bottom right 
-        GL.Vertex2(playerEndX + playerPos, -1f);
-        // top right
-        GL.Vertex2(playerEndX + playerPos, -1f + playerHeight);
-        // top left 
-        GL.Vertex2(playerStartX + playerPos, -1f + playerHeight);
-
-        GL.End();
+        _textureManager.DrawPlayer(_state.PlayerBox);
     }
 }
