@@ -13,7 +13,7 @@ public class TextureManager
     private Texture2D _player_attack;
     private Texture2D _player_hurt;
     private Texture2D _player_death;
-    
+
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
 
     public void DrawBackground()
@@ -21,14 +21,33 @@ public class TextureManager
         TextureHelper.DrawRectangularTexture(new Box2(0f, 0f, 16f, 16f), _background.Handle);
     }
 
-    public void DrawPlayer(Box2 position)
+    public void DrawPlayer(Box2 position, PlayerState playerState, uint spriteId)
     {
-        TextureHelper.DrawSprite4Col(position, _player_idle.Handle, 0);
-        //TextureHelper.DrawSprite6Col(position, _player_run.Handle, 0);
-        //TextureHelper.DrawSprite6Col(position, _player_jump.Handle, 0);
-        //TextureHelper.DrawSprite8Col(position, _player_attack.Handle, 0);
-        //TextureHelper.DrawSprite2Col(position, _player_hurt.Handle, 0);
-        //TextureHelper.DrawSprite6Col(position, _player_death.Handle, 0);
+        Texture2D texture2D = null;
+        switch (playerState)
+        {
+            case PlayerState.idle:
+                texture2D = _player_idle;
+                break;
+            case PlayerState.run:
+                texture2D = _player_run;
+                break;
+            case PlayerState.jump:
+                texture2D = _player_jump;
+                break;
+            case PlayerState.attack:
+                texture2D= _player_attack;
+                break;
+            case PlayerState.hurt:
+                texture2D=_player_hurt;
+                break;
+            case PlayerState.death:
+                texture2D = _player_death;
+                break;
+        }
+
+        TextureHelper.DrawSprite4Col(position, texture2D.Handle, 0);
+        
     }
 
     public void Initialize()
