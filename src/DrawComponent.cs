@@ -103,7 +103,7 @@ public class DrawComponent : IDrawComponent
 
     private void DrawPlayer(FrameEventArgs obj)
     {
-        _textureManager.DrawPlayer(_state.PlayerBox);
+
         //base.Update(obj.Time);
         float NormalizedAnimationTime = +(float)(obj.Time / 1.5f);
         NormalizedAnimationTime %= 1f;
@@ -112,19 +112,22 @@ public class DrawComponent : IDrawComponent
         uint rows = 1;
 
         // calculate the current frame of an animation
-        var spriteId = (uint)MathF.Round(NormalizedAnimationTime * (columns * rows - 1));
+        uint spriteId = (uint)MathF.Round(NormalizedAnimationTime * (columns * rows - 1));
+        Console.WriteLine("spriteid=" + spriteId);
         var texCoords = SpriteSheetTools.CalcTexCoords(spriteId, columns, rows);
-        //Draw(texCoords);
-        GL.Begin(PrimitiveType.Quads);
-        GL.TexCoord2(texCoords.Min);
-        GL.Vertex2(_state.PlayerBox.Min);
-        GL.TexCoord2(texCoords.Max.X, texCoords.Min.Y);
-        GL.Vertex2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
-        GL.TexCoord2(texCoords.Max);
-        GL.Vertex2(_state.PlayerBox.Max);
-        GL.TexCoord2(texCoords.Min.X, texCoords.Max.Y);
-        GL.Vertex2(_state.PlayerBox.Min.X, _state.PlayerBox.Max.Y);
-        GL.End();
+        _textureManager.DrawPlayerTex(_state.PlayerBox, PlayerState.idle, spriteId);
+        
+        // //Draw(texCoords);
+        // GL.Begin(PrimitiveType.Quads);
+        // GL.TexCoord2(texCoords.Min);
+        // GL.Vertex2(_state.PlayerBox.Min);
+        // GL.TexCoord2(texCoords.Max.X, texCoords.Min.Y);
+        // GL.Vertex2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
+        // GL.TexCoord2(texCoords.Max);
+        // GL.Vertex2(_state.PlayerBox.Max);
+        // GL.TexCoord2(texCoords.Min.X, texCoords.Max.Y);
+        // GL.Vertex2(_state.PlayerBox.Min.X, _state.PlayerBox.Max.Y);
+        // GL.End();
 
     }
 }
