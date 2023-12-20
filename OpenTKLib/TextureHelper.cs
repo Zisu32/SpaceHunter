@@ -11,6 +11,7 @@ namespace OpenTKLib;
 public static class TextureHelper
 {
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
+    static uint spriteId = 0;
 
     /// <summary>
     /// Enables Capability to display textures including alpha channels
@@ -79,6 +80,7 @@ public static class TextureHelper
 
         GL.End();
     }
+    
     public static void DrawSprite4Col(Box2 rectangle, Handle<Texture> texture, FrameEventArgs obj)
     {
         GL.BindTexture(TextureTarget.Texture2D, texture);
@@ -86,19 +88,15 @@ public static class TextureHelper
         // how many sprites are in each column and row
         const uint columns = 4;
         const uint rows = 1;
-
-        float NormalizedAnimationTime = 0f;
-        NormalizedAnimationTime += ((float)(obj.Time)/1.5f)*100;
-        Console.WriteLine("obj.Time = " + obj.Time);
-        Console.WriteLine("NormAniTime = " + NormalizedAnimationTime);
-        NormalizedAnimationTime %= 1f;
-        Console.WriteLine("After modulo = " + NormalizedAnimationTime);
         
-        // calculate the current frame of an animation
-        uint spriteIdRounded = (uint)MathF.Round(NormalizedAnimationTime * (columns * rows - 1));
-        Console.WriteLine("spriteIdRounded = " + spriteIdRounded);
-        var texCoords = SpriteSheetTools.CalcTexCoords(spriteIdRounded, columns, rows);
-        //Draw(texture.Bounds, texCoords);
+        float NormalizedAnimationTime = (float)(obj.Time);
+        if (NormalizedAnimationTime >= 0)
+        {
+            spriteId = (spriteId + 1) % 4; 
+        }
+        Console.WriteLine(spriteId);
+        var texCoords = SpriteSheetTools.CalcTexCoords(spriteId, columns, rows);
+
 
         // prevent color problems
         GL.Color4(Color.White);
@@ -119,6 +117,7 @@ public static class TextureHelper
         GL.Vertex2(rectangle.Min.X, rectangle.Max.Y);
 
         GL.End();
+        System.Threading.Thread.Sleep(200);
     }
     
     public static void DrawSprite6Col(Box2 rectangle, Handle<Texture> texture, uint spriteId)
