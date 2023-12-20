@@ -57,12 +57,12 @@ internal static class Program
         manager.DisplayWindow();
     }
 
-    private static void GameUpdate(object? sender, FrameEventArgs e)
+    private static void GameUpdate(object? sender, FrameEventArgs frameArgs)
     {
-        _worldHandler.Update();
-        // Translation();
+        _worldHandler.Update(frameArgs);
+        Translation();
         // Rotation();
-        // Scale();
+        Scale();
         // PlayerMove();
     }
     

@@ -1,4 +1,5 @@
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTKLib;
 using SpaceHunter.Models;
@@ -13,6 +14,8 @@ public class WorldHandler
     private readonly Camera _camera;
     private readonly GameState _state;
     private readonly BufferedKeyGroup _playerKeys;
+    private const float JumpDuration = 3f;
+    private float JumpTime = 0f;
 
     public WorldHandler(Camera camera, GameState state, BufferedKeyGroup playerKeys)
     {
@@ -24,9 +27,55 @@ public class WorldHandler
         _camera.Scale = 4.0f;
     }
 
-    public void Update()
+    public void Update(FrameEventArgs frameArgs)
     {
         MovePlayer();
+        if (_state.PlayerInAir)
+        {
+            JumpMovement(frameArgs);
+            Console.WriteLine("jump");
+        }
+    }
+
+    // TODO extract player box size (5f) to const somewhere
+
+    private void JumpMovement(FrameEventArgs frameArgs)
+    {
+        Vector2 playerBoxMin = _state.PlayerBox.Min;
+        Vector2 playerBoxMax = _state.PlayerBox.Max;
+
+        // stop jump
+        if (JumpTime > JumpDuration - 0.02f)
+        {
+            if (playerBoxMin.Y - (5f / JumpDuration / 2) < 0)
+            {
+                Console.WriteLine("PlayerBox stop");
+            }
+
+            if (JumpTime > JumpDuration)
+            {
+                Console.WriteLine("Time stop0");
+            }
+            
+            _state.PlayerInAir = false;
+        }
+
+        
+        if (JumpTime > JumpDuration / 2)
+        {
+            // move down
+            playerBoxMax.Y -= (5f / JumpDuration / 2);
+            playerBoxMin.Y -= (5f / JumpDuration / 2);
+        }
+        else
+        {
+            // move up
+            playerBoxMax.Y += (5f / JumpDuration / 2);
+            playerBoxMin.Y += (5f / JumpDuration / 2);
+        }
+
+        _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
+        JumpTime += (float)frameArgs.Time;
     }
 
     private void MovePlayer()
@@ -34,16 +83,9 @@ public class WorldHandler
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
+        // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
         switch (_playerKeys.LastPressed)
         {
-            // case Keys.Up:
-            //     playerBoxMin.Y += 0.1f;
-            //     playerBoxMax.Y += 0.1f;
-            //     break;
-            // case Keys.Down:
-            //     playerBoxMin.Y -= 0.1f;
-            //     playerBoxMax.Y -= 0.1f;
-            //     break;
             case Keys.Left:
 
                 // TODO: get floated, this somehow allows player to move camera out of bounds
@@ -57,7 +99,6 @@ public class WorldHandler
                 break;
             case Keys.Right:
 
-                // TODO: where do the 5f come from?
                 // 5f is size of player Box
                 if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + 5f / 2)
                 {
@@ -66,6 +107,11 @@ public class WorldHandler
 
                 playerBoxMin.X += 0.2f;
                 playerBoxMax.X += 0.2f;
+                break;
+            case Keys.Space:
+                // TODO, this should only be set once to prevent somehow becoming invincible
+                _state.PlayerInAir = true;
+                JumpTime = 0;
                 break;
 
             default:

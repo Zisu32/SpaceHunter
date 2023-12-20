@@ -1,6 +1,4 @@
-using System.Drawing;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTKLib;
 using SpaceHunter.Models;
@@ -29,6 +27,8 @@ public class DrawComponent : IDrawComponent
         _textureManager.DrawPlayer(_state.PlayerBox);
 
         ErrorCode errorCode = GL.GetError();
+        
+        
 
         if (errorCode != ErrorCode.NoError)
         {
