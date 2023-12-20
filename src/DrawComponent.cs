@@ -103,20 +103,16 @@ public class DrawComponent : IDrawComponent
 
     private void DrawPlayer(FrameEventArgs obj)
     {
+        
+        _textureManager.DrawPlayerTex(_state.PlayerBox, PlayerState.idle, obj);
 
         //base.Update(obj.Time);
-        float NormalizedAnimationTime = +(float)(obj.Time / 1.5f);
-        NormalizedAnimationTime %= 1f;
-
-        uint columns = 4;
-        uint rows = 1;
-
+       // float NormalizedAnimationTime = +(float)(obj.Time / 1.5f);
+       // NormalizedAnimationTime %= 1f;
+       
+       
         // calculate the current frame of an animation
-        uint spriteId = (uint)MathF.Round(NormalizedAnimationTime * (columns * rows - 1));
-        Console.WriteLine("spriteid=" + spriteId);
-        var texCoords = SpriteSheetTools.CalcTexCoords(spriteId, columns, rows);
-        _textureManager.DrawPlayerTex(_state.PlayerBox, PlayerState.idle, spriteId);
-        
+        //var texCoords = SpriteSheetTools.CalcTexCoords(spriteId, columns, rows);
         // //Draw(texCoords);
         // GL.Begin(PrimitiveType.Quads);
         // GL.TexCoord2(texCoords.Min);

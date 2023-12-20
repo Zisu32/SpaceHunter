@@ -1,4 +1,5 @@
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTKLib;
 using Zenseless.OpenTK;
 
@@ -21,7 +22,7 @@ public class TextureManager
         TextureHelper.DrawRectangularTexture(new Box2(0f, 0f, 16f, 16f), _background.Handle);
     }
 
-    public void DrawPlayerTex(Box2 position, PlayerState playerState, uint spriteId)
+    public void DrawPlayerTex(Box2 position, PlayerState playerState, FrameEventArgs obj)
     {
         Texture2D texture2D = null;
         switch (playerState)
@@ -46,7 +47,7 @@ public class TextureManager
                 break;
         }
 
-        TextureHelper.DrawSprite4Col(position, texture2D.Handle, spriteId);
+        TextureHelper.DrawSprite4Col(position, texture2D.Handle, obj);
         
     }
 

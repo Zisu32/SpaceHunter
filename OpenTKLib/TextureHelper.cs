@@ -1,6 +1,7 @@
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using Zenseless.OpenTK;
 using Zenseless.Patterns;
 using SpaceHunter;
@@ -78,16 +79,25 @@ public static class TextureHelper
 
         GL.End();
     }
-    public static void DrawSprite4Col(Box2 rectangle, Handle<Texture> texture, uint spriteId)
+    public static void DrawSprite4Col(Box2 rectangle, Handle<Texture> texture, FrameEventArgs obj)
     {
         GL.BindTexture(TextureTarget.Texture2D, texture);
 
         // how many sprites are in each column and row
         const uint columns = 4;
         const uint rows = 1;
+
+        float NormalizedAnimationTime = 0f;
+        NormalizedAnimationTime += ((float)(obj.Time)/1.5f)*100;
+        Console.WriteLine("obj.Time = " + obj.Time);
+        Console.WriteLine("NormAniTime = " + NormalizedAnimationTime);
+        NormalizedAnimationTime %= 1f;
+        Console.WriteLine("After modulo = " + NormalizedAnimationTime);
+        
         // calculate the current frame of an animation
-        // var spriteId = (uint)MathF.Round(texture.NormalizedAnimationTime * (columns * rows - 1));
-        var texCoords = SpriteSheetTools.CalcTexCoords(spriteId, columns, rows);
+        uint spriteIdRounded = (uint)MathF.Round(NormalizedAnimationTime * (columns * rows - 1));
+        Console.WriteLine("spriteIdRounded = " + spriteIdRounded);
+        var texCoords = SpriteSheetTools.CalcTexCoords(spriteIdRounded, columns, rows);
         //Draw(texture.Bounds, texCoords);
 
         // prevent color problems
