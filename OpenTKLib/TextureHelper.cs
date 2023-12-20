@@ -89,12 +89,13 @@ public static class TextureHelper
         const uint columns = 4;
         const uint rows = 1;
         
-        float NormalizedAnimationTime = (float)(obj.Time);
-        if (NormalizedAnimationTime >= 0)
+        float clock = (float)(obj.Time);
+        Console.WriteLine("clock: " + clock);
+        if (clock > 0.017)
         {
             spriteId = (spriteId + 1) % 4; 
         }
-        Console.WriteLine(spriteId);
+        Console.WriteLine("ID: " + spriteId);
         var texCoords = SpriteSheetTools.CalcTexCoords(spriteId, columns, rows);
 
 
@@ -117,7 +118,6 @@ public static class TextureHelper
         GL.Vertex2(rectangle.Min.X, rectangle.Max.Y);
 
         GL.End();
-        System.Threading.Thread.Sleep(200);
     }
     
     public static void DrawSprite6Col(Box2 rectangle, Handle<Texture> texture, uint spriteId)
@@ -182,7 +182,7 @@ public static class TextureHelper
         // top left
         GL.TexCoord2(texCoords.Min.X, texCoords.Max.Y);
         GL.Vertex2(rectangle.Min.X, rectangle.Max.Y);
-
+        
         GL.End();
     }
 
