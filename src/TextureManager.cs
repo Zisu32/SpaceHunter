@@ -26,7 +26,7 @@ public class TextureManager
         TextureHelper.InitalizeOpenGLTextures();
 
         // Textures can only be loaded when a window is already being displayed (for some reason)
-        _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.BG-1.jpg");
+        _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.BG-1.png");
         _player = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Character_Single.png");
     }
 }

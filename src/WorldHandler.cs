@@ -14,7 +14,7 @@ public class WorldHandler
     private readonly Camera _camera;
     private readonly GameState _state;
     private readonly BufferedKeyGroup _playerKeys;
-    private const float JumpDuration = 3f;
+    private const float JumpDuration = 0.5f;
     private float JumpTime = 0f;
 
     public WorldHandler(Camera camera, GameState state, BufferedKeyGroup playerKeys)
@@ -33,7 +33,7 @@ public class WorldHandler
         if (_state.PlayerInAir)
         {
             JumpMovement(frameArgs);
-            Console.WriteLine("jump");
+            // Console.WriteLine("jump");
         }
     }
 
@@ -60,18 +60,21 @@ public class WorldHandler
             _state.PlayerInAir = false;
         }
 
+        Console.WriteLine(frameArgs.Time);
+        float jumpDistance = (float)(5f * (frameArgs.Time / JumpDuration));
         
         if (JumpTime > JumpDuration / 2)
         {
             // move down
-            playerBoxMax.Y -= (5f / JumpDuration / 2);
-            playerBoxMin.Y -= (5f / JumpDuration / 2);
+            playerBoxMax.Y -= jumpDistance;
+            playerBoxMin.Y -= (jumpDistance);
+            // TODO, move back down to 0 coord
         }
         else
         {
             // move up
-            playerBoxMax.Y += (5f / JumpDuration / 2);
-            playerBoxMin.Y += (5f / JumpDuration / 2);
+            playerBoxMax.Y += jumpDistance;
+            playerBoxMin.Y += jumpDistance;
         }
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
@@ -110,6 +113,10 @@ public class WorldHandler
                 break;
             case Keys.Space:
                 // TODO, this should only be set once to prevent somehow becoming invincible
+                if (_state.PlayerInAir)
+                {
+                    break;
+                }
                 _state.PlayerInAir = true;
                 JumpTime = 0;
                 break;
