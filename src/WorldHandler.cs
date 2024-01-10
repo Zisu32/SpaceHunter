@@ -33,7 +33,6 @@ public class WorldHandler
         if (_state.PlayerInAir)
         {
             JumpMovement(frameArgs);
-            // Console.WriteLine("jump");
         }
     }
 
@@ -44,31 +43,30 @@ public class WorldHandler
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
-        // stop jump
-        if (JumpTime > JumpDuration - 0.02f)
+        // stop jump, first wait the predefined time. Then wait for play to return to ground
+        if (JumpTime > JumpDuration -0.02f && playerBoxMin.Y < 0.001f)
         {
-            if (playerBoxMin.Y - (5f / JumpDuration / 2) < 0)
-            {
-                Console.WriteLine("PlayerBox stop");
-            }
-
-            if (JumpTime > JumpDuration)
-            {
-                Console.WriteLine("Time stop0");
-            }
+            // if (playerBoxMin.Y - (5f / JumpDuration / 2) < 0)
+            // {
+            //     Console.WriteLine("PlayerBox stop");
+            // }
+            //
+            // if (JumpTime > JumpDuration)
+            // {
+            //     Console.WriteLine("Time stop0");
+            // }
             
             _state.PlayerInAir = false;
         }
 
-        Console.WriteLine(frameArgs.Time);
+        // Console.WriteLine(frameArgs.Time);
         float jumpDistance = (float)(5f * (frameArgs.Time / JumpDuration));
-        
+
         if (JumpTime > JumpDuration / 2)
         {
             // move down
             playerBoxMax.Y -= jumpDistance;
             playerBoxMin.Y -= (jumpDistance);
-            // TODO, move back down to 0 coord
         }
         else
         {
