@@ -15,6 +15,11 @@ public class TextureManager
     private Texture2D _player_hurt;
     private Texture2D _player_death;
 
+    static float clockCounter = 0;
+    static uint spriteId = 0;
+    static uint columns = 0;
+    static uint rows = 1;
+    
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
 
     public void DrawBackground()
@@ -29,25 +34,43 @@ public class TextureManager
         {
             case PlayerState.idle:
                 texture2D = _player_idle;
+                columns = 4;
                 break;
             case PlayerState.run:
                 texture2D = _player_run;
+                columns = 6;
                 break;
             case PlayerState.jump:
                 texture2D = _player_jump;
+                columns = 6;
                 break;
             case PlayerState.attack:
                 texture2D= _player_attack;
+                columns = 8;
                 break;
             case PlayerState.hurt:
                 texture2D=_player_hurt;
+                columns = 2;
                 break;
             case PlayerState.death:
                 texture2D = _player_death;
+                columns = 6;
                 break;
         }
-
-        TextureHelper.DrawSprite4Col(position, texture2D.Handle, obj);
+        
+        // Zeitberechnung für Animation der Sprites
+        float clock = (float)(obj.Time);
+        clockCounter += clock;
+        Console.WriteLine("clockCounter: " + clockCounter);
+        if (clockCounter > 0.25)
+        {
+            Console.WriteLine("Col: " + columns);
+            spriteId = (spriteId + 1) % columns;
+            clockCounter = 0;
+        }
+        Console.WriteLine("spriteID: " + spriteId);
+        
+        TextureHelper.DrawSprite(position, texture2D.Handle, spriteId, columns, rows);
         
     }
 
