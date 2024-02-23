@@ -97,6 +97,7 @@ public class WorldHandler
 
                 playerBoxMin.X -= 0.2f;
                 playerBoxMax.X -= 0.2f;
+                _state.playerState = PlayerState.run;
                 break;
             case Keys.Right:
 
@@ -108,6 +109,7 @@ public class WorldHandler
 
                 playerBoxMin.X += 0.2f;
                 playerBoxMax.X += 0.2f;
+                _state.playerState = PlayerState.run;
                 break;
             case Keys.Space:
                 // TODO, this should only be set once to prevent somehow becoming invincible
@@ -120,6 +122,7 @@ public class WorldHandler
                 break;
 
             default:
+                _state.playerState = PlayerState.idle;
                 return;
         }
 
