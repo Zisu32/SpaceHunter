@@ -26,7 +26,7 @@ public class DrawComponent : IDrawComponent
     public async Task Draw(FrameEventArgs obj)
     {
         _textureManager.DrawBackground();
-        _textureManager.DrawPlayer(_state.PlayerBox);
+        _textureManager.DrawPlayerTex(_state.PlayerBox,PlayerState.idle, obj);
 
         ErrorCode errorCode = GL.GetError();
         
