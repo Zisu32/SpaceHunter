@@ -14,14 +14,18 @@ public class WorldHandler
     private readonly Camera _camera;
     private readonly GameState _state;
     private readonly BufferedKeyGroup _playerKeys;
+    private readonly Keyboard _keyboard;
     private const float JumpDuration = 0.5f;
-    private float JumpTime = 0f;
+    // how many players heights the jump is high
+    private const float JumpHeight = 2.5f; 
+    private float _jumpTime;
 
-    public WorldHandler(Camera camera, GameState state, BufferedKeyGroup playerKeys)
+    public WorldHandler(Camera camera, GameState state, BufferedKeyGroup playerKeys, Keyboard keyboard)
     {
         _camera = camera;
         _state = state;
         _playerKeys = playerKeys;
+        _keyboard = keyboard;
 
         // setup initial camera parameters
         _camera.Scale = 4.0f;
@@ -44,25 +48,17 @@ public class WorldHandler
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
         // stop jump, first wait the predefined time. Then wait for play to return to ground
-        if (JumpTime > JumpDuration -0.02f && playerBoxMin.Y < 0.001f)
+        if (_jumpTime > JumpDuration - 0.02f && playerBoxMin.Y < 0.0001f)
         {
-            // if (playerBoxMin.Y - (5f / JumpDuration / 2) < 0)
-            // {
-            //     Console.WriteLine("PlayerBox stop");
-            // }
-            //
-            // if (JumpTime > JumpDuration)
-            // {
-            //     Console.WriteLine("Time stop0");
-            // }
-            
             _state.PlayerInAir = false;
+            playerBoxMin.Y = 0;
+            _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
+            return;
         }
 
-        // Console.WriteLine(frameArgs.Time);
-        float jumpDistance = (float)(5f * (frameArgs.Time / JumpDuration));
+        float jumpDistance = (float)(5f * JumpHeight * (frameArgs.Time / JumpDuration));
 
-        if (JumpTime > JumpDuration / 2)
+        if (_jumpTime > JumpDuration / 2)
         {
             // move down
             playerBoxMax.Y -= jumpDistance;
@@ -76,11 +72,16 @@ public class WorldHandler
         }
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
-        JumpTime += (float)frameArgs.Time;
+        _jumpTime += (float)frameArgs.Time;
     }
 
     private void MovePlayer()
     {
+        if (_playerKeys.LastPressed != null)
+        {
+            Console.WriteLine($"PlayerKey: {_playerKeys.LastPressed}");
+        }
+
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
@@ -117,8 +118,9 @@ public class WorldHandler
                 {
                     break;
                 }
+
                 _state.PlayerInAir = true;
-                JumpTime = 0;
+                _jumpTime = 0;
                 break;
 
             default:
@@ -137,7 +139,12 @@ public class WorldHandler
         Console.WriteLine($"PlayerPosMax: {playerBoxMax}");
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
-        _playerKeys.LastPressed = null;
+
+        // TODO, don't stop movement instantly
+        if (!_keyboard.CheckKeyDown(Keys.Left) || !_keyboard.CheckKeyDown(Keys.Right))
+        {
+            _playerKeys.LastPressed = null;
+        }
 
 
         // move camera
