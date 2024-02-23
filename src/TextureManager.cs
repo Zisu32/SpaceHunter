@@ -21,10 +21,11 @@ public class TextureManager
     static uint rows = 1;
     
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
+    public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 20f, 20f);
 
     public void DrawBackground()
     {
-        TextureHelper.DrawRectangularTexture(new Box2(0f, 0f, 16f, 16f), _background.Handle);
+        TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background.Handle);
     }
 
     public void DrawPlayerTex(Box2 position, PlayerState playerState, FrameEventArgs obj)
@@ -79,6 +80,8 @@ public class TextureManager
         TextureHelper.InitalizeOpenGLTextures();
 
         // Textures can only be loaded when a window is already being displayed (for some reason)
+        _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.BG-1.png");
+        _player = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Character_Single.png");
         _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.BG-1.jpg");
         _player_idle = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_idle.png");
         _player_run = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_run.png");

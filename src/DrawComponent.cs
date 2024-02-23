@@ -25,105 +25,21 @@ public class DrawComponent : IDrawComponent
 
     public async Task Draw(FrameEventArgs obj)
     {
-        // DrawBlockGrid();
-
         _textureManager.DrawBackground();
-        // _textureManager.DrawPlayer(_state.PlayerBox);
-
-        DrawPlayer(obj);
-
-        // DrawDebugLine(_state.DebugLineHeight);
+        _textureManager.DrawPlayer(_state.PlayerBox);
 
         ErrorCode errorCode = GL.GetError();
+        
+        
 
         if (errorCode != ErrorCode.NoError)
         {
-            Console.WriteLine("GL Error");
+            Console.Error.WriteLine($"GL Error: {errorCode}");
         }
     }
 
     public void Initialize()
     {
         _textureManager.Initialize();
-
-    }
-
-    private void DrawBall()
-    {
-        GL.Color4(Color.White);
-
-        float ballX = _state.BallXPosition * 2.0f - 1;
-        float ballY = _state.BallYPosition * 2.0f - 1;
-        GenericDrawFunctions.DrawCircle(new Vector2(ballX, ballY),
-            CircleSegments, 0.08);
-    }
-
-
-    private void DrawBlockGrid()
-    {
-        const float quadSizeX = (2.0f / GameState.BlocksHorizontal);
-        const float quadSizeY = (1.0f / GameState.BlocksVertical);
-
-        for (int y = 0; y < GameState.BlocksVertical; y++)
-        {
-            for (int x = 0; x < GameState.BlocksHorizontal; x++)
-            {
-                float colorY = y * (1.0f / GameState.BlocksVertical);
-
-                // HSV: x is hue, y is Saturation, z is value, w is alpha
-                GL.Color4(Color4.FromHsv(new Vector4(colorY, 1, 1, 1)));
-
-                GL.Begin(BeginMode.Quads);
-                // bottom left
-                GL.Vertex2(quadSizeX * x, quadSizeY * y);
-                // bottom right
-                GL.Vertex2(quadSizeX * x + quadSizeX - Space, quadSizeY * y);
-                // top right
-                GL.Vertex2(quadSizeX * x + quadSizeX - Space, quadSizeY * y + quadSizeY - Space);
-                // top Left
-                GL.Vertex2(quadSizeX * x, quadSizeY * y + quadSizeY - Space);
-
-                GL.End();
-            }
-        }
-    }
-
-    public static void DrawDebugLine(float height)
-    {
-        GL.Color4(Color.White);
-
-        GL.Begin(BeginMode.Quads);
-
-        // GenericDrawFunctions.DrawLineY(height, Color.White);
-
-        GenericDrawFunctions.DrawLineX(height, Color.White);
-
-        GL.End();
-    }
-
-    private void DrawPlayer(FrameEventArgs obj)
-    {
-        
-        _textureManager.DrawPlayerTex(_state.PlayerBox, PlayerState.idle, obj);
-
-        //base.Update(obj.Time);
-       // float NormalizedAnimationTime = +(float)(obj.Time / 1.5f);
-       // NormalizedAnimationTime %= 1f;
-       
-       
-        // calculate the current frame of an animation
-        //var texCoords = SpriteSheetTools.CalcTexCoords(spriteId, columns, rows);
-        // //Draw(texCoords);
-        // GL.Begin(PrimitiveType.Quads);
-        // GL.TexCoord2(texCoords.Min);
-        // GL.Vertex2(_state.PlayerBox.Min);
-        // GL.TexCoord2(texCoords.Max.X, texCoords.Min.Y);
-        // GL.Vertex2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
-        // GL.TexCoord2(texCoords.Max);
-        // GL.Vertex2(_state.PlayerBox.Max);
-        // GL.TexCoord2(texCoords.Min.X, texCoords.Max.Y);
-        // GL.Vertex2(_state.PlayerBox.Min.X, _state.PlayerBox.Max.Y);
-        // GL.End();
-
     }
 }

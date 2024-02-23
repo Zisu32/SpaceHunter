@@ -8,30 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Assets\*.jpg" />
-      <None Remove="Assets\BG-1.png" />
-      <None Remove="Assets\Character_Single.png" />
-      <EmbeddedResource Include="Assets\Character_Single.png" />
-      <None Remove="Assets\Sprites\main_characters\cyberpunk_character\3_Cyborg\Cyborg_run_attack.png" />
-      <EmbeddedResource Include="Assets\Sprites\main_characters\cyberpunk_character\3_Cyborg\Cyborg_run_attack.png" />
-      <None Remove="Assets\Sprites\main_characters\cyberpunk_character\3_Cyborg\Cyborg_run.png" />
-      <EmbeddedResource Include="Assets\Sprites\main_characters\cyberpunk_character\3_Cyborg\Cyborg_run.png" />
-      <None Remove="Assets\Cyborg_run.png" />
-      <EmbeddedResource Include="Assets\Cyborg_run.png" />
-      <None Remove="Assets\Cyborg_idle.png" />
-      <EmbeddedResource Include="Assets\Cyborg_idle.png" />
-      <None Remove="Assets\Cyborg_attack3.png" />
-      <EmbeddedResource Include="Assets\Cyborg_attack3.png" />
-      <None Remove="Assets\Cyborg_death.png" />
-      <EmbeddedResource Include="Assets\Cyborg_death.png" />
-      <None Remove="Assets\Cyborg_doublejump.png" />
-      <EmbeddedResource Include="Assets\Cyborg_doublejump.png" />
-      <None Remove="Assets\Cyborg_hurt.png" />
-      <EmbeddedResource Include="Assets\Cyborg_hurt.png" />
+        <!-- just mark everything in Assets as embedded ressource -->
+        <EmbeddedResource Include="Assets/*/*/*/*/*"/>
+        <EmbeddedResource Include="Assets/*/*/*/*"/>
+        <EmbeddedResource Include="Assets/*/*/*"/>
+        <EmbeddedResource Include="Assets/*/*"/>
+        <EmbeddedResource Include="Assets/*"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OpenTKLib\OpenTKLib.csproj" />
+        <ProjectReference Include="..\OpenTKLib\OpenTKLib.csproj"/>
     </ItemGroup>
 
 </Project>

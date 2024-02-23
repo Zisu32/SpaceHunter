@@ -3,7 +3,6 @@ using Zenseless.OpenTK;
 
 namespace OpenTKLib;
 
-
 // TODO aspect ratio functionality
 public class Camera
 {
@@ -39,10 +38,14 @@ public class Camera
         get => _scale;
         set
         {
-            _scale = value; 
+            _scale = value;
             UpdateMatrix();
         }
     }
+
+    // 1f / Scale is our standard Scale calculation
+    // 1f is the width of one screen half thus multiply it by 2
+    public float ScreenWidth => 1f / (1f / Scale) * 2;
 
     private void UpdateMatrix()
     {
@@ -50,6 +53,9 @@ public class Camera
         Matrix4 rotation = Transformation2d.Rotation(MathHelper.DegreesToRadians(_rotation));
         Matrix4 scale = Transformation2d.Scale(1f / Scale);
 
-        CameraMatrix = Transformation2d.Combine(scale, rotation, translation);
+        // the default translate moves the camera, so that the bottom left Corner is 0,0
+        Matrix4 defaultTranslate = Transformation2d.Translate(-1 * Scale, -1 * Scale);
+
+        CameraMatrix = Transformation2d.Combine(defaultTranslate, translation, scale, rotation);
     }
 }
