@@ -46,7 +46,7 @@ internal static class Program
 
         _camera = manager.Camera;
 
-        _worldHandler = new WorldHandler(_camera, _state, _playerKeys);
+         _worldHandler = new WorldHandler(_camera, _state, _playerKeys, manager.Keyboard);
 
         manager.Keyboard.AddKeyGroup(_translationKeys);
         manager.Keyboard.AddKeyGroup(_rotationKeys);

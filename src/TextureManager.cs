@@ -62,14 +62,14 @@ public class TextureManager
         // Zeitberechnung für Animation der Sprites
         float clock = (float)(obj.Time);
         clockCounter += clock;
-        Console.WriteLine("clockCounter: " + clockCounter);
+        // Console.WriteLine("clockCounter: " + clockCounter);
         if (clockCounter > 0.25)
         {
-            Console.WriteLine("Col: " + columns);
+            // Console.WriteLine("Col: " + columns);
             spriteId = (spriteId + 1) % columns;
             clockCounter = 0;
         }
-        Console.WriteLine("spriteID: " + spriteId);
+        // Console.WriteLine("spriteID: " + spriteId);
         
         TextureHelper.DrawSprite(position, texture2D.Handle, spriteId, columns, rows);
         
