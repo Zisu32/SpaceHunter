@@ -2,8 +2,10 @@
 
     public enum PlayerState
     {
-        idle,
-        run,
+        idle_r,
+        idle_l,
+        run_r,
+        run_l,
         jump,
         attack,
         hurt,
