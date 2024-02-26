@@ -2,12 +2,15 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTKLib;
 using Zenseless.OpenTK;
+using OpenTK.Graphics.OpenGL;
+
 
 namespace SpaceHunter;
 
 public class TextureManager
 {
     private Texture2D _background;
+    private Texture2D _healthbar;
     private Texture2D _player_idle_r;
     private Texture2D _player_idle_l;
     private Texture2D _player_run_r;
@@ -23,9 +26,10 @@ public class TextureManager
     static uint spriteId = 0;
     static uint columns = 0;
     static uint rows = 1;
-    
+
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 20f, 20f);
+    public static readonly Box2 HealthbarRectangle = new Box2(0.25f, 7f, 1.5f, 8f);
 
     public void DrawBackground()
     {
@@ -62,15 +66,15 @@ public class TextureManager
                 columns = 6;
                 break;
             case PlayerState.attack_r:
-                texture2D= _player_attack_r;
+                texture2D = _player_attack_r;
                 columns = 8;
                 break;
             case PlayerState.attack_l:
-                texture2D= _player_attack_l;
+                texture2D = _player_attack_l;
                 columns = 8;
                 break;
             case PlayerState.hurt:
-                texture2D=_player_hurt;
+                texture2D = _player_hurt;
                 columns = 2;
                 break;
             case PlayerState.death:
@@ -78,7 +82,7 @@ public class TextureManager
                 columns = 6;
                 break;
         }
-        
+
         // Zeitberechnung für Animation der Sprites
         float clock = (float)(obj.Time);
         clockCounter += clock;
@@ -90,10 +94,15 @@ public class TextureManager
             clockCounter = 0;
         }
         // Console.WriteLine("spriteID: " + spriteId);
-        
+
         TextureHelper.DrawSprite(position, texture2D.Handle, spriteId, columns, rows);
-        
     }
+
+    public void DrawHealthbar()
+    {
+        TextureHelper.DrawRectangularTexture(HealthbarRectangle, _healthbar.Handle);
+    }
+
 
     public void Initialize()
     {
@@ -101,6 +110,7 @@ public class TextureManager
 
         // Textures can only be loaded when a window is already being displayed (for some reason)
         _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.BG-1.jpg");
+        _healthbar = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.UI.batterie_Lebensanzeige-full.png");
         _player_idle_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_idle_r.png");
         _player_idle_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_idle_l.png");
         _player_run_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_run_r.png");
@@ -111,6 +121,5 @@ public class TextureManager
         _player_attack_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_attack3_l.png");
         _player_hurt = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_hurt.png");
         _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_death.png");
-
     }
 }

@@ -14,7 +14,7 @@ public class DrawComponent : IDrawComponent
     private readonly TextureManager _textureManager;
     private readonly GameState _state;
     private const int CircleSegments = 50;
-
+    
     public DrawComponent(GameState state)
     {
         this._state = state;
@@ -27,6 +27,7 @@ public class DrawComponent : IDrawComponent
     {
         _textureManager.DrawBackground();
         _textureManager.DrawPlayerTex(_state.PlayerBox, _state.playerState, obj);
+        _textureManager.DrawHealthbar();
 
         ErrorCode errorCode = GL.GetError();
 
