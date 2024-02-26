@@ -41,7 +41,7 @@ internal static class Program
 
         _playerKeys = new BufferedKeyGroup(new List<Keys>
         {
-            Keys.Up, Keys.Right, Keys.Down, Keys.Left, Keys.Space
+            Keys.Up, Keys.Right, Keys.Down, Keys.Left, Keys.Space, Keys.F
         });
 
         _camera = manager.Camera;

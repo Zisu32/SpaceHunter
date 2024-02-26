@@ -12,8 +12,10 @@ public class TextureManager
     private Texture2D _player_idle_l;
     private Texture2D _player_run_r;
     private Texture2D _player_run_l;
-    private Texture2D _player_jump;
-    private Texture2D _player_attack;
+    private Texture2D _player_jump_r;
+    private Texture2D _player_jump_l;
+    private Texture2D _player_attack_r;
+    private Texture2D _player_attack_l;
     private Texture2D _player_hurt;
     private Texture2D _player_death;
 
@@ -51,12 +53,20 @@ public class TextureManager
                 texture2D = _player_run_l;
                 columns = 6;
                 break;
-            case PlayerState.jump:
-                texture2D = _player_jump;
+            case PlayerState.jump_r:
+                texture2D = _player_jump_r;
                 columns = 6;
                 break;
-            case PlayerState.attack:
-                texture2D= _player_attack;
+            case PlayerState.jump_l:
+                texture2D = _player_jump_l;
+                columns = 6;
+                break;
+            case PlayerState.attack_r:
+                texture2D= _player_attack_r;
+                columns = 8;
+                break;
+            case PlayerState.attack_l:
+                texture2D= _player_attack_l;
                 columns = 8;
                 break;
             case PlayerState.hurt:
@@ -95,8 +105,10 @@ public class TextureManager
         _player_idle_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_idle_l.png");
         _player_run_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_run_r.png");
         _player_run_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_run_l.png");
-        _player_jump = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_doublejump.png");
-        _player_attack = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_attack3.png");
+        _player_jump_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_doublejump_r.png");
+        _player_jump_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_doublejump_l.png");
+        _player_attack_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_attack3_r.png");
+        _player_attack_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_attack3_l.png");
         _player_hurt = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_hurt.png");
         _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_death.png");
 
