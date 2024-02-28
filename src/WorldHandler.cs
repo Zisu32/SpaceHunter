@@ -29,6 +29,9 @@ public class WorldHandler
 
         // setup initial camera parameters
         _camera.Scale = 4.0f;
+        
+        // TODO, actual enemy Logic
+        _state.enemyBoxes.Add(new Box2(15f,0f,20f,5f));
     }
 
     public void Update(FrameEventArgs frameArgs)
@@ -37,6 +40,14 @@ public class WorldHandler
         if (_state.PlayerInAir)
         {
             JumpMovement(frameArgs);
+        }
+        
+        Console.WriteLine($"Player Min:({_state.PlayerBox.Min}) Max:({_state.PlayerBox.Max})");
+        Console.WriteLine($"Enemy Min:({_state.enemyBoxes[0].Min}) Max:({_state.enemyBoxes[0].Max})");
+
+        if (CollisionHandler.TwoBoxCollisionCheck(_state.PlayerBox, _state.enemyBoxes[0]))
+        {
+            Console.WriteLine("collision");
         }
     }
 
@@ -135,8 +146,8 @@ public class WorldHandler
                 return;
         }
 
-        Console.WriteLine($"PlayerPosMin: {playerBoxMin}");
-        Console.WriteLine($"PlayerPosMax: {playerBoxMax}");
+        // Console.WriteLine($"PlayerPosMin: {playerBoxMin}");
+        // Console.WriteLine($"PlayerPosMax: {playerBoxMax}");
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
 
@@ -157,7 +168,7 @@ public class WorldHandler
             _camera.Center = cameraCenter;
         }
 
-        Console.WriteLine($"Camera: {cameraCenter.X}");
-        Console.WriteLine("");
+        // Console.WriteLine($"Camera: {cameraCenter.X}");
+        // Console.WriteLine("");
     }
 }

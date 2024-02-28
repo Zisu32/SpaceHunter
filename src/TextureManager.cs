@@ -7,6 +7,7 @@ namespace SpaceHunter;
 
 public class TextureManager
 {
+    // TODO, find better way to handle loaded Textures
     private Texture2D _background;
     private Texture2D _player_idle_r;
     private Texture2D _player_idle_l;
@@ -17,17 +18,24 @@ public class TextureManager
     private Texture2D _player_hurt;
     private Texture2D _player_death;
 
+    private Texture2D _enemy;
+
     static float clockCounter = 0;
     static uint spriteId = 0;
     static uint columns = 0;
     static uint rows = 1;
-    
+
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 20f, 20f);
 
     public void DrawBackground()
     {
         TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background.Handle);
+    }
+
+    public void DrawEnemy(Box2 position)
+    {
+        TextureHelper.DrawRectangularTexture(position, _enemy.Handle);
     }
 
     public void DrawPlayerTex(Box2 position, PlayerState playerState, FrameEventArgs obj)
@@ -56,11 +64,11 @@ public class TextureManager
                 columns = 6;
                 break;
             case PlayerState.attack:
-                texture2D= _player_attack;
+                texture2D = _player_attack;
                 columns = 8;
                 break;
             case PlayerState.hurt:
-                texture2D=_player_hurt;
+                texture2D = _player_hurt;
                 columns = 2;
                 break;
             case PlayerState.death:
@@ -68,7 +76,7 @@ public class TextureManager
                 columns = 6;
                 break;
         }
-        
+
         // Zeitberechnung für Animation der Sprites
         float clock = (float)(obj.Time);
         clockCounter += clock;
@@ -80,9 +88,9 @@ public class TextureManager
             clockCounter = 0;
         }
         // Console.WriteLine("spriteID: " + spriteId);
-        
+
+
         TextureHelper.DrawSprite(position, texture2D.Handle, spriteId, columns, rows);
-        
     }
 
     public void Initialize()
@@ -100,5 +108,6 @@ public class TextureManager
         _player_hurt = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_hurt.png");
         _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_death.png");
 
+        _enemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.Enemies.blueEnemy.sprite_no_border.png");
     }
 }

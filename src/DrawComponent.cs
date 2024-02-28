@@ -27,7 +27,12 @@ public class DrawComponent : IDrawComponent
     {
         _textureManager.DrawBackground();
         _textureManager.DrawPlayerTex(_state.PlayerBox, _state.playerState, obj);
-
+        
+        foreach (Box2 enemyBox in _state.enemyBoxes)
+        {
+            _textureManager.DrawEnemy(enemyBox);
+        }
+        
         ErrorCode errorCode = GL.GetError();
 
 
