@@ -16,13 +16,14 @@ internal static class Program
     private static BufferedKeyGroup _playerKeys;
     private static GameState _state;
     private static WorldHandler _worldHandler;
+    private static OpenTKManager _manager;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     public static void Main(string[] args)
     {
         _state = new GameState();
 
-        OpenTKManager manager = new OpenTKManager(new DrawComponent(_state));
+        _manager = new OpenTKManager(new DrawComponent(_state));
 
         _translationKeys = new BufferedKeyGroup(new List<Keys>
         {
@@ -44,17 +45,17 @@ internal static class Program
             Keys.Up, Keys.Right, Keys.Down, Keys.Left, Keys.Space
         });
 
-        _camera = manager.Camera;
+        _camera = _manager.Camera;
 
-         _worldHandler = new WorldHandler(_camera, _state, _playerKeys, manager.Keyboard);
+        _worldHandler = new WorldHandler(_camera, _state, _playerKeys, _manager.Keyboard);
 
-        manager.Keyboard.AddKeyGroup(_translationKeys);
-        manager.Keyboard.AddKeyGroup(_rotationKeys);
-        manager.Keyboard.AddKeyGroup(_scaleKeys);
-        manager.Keyboard.AddKeyGroup(_playerKeys);
-        manager.GameStateUpdateEvent += GameUpdate;
+        _manager.Keyboard.AddKeyGroup(_translationKeys);
+        _manager.Keyboard.AddKeyGroup(_rotationKeys);
+        _manager.Keyboard.AddKeyGroup(_scaleKeys);
+        _manager.Keyboard.AddKeyGroup(_playerKeys);
+        _manager.GameStateUpdateEvent += GameUpdate;
 
-        manager.DisplayWindow();
+        _manager.DisplayWindow();
     }
 
     private static void GameUpdate(object? sender, FrameEventArgs frameArgs)
@@ -65,7 +66,7 @@ internal static class Program
         Scale();
         // PlayerMove();
     }
-    
+
     private static void Scale()
     {
         switch (_scaleKeys.LastPressed)

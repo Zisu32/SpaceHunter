@@ -17,6 +17,7 @@ public class OpenTKManager
     public OpenTKManager(IDrawComponent drawComponent)
     {
         _drawComponent = drawComponent;
+        _drawComponent.Camera = this.Camera;
         _window = new GameWindow(GameWindowSettings.Default, new NativeWindowSettings
         {
             Profile = ContextProfile.Compatability, Flags = ContextFlags.Default
