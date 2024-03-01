@@ -1,7 +1,6 @@
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
 using Zenseless.OpenTK;
 using Zenseless.Patterns;
 using SpaceHunter;
@@ -11,7 +10,6 @@ namespace OpenTKLib;
 public static class TextureHelper
 {
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
-    static uint spriteId = 0;
 
     /// <summary>
     /// Enables Capability to display textures including alpha channels

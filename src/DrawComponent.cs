@@ -21,16 +21,17 @@ public class DrawComponent : IDrawComponent
         this._textureManager = new TextureManager();
     }
 
-    public const float Space = 0.01f;
-
     public async Task Draw(FrameEventArgs obj)
     {
         _textureManager.DrawBackground();
         _textureManager.DrawPlayerTex(_state.PlayerBox, _state.playerState, obj);
         
+        DebugDrawHelper.DrawRectangle(_state.PlayerBox, Color.Blue);
+        
         foreach (Box2 enemyBox in _state.enemyBoxes)
         {
             _textureManager.DrawEnemy(enemyBox);
+            DebugDrawHelper.DrawRectangle(enemyBox, Color.Red);
         }
         
         _textureManager.DrawHealthbar();
