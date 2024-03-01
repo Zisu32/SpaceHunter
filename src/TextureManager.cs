@@ -2,6 +2,8 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTKLib;
 using Zenseless.OpenTK;
+using OpenTK.Graphics.OpenGL;
+
 
 namespace SpaceHunter;
 
@@ -9,12 +11,15 @@ public class TextureManager
 {
     // TODO, find better way to handle loaded Textures
     private Texture2D _background;
+    private Texture2D _healthbar;
     private Texture2D _player_idle_r;
     private Texture2D _player_idle_l;
     private Texture2D _player_run_r;
     private Texture2D _player_run_l;
-    private Texture2D _player_jump;
-    private Texture2D _player_attack;
+    private Texture2D _player_jump_r;
+    private Texture2D _player_jump_l;
+    private Texture2D _player_attack_r;
+    private Texture2D _player_attack_l;
     private Texture2D _player_hurt;
     private Texture2D _player_death;
 
@@ -27,6 +32,7 @@ public class TextureManager
 
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 20f, 20f);
+    public static readonly Box2 HealthbarRectangle = new Box2(0.25f, 7f, 1.5f, 8f);
 
     public void DrawBackground()
     {
@@ -59,12 +65,22 @@ public class TextureManager
                 texture2D = _player_run_l;
                 columns = 6;
                 break;
-            case PlayerState.jump:
-                texture2D = _player_jump;
+            case PlayerState.jump_r:
+                texture2D = _player_jump_r;
+                columns = 6;
+                break;
+            case PlayerState.jump_l:
+                texture2D = _player_jump_l;
                 columns = 6;
                 break;
             case PlayerState.attack:
                 texture2D = _player_attack;
+            case PlayerState.attack_r:
+                texture2D = _player_attack_r;
+                columns = 8;
+                break;
+            case PlayerState.attack_l:
+                texture2D = _player_attack_l;
                 columns = 8;
                 break;
             case PlayerState.hurt:
@@ -90,8 +106,15 @@ public class TextureManager
         // Console.WriteLine("spriteID: " + spriteId);
 
 
+
         TextureHelper.DrawSprite(position, texture2D.Handle, spriteId, columns, rows);
     }
+
+    public void DrawHealthbar()
+    {
+        TextureHelper.DrawRectangularTexture(HealthbarRectangle, _healthbar.Handle);
+    }
+
 
     public void Initialize()
     {
@@ -99,12 +122,15 @@ public class TextureManager
 
         // Textures can only be loaded when a window is already being displayed (for some reason)
         _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.BG-1.jpg");
+        _healthbar = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.UI.batterie_Lebensanzeige-full.png");
         _player_idle_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_idle_r.png");
         _player_idle_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_idle_l.png");
         _player_run_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_run_r.png");
         _player_run_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_run_l.png");
-        _player_jump = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_doublejump.png");
-        _player_attack = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_attack3.png");
+        _player_jump_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_doublejump_r.png");
+        _player_jump_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_doublejump_l.png");
+        _player_attack_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_attack3_r.png");
+        _player_attack_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_attack3_l.png");
         _player_hurt = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_hurt.png");
         _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_death.png");
 

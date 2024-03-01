@@ -33,6 +33,8 @@ public class DrawComponent : IDrawComponent
             _textureManager.DrawEnemy(enemyBox);
         }
         
+        _textureManager.DrawHealthbar();
+
         ErrorCode errorCode = GL.GetError();
 
 
