@@ -73,8 +73,6 @@ public class TextureManager
                 texture2D = _player_jump_l;
                 columns = 6;
                 break;
-            case PlayerState.attack:
-                texture2D = _player_attack;
             case PlayerState.attack_r:
                 texture2D = _player_attack_r;
                 columns = 8;
@@ -121,19 +119,18 @@ public class TextureManager
         TextureHelper.InitalizeOpenGLTextures();
 
         // Textures can only be loaded when a window is already being displayed (for some reason)
-        _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.BG-1.jpg");
-        _healthbar = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.UI.batterie_Lebensanzeige-full.png");
-        _player_idle_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_idle_r.png");
-        _player_idle_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_idle_l.png");
-        _player_run_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_run_r.png");
-        _player_run_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_run_l.png");
-        _player_jump_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_doublejump_r.png");
-        _player_jump_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_doublejump_l.png");
-        _player_attack_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_attack3_r.png");
-        _player_attack_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_attack3_l.png");
-        _player_hurt = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_hurt.png");
-        _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Cyborg_death.png");
-
-        _enemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.Enemies.blueEnemy.sprite_no_border.png");
+        _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Backgrounds.1.jpg");
+        _healthbar = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.UI.batterie_Lebensanzeige-full.png");
+        _player_idle_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_r_new.png");
+        _player_idle_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_l_new.png");
+        _player_run_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_run_r_new.png");
+        _player_run_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_run_l_new.png");
+        _player_jump_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_doublejump_r_new.png");
+        _player_jump_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_doublejump_l_new.png");
+        _player_attack_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_attack3_r.png");
+        _player_attack_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_attack3_l.png");
+        _player_hurt = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_hurt.png");
+        _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_death.png");
+        _enemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.Enemies.blueEnemy.Sprite_test.png");
     }
 }
