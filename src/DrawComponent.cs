@@ -44,8 +44,6 @@ public class DrawComponent : IDrawComponent
         }
     }
 
-    
-
     public void Initialize()
     {
         _textureManager.Initialize();
