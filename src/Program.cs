@@ -8,16 +8,15 @@ namespace SpaceHunter;
 
 internal static class Program
 {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private static Camera _camera;
-    private static BufferedKeyGroup _translationKeys;
-    private static BufferedKeyGroup _rotationKeys;
-    private static BufferedKeyGroup _scaleKeys;
-    private static BufferedKeyGroup _playerKeys;
-    private static GameState _state;
-    private static WorldHandler _worldHandler;
-    private static OpenTKManager _manager;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private static Camera _camera = null!;
+    private static BufferedKeyGroup _translationKeys = null!;
+    private static BufferedKeyGroup _rotationKeys = null!;
+    private static BufferedKeyGroup _scaleKeys = null!;
+    private static BufferedKeyGroup _playerKeys = null!;
+    private static GameState _state = null!;
+    private static WorldHandler _worldHandler = null!;
+    private static PlayerMovement _playerMovementHandler = null!;
+    private static OpenTKManager _manager = null!;
 
     public static void Main(string[] args)
     {
@@ -48,6 +47,8 @@ internal static class Program
         _camera = _manager.Camera;
 
         _worldHandler = new WorldHandler(_camera, _state, _playerKeys, _manager.Keyboard);
+        _playerMovementHandler = new PlayerMovement(_state, _playerKeys, _manager.Keyboard, _camera);
+        
 
         _manager.Keyboard.AddKeyGroup(_translationKeys);
         _manager.Keyboard.AddKeyGroup(_rotationKeys);
@@ -61,6 +62,7 @@ internal static class Program
     private static void GameUpdate(object? sender, FrameEventArgs frameArgs)
     {
         _worldHandler.Update(frameArgs);
+        _playerMovementHandler.Update(frameArgs);
         Translation();
         // Rotation();
         Scale();

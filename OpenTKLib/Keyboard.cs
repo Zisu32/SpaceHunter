@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -8,7 +9,7 @@ public class Keyboard
 {
     private readonly GameWindow _window;
     private readonly OpenTKManager _openTkManager;
-    private readonly List<Keys> _keyList = new();
+    private readonly List<Keys> _keyList = new(); // TODO, unused
     private readonly List<BufferedKeyGroup> _keyGroups = new();
 
     public Keyboard(OpenTKManager openTkManager, GameWindow window)
