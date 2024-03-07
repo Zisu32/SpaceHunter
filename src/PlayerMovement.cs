@@ -1,4 +1,4 @@
- using OpenTK.Mathematics;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -49,6 +49,14 @@ public class PlayerMovement
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
+        if (MathF.Abs(_playerSpeed) < 0.00001f
+            || playerBoxMin.X + _playerSpeed < 0f
+            || playerBoxMax.X + _playerSpeed >= TextureManager.BackgroundRectangle.Max.X + 5f / 2)
+        {
+            _playerSpeed = 0;
+        }
+
+
         if (_playerSpeed != 0)
         {
             playerBoxMin.X += _playerSpeed;
@@ -58,14 +66,11 @@ public class PlayerMovement
 
         _playerSpeed /= PlayerSpeedDiv;
 
-        if (MathF.Abs(_playerSpeed) < 0.00001f)
-        {
-            _playerSpeed = 0;
-        }
-        
+
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
     }
 
+    // TODO, switch to upwards speed approach, like left/right speed
     private void JumpMovement(FrameEventArgs frameArgs)
     {
         Vector2 playerBoxMin = _state.PlayerBox.Min;
@@ -115,10 +120,7 @@ public class PlayerMovement
         // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
         switch (_playerKeys.LastPressed)
         {
-            // TODO, make player right left movement speed based
             case Keys.Left:
-
-                // TODO: get floated, this somehow allows player to move camera out of bounds
                 if (playerBoxMin.X < 0)
                 {
                     return;
@@ -128,7 +130,6 @@ public class PlayerMovement
                 _state.playerState = PlayerState.run_l;
                 break;
             case Keys.Right:
-
                 // 5f is size of player Box
                 if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + 5f / 2)
                 {
@@ -171,10 +172,10 @@ public class PlayerMovement
         }
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
-        
+
         // TODO, this does not help, buffered Key Groups need to be replaced
         Keys? lastKey = _playerKeys.LastPressed;
-        if (lastKey != null) 
+        if (lastKey != null)
         {
             if (!_keyboard.CheckKeyDown((Keys)lastKey))
             {
