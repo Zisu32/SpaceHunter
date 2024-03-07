@@ -1,4 +1,4 @@
-using OpenTK.Mathematics;
+ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -20,7 +20,11 @@ public class PlayerMovement
     private const float JumpHeight = 2.5f;
     private const float JumpDuration = 0.5f;
     private float _jumpTime;
-    
+
+    private float _playerSpeed = 0;
+    private const float PlayerSpeedAdd = 0.01f;
+    private const float PlayerSpeedDiv = 1.1f;
+
     public PlayerMovement(GameState state, BufferedKeyGroup playerKeys, Keyboard keyboard, Camera camera)
     {
         _state = state;
@@ -36,13 +40,26 @@ public class PlayerMovement
         {
             JumpMovement(frameArgs);
         }
-        
+
         if (CollisionHandler.TwoBoxCollisionCheck(_state.PlayerBox, _state.enemyBoxes[0]))
         {
             Console.WriteLine("player enemy collision");
-        }   
+        }
+
+        Vector2 playerBoxMin = _state.PlayerBox.Min;
+        Vector2 playerBoxMax = _state.PlayerBox.Max;
+
+        // TODO, if speed != 0
+        playerBoxMin.X += _playerSpeed;
+        playerBoxMax.X += _playerSpeed;
+        
+        // TODO, if speed is small enough, set to 0
+        _playerSpeed = _playerSpeed / PlayerSpeedDiv;
+
+        Console.WriteLine($"Player Speed: {_playerSpeed}");
+        _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
     }
-    
+
     private void JumpMovement(FrameEventArgs frameArgs)
     {
         Vector2 playerBoxMin = _state.PlayerBox.Min;
@@ -82,13 +99,13 @@ public class PlayerMovement
     {
         if (_playerKeys.LastPressed != null)
         {
-            Console.WriteLine($"PlayerKey: {_playerKeys.LastPressed}");
+            // Console.WriteLine($"PlayerKey: {_playerKeys.LastPressed}");
         }
 
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
-        
+
         // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
         switch (_playerKeys.LastPressed)
         {
@@ -101,8 +118,7 @@ public class PlayerMovement
                     return;
                 }
 
-                playerBoxMin.X -= 0.2f;
-                playerBoxMax.X -= 0.2f;
+                _playerSpeed -= PlayerSpeedAdd;
                 _state.playerState = PlayerState.run_l;
                 break;
             case Keys.Right:
@@ -113,8 +129,7 @@ public class PlayerMovement
                     return;
                 }
 
-                playerBoxMin.X += 0.2f;
-                playerBoxMax.X += 0.2f;
+                _playerSpeed += PlayerSpeedAdd;
                 _state.playerState = PlayerState.run_r;
                 break;
             case Keys.Space:
@@ -145,6 +160,7 @@ public class PlayerMovement
                         _state.playerState = PlayerState.idle_r;
                     }
                 }
+
                 break;
         }
 
