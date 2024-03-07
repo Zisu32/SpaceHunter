@@ -23,7 +23,7 @@ public class PlayerMovement
 
     private float _playerSpeed = 0;
     private const float PlayerSpeedAdd = 0.01f;
-    private const float PlayerSpeedDiv = 1.1f;
+    private static float PlayerSpeedDiv = 1.1f;
 
     public PlayerMovement(GameState state, BufferedKeyGroup playerKeys, Keyboard keyboard, Camera camera)
     {
@@ -39,11 +39,19 @@ public class PlayerMovement
         if (_state.PlayerInAir)
         {
             JumpMovement(frameArgs);
+            // TODO, no
+            PlayerSpeedDiv = 1.0001f;
+        }
+        else
+        {
+            // TODO, stop SpeedDiv should be constant
+            PlayerSpeedDiv = 1.1f;
         }
 
+        // TODO, remove or move
         if (CollisionHandler.TwoBoxCollisionCheck(_state.PlayerBox, _state.enemyBoxes[0]))
         {
-            Console.WriteLine("player enemy collision");
+            // Console.WriteLine("player enemy collision");
         }
 
         Vector2 playerBoxMin = _state.PlayerBox.Min;
@@ -61,16 +69,17 @@ public class PlayerMovement
         {
             playerBoxMin.X += _playerSpeed;
             playerBoxMax.X += _playerSpeed;
-            Console.WriteLine($"Player Speed: {_playerSpeed}");
+            Console.WriteLine($"Player Speed: {_playerSpeed:N4} MinBox:{playerBoxMin.X}");
         }
 
         _playerSpeed /= PlayerSpeedDiv;
-
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
     }
 
     // TODO, switch to upwards speed approach, like left/right speed
+    // TODO, why does this not move left/right? --> space stops instantly reduces speed to zero
+    // maybe decrease move speed less in air? actual fix: no bufferedKeyGroups
     private void JumpMovement(FrameEventArgs frameArgs)
     {
         Vector2 playerBoxMin = _state.PlayerBox.Min;
