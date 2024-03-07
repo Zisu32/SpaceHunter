@@ -167,7 +167,9 @@ public class PlayerMovement
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
 
-        if (!_keyboard.CheckKeyDown(Keys.Left) && !_keyboard.CheckKeyDown(Keys.Right))
+        // TODO, check and reset for individual keys
+        // maybe modify KeyGroups to reset themselves
+        if (!_keyboard.CheckKeyDown(Keys.Left) && !_keyboard.CheckKeyDown(Keys.Right) && !_keyboard.CheckKeyDown(Keys.Space))
         {
             _playerKeys.LastPressed = null;
         }
