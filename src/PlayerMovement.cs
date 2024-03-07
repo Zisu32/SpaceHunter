@@ -49,14 +49,20 @@ public class PlayerMovement
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
-        // TODO, if speed != 0
-        playerBoxMin.X += _playerSpeed;
-        playerBoxMax.X += _playerSpeed;
-        
-        // TODO, if speed is small enough, set to 0
-        _playerSpeed = _playerSpeed / PlayerSpeedDiv;
+        if (_playerSpeed != 0)
+        {
+            playerBoxMin.X += _playerSpeed;
+            playerBoxMax.X += _playerSpeed;
+            Console.WriteLine($"Player Speed: {_playerSpeed}");
+        }
 
-        Console.WriteLine($"Player Speed: {_playerSpeed}");
+        _playerSpeed /= PlayerSpeedDiv;
+
+        if (MathF.Abs(_playerSpeed) < 0.00001f)
+        {
+            _playerSpeed = 0;
+        }
+        
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
     }
 
@@ -164,14 +170,16 @@ public class PlayerMovement
                 break;
         }
 
-
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
-
-        // TODO, check and reset for individual keys
-        // maybe modify KeyGroups to reset themselves
-        if (!_keyboard.CheckKeyDown(Keys.Left) && !_keyboard.CheckKeyDown(Keys.Right) && !_keyboard.CheckKeyDown(Keys.Space))
+        
+        // TODO, this does not help, buffered Key Groups need to be replaced
+        Keys? lastKey = _playerKeys.LastPressed;
+        if (lastKey != null) 
         {
-            _playerKeys.LastPressed = null;
+            if (!_keyboard.CheckKeyDown((Keys)lastKey))
+            {
+                _playerKeys.LastPressed = null;
+            }
         }
 
 
