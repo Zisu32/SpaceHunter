@@ -3,6 +3,7 @@ using OpenTK.Windowing.Common;
 using OpenTKLib;
 using Zenseless.OpenTK;
 using OpenTK.Graphics.OpenGL;
+using SpaceHunter.Models;
 
 
 namespace SpaceHunter;
