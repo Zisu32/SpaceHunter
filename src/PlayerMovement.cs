@@ -35,6 +35,11 @@ public class PlayerMovement
 
     public void Update(FrameEventArgs frameArgs)
     {
+        if (!_state.PlayerAlive)
+        {
+            return;
+        }
+
         MovePlayer();
         if (_state.PlayerInAir)
         {
@@ -46,12 +51,6 @@ public class PlayerMovement
         {
             // TODO, stop SpeedDiv should be constant
             PlayerSpeedDiv = 1.1f;
-        }
-
-        // TODO, remove or move
-        if (CollisionHandler.TwoBoxCollisionCheck(_state.PlayerBox, _state.enemyBoxes[0]))
-        {
-            // Console.WriteLine("player enemy collision");
         }
 
         Vector2 playerBoxMin = _state.PlayerBox.Min;

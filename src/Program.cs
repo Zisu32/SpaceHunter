@@ -8,6 +8,7 @@ namespace SpaceHunter;
 
 internal static class Program
 {
+    private static CollisionHandler _collisionHandler;
     private static Camera _camera = null!;
     private static BufferedKeyGroup _translationKeys = null!;
     private static BufferedKeyGroup _rotationKeys = null!;
@@ -48,6 +49,7 @@ internal static class Program
 
         _worldHandler = new WorldHandler(_camera, _state, _playerKeys, _manager.Keyboard);
         _playerMovementHandler = new PlayerMovement(_state, _playerKeys, _manager.Keyboard, _camera);
+        _collisionHandler = new CollisionHandler(_state);
         
 
         _manager.Keyboard.AddKeyGroup(_translationKeys);
@@ -62,10 +64,11 @@ internal static class Program
     private static void GameUpdate(object? sender, FrameEventArgs frameArgs)
     {
         _worldHandler.Update(frameArgs);
+        _collisionHandler.Update(frameArgs);
         _playerMovementHandler.Update(frameArgs);
-        Translation();
+        // Translation();
         // Rotation();
-        Scale();
+        // Scale();
         // PlayerMove();
     }
 
