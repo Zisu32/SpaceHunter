@@ -51,7 +51,6 @@ internal static class Program
         _playerMovementHandler = new PlayerMovement(_state, _playerKeys, _manager.Keyboard, _camera);
         _collisionHandler = new CollisionHandler(_state);
         
-
         _manager.Keyboard.AddKeyGroup(_translationKeys);
         _manager.Keyboard.AddKeyGroup(_rotationKeys);
         _manager.Keyboard.AddKeyGroup(_scaleKeys);
@@ -66,10 +65,22 @@ internal static class Program
         _worldHandler.Update(frameArgs);
         _collisionHandler.Update(frameArgs);
         _playerMovementHandler.Update(frameArgs);
+        
+        // player actions
+        if (!_state.PlayerAlive)
+        {
+            _state.playerState = PlayerState.death;
+            Console.WriteLine("ded");
+        }
+
+        #region Camera debug
+
         // Translation();
         // Rotation();
         // Scale();
         // PlayerMove();
+
+        #endregion
     }
 
     private static void Scale()

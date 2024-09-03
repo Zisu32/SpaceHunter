@@ -8,8 +8,9 @@ public class GameState
 
     public Box2? PlayerHitBox = null;
 
-    public bool PlayerAlive = true;
-    
+    public bool PlayerAlive => PlayerHealth > 0;
+    public int PlayerHealth = ConstantBalancingValues.MaxPlayerHealth;
+
     // TODO, replace Box2 with enemy class
     public List<Box2> enemyBoxes = new List<Box2>();
     public bool PlayerInAir = false;
