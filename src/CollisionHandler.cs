@@ -39,6 +39,9 @@ public class CollisionHandler
             {
                 Console.WriteLine("Player collision");
 
+                
+                // TODO player hurt anim
+                
                 _state.PlayerHealth -= ConstantBalancingValues.EnemyDamage;
                 _damageCooldown = ConstantBalancingValues.InvincibleDuration;
 

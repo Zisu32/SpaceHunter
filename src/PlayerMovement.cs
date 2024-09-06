@@ -24,6 +24,7 @@ public class PlayerMovement
     private float _playerSpeed = 0;
     private const float PlayerSpeedAdd = 0.01f;
     private static float PlayerSpeedDiv = 1.1f;
+    private double _attackTime = 0;
 
     public PlayerMovement(GameState state, BufferedKeyGroup playerKeys, Keyboard keyboard, Camera camera)
     {
@@ -35,6 +36,8 @@ public class PlayerMovement
 
     public void Update(FrameEventArgs frameArgs)
     {
+        #region Movement
+
         if (!_state.PlayerAlive)
         {
             return;
@@ -74,6 +77,37 @@ public class PlayerMovement
         _playerSpeed /= PlayerSpeedDiv;
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
+
+        #endregion
+
+        // attac
+        // F pressed an attack time over
+        // TODO, when Inputs are handled differently: ensure that holding attack does not work
+        if (_playerKeys.LastPressed == Keys.F && _attackTime <= 0)
+        {
+            _attackTime = ConstantBalancingValues.AttackDuration;
+
+            // set start time
+            // create Attack Hitbox
+            // check enemy collision in CollisionHandler
+            // when time is over remove hitbox
+        }
+
+        if (_attackTime > 0)
+        {
+            Vector2 hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
+            // TODO extract HitBox Size ( + 2) to const 
+            Vector2 hitBoxMax = new Vector2(_state.PlayerBox.Max.X + 2, _state.PlayerBox.Max.Y);
+
+            _state.PlayerHitBox = new Box2(hitBoxMin, hitBoxMax);
+
+            _attackTime -= frameArgs.Time;
+        }
+        else
+        {
+            // _attackTime <= 0
+            _state.PlayerHitBox = null;
+        }
     }
 
     // TODO, switch to upwards speed approach, like left/right speed

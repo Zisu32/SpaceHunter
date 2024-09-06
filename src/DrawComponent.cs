@@ -25,15 +25,19 @@ public class DrawComponent : IDrawComponent
     {
         _textureManager.DrawBackground();
         _textureManager.DrawPlayerTex(_state.PlayerBox, _state.playerState, obj);
-        
+
         DebugDrawHelper.DrawRectangle(_state.PlayerBox, Color.Blue);
-        
+        if (_state.PlayerHitBox != null)
+        {
+            DebugDrawHelper.DrawRectangle(_state.PlayerHitBox.Value, Color.Yellow);
+        }
+
         foreach (Box2 enemyBox in _state.enemyBoxes)
         {
             _textureManager.DrawEnemy(enemyBox);
             DebugDrawHelper.DrawRectangle(enemyBox, Color.Red);
         }
-        
+
         _textureManager.DrawHealthbar();
 
         ErrorCode errorCode = GL.GetError();
@@ -45,7 +49,6 @@ public class DrawComponent : IDrawComponent
         }
     }
 
-    
 
     public void Initialize()
     {
