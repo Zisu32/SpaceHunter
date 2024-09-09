@@ -27,26 +27,45 @@ public class CollisionHandler
         else
         {
             Console.WriteLine("collision -- invincible");
-            _damageCooldown-= frameArgs.Time;
+            _damageCooldown -= frameArgs.Time;
+        }
+
+        PlayerAttackCheck();
+    }
+
+    private void PlayerAttackCheck()
+    {
+        if (_state.PlayerHitBox == null)
+        {
+            return;
+        }
+
+        // TODO LINQ first?
+        foreach (Enemy enemy in _state.enemies)
+        {
+            if (TwoBoxCollisionCheck(_state.PlayerHitBox.Value, enemy.Box))
+            {
+                enemy.Health -= ConstantBalancingValues.AttackDamage;
+                Console.WriteLine("Enemy damage");
+                
+                // player can only damage one enemy
+                return;
+            }
         }
     }
 
     private void EnemyCollisionCheck()
     {
-        foreach (Box2 enemyBox in _state.enemyBoxes)
+        // any enemy Box has collision with PlayerBox
+        if (_state.enemies.Any(enemy => TwoBoxCollisionCheck(_state.PlayerBox, enemy.Box)))
         {
-            if (TwoBoxCollisionCheck(_state.PlayerBox, enemyBox))
-            {
-                Console.WriteLine("Player collision");
+            Console.WriteLine("Player collision");
 
-                
-                // TODO player hurt anim
-                
-                _state.PlayerHealth -= ConstantBalancingValues.EnemyDamage;
-                _damageCooldown = ConstantBalancingValues.InvincibleDuration;
 
-                break;
-            }
+            // TODO player hurt anim
+
+            _state.PlayerHealth -= ConstantBalancingValues.EnemyDamage;
+            _damageCooldown = ConstantBalancingValues.InvincibleDuration;
         }
     }
 

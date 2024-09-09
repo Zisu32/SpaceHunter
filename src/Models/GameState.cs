@@ -11,8 +11,7 @@ public class GameState
     public bool PlayerAlive => PlayerHealth > 0;
     public int PlayerHealth = ConstantBalancingValues.MaxPlayerHealth;
 
-    // TODO, replace Box2 with enemy class
-    public List<Box2> enemyBoxes = new List<Box2>();
+    public List<Enemy> enemies = new();
     public bool PlayerInAir = false;
     public PlayerState playerState = PlayerState.idle_r;
 }

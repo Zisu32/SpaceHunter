@@ -26,14 +26,24 @@ public class WorldHandler
         // setup initial camera parameters
         // TODO, this seems like the wrong place for this
         _camera.Scale = 4.0f;
-        
+
         // TODO, actual enemy Logic
-        _state.enemyBoxes.Add(new Box2(15f,0f,20f,5f));
+        _state.enemies.Add(new Enemy { Box = new Box2(15f, 0f, 20f, 5f) });
+        _state.enemies.First().OnDeath += EnemyDeath;
+    }
+
+    private void EnemyDeath(object? sender, EventArgs e)
+    {
+        if (sender is not Enemy enemy)
+        {
+            throw new InvalidCastException("Enemy Death sender is not Enemy. Something is very wrong");
+        }
+
+        _state.enemies.Remove(enemy);
+        Console.WriteLine("enemy death");
     }
 
     public void Update(FrameEventArgs frameArgs)
     {
-      
     }
-    
 }

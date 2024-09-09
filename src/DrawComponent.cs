@@ -32,10 +32,10 @@ public class DrawComponent : IDrawComponent
             DebugDrawHelper.DrawRectangle(_state.PlayerHitBox.Value, Color.Yellow);
         }
 
-        foreach (Box2 enemyBox in _state.enemyBoxes)
+        foreach (Enemy enemy in _state.enemies)
         {
-            _textureManager.DrawEnemy(enemyBox);
-            DebugDrawHelper.DrawRectangle(enemyBox, Color.Red);
+            _textureManager.DrawEnemy(enemy.Box);
+            DebugDrawHelper.DrawRectangle(enemy.Box, Color.Red);
         }
 
         _textureManager.DrawHealthbar();
