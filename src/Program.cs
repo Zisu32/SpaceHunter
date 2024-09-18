@@ -10,10 +10,10 @@ internal static class Program
 {
     private static CollisionHandler _collisionHandler;
     private static Camera _camera = null!;
-    private static BufferedKeyGroup _translationKeys = null!;
-    private static BufferedKeyGroup _rotationKeys = null!;
-    private static BufferedKeyGroup _scaleKeys = null!;
-    private static BufferedKeyGroup _playerKeys = null!;
+    private static KeyGroup _translationKeys = null!;
+    private static KeyGroup _rotationKeys = null!;
+    private static KeyGroup _scaleKeys = null!;
+    private static KeyGroup _playerKeys = null!;
     private static GameState _state = null!;
     private static WorldHandler _worldHandler = null!;
     private static PlayerMovement _playerMovementHandler = null!;
@@ -25,22 +25,22 @@ internal static class Program
 
         _manager = new OpenTKManager(new DrawComponent(_state));
 
-        _translationKeys = new BufferedKeyGroup(new List<Keys>
+        _translationKeys = new KeyGroup(new List<Keys>
         {
             Keys.A, Keys.D, Keys.W, Keys.S
         });
 
-        _rotationKeys = new BufferedKeyGroup(new List<Keys>
+        _rotationKeys = new KeyGroup(new List<Keys>
         {
             Keys.Q, Keys.E
         });
 
-        _scaleKeys = new BufferedKeyGroup(new List<Keys>
+        _scaleKeys = new KeyGroup(new List<Keys>
         {
             Keys.Z, Keys.X
         });
 
-        _playerKeys = new BufferedKeyGroup(new List<Keys>
+        _playerKeys = new KeyGroup(new List<Keys>
         {
             Keys.Up, Keys.Right, Keys.Down, Keys.Left, Keys.Space, Keys.F
         });
@@ -50,7 +50,7 @@ internal static class Program
         _worldHandler = new WorldHandler(_camera, _state, _playerKeys, _manager.Keyboard);
         _playerMovementHandler = new PlayerMovement(_state, _playerKeys, _manager.Keyboard, _camera);
         _collisionHandler = new CollisionHandler(_state);
-        
+
         _manager.Keyboard.AddKeyGroup(_translationKeys);
         _manager.Keyboard.AddKeyGroup(_rotationKeys);
         _manager.Keyboard.AddKeyGroup(_scaleKeys);
@@ -65,7 +65,7 @@ internal static class Program
         _worldHandler.Update(frameArgs);
         _collisionHandler.Update(frameArgs);
         _playerMovementHandler.Update(frameArgs);
-        
+
         // player actions
         if (!_state.PlayerAlive)
         {
@@ -85,65 +85,61 @@ internal static class Program
 
     private static void Scale()
     {
-        switch (_scaleKeys.LastPressed)
+        if (_scaleKeys.PressedKeys.Contains(Keys.Z))
         {
-            case Keys.Z:
-                _camera.Scale += .1f;
-                break;
-            case Keys.X:
-                _camera.Scale -= .1f;
-                break;
-            default:
-                return;
+            _camera.Scale += .1f;
+        }
+
+        if (_scaleKeys.PressedKeys.Contains(Keys.X))
+        {
+            _camera.Scale -= .1f;
         }
 
         Console.WriteLine($"Scale = {_camera.Scale}");
-        _scaleKeys.LastPressed = null;
     }
 
     private static void Rotation()
     {
-        switch (_rotationKeys.LastPressed)
+        if (_rotationKeys.PressedKeys.Contains(Keys.Q))
         {
-            case Keys.Q:
-                _camera.Rotation += 2;
-                break;
-            case Keys.E:
-                _camera.Rotation -= 2;
-                break;
-            default:
-                return;
+            _camera.Rotation += 2;
+        }
+
+        if (_rotationKeys.PressedKeys.Contains(Keys.E))
+        {
+            _camera.Rotation -= 2;
         }
 
         Console.WriteLine($"Rotation = {_camera.Rotation}");
-        _rotationKeys.LastPressed = null;
     }
 
     private static void Translation()
     {
         Vector2 cameraCenter = _camera.Center;
 
-        // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-        switch (_translationKeys.LastPressed)
+
+        if (_translationKeys.PressedKeys.Contains(Keys.A))
         {
-            case Keys.A:
-                cameraCenter.X -= 0.1f;
-                break;
-            case Keys.D:
-                cameraCenter.X += 0.1f;
-                break;
-            case Keys.W:
-                cameraCenter.Y += 0.1f;
-                break;
-            case Keys.S:
-                cameraCenter.Y -= 0.1f;
-                break;
-            default:
-                return;
+            cameraCenter.X -= 0.1f;
         }
 
+        if (_translationKeys.PressedKeys.Contains(Keys.D))
+        {
+            cameraCenter.X += 0.1f;
+        }
+
+        if (_translationKeys.PressedKeys.Contains(Keys.W))
+        {
+            cameraCenter.Y += 0.1f;
+        }
+
+        if (_translationKeys.PressedKeys.Contains(Keys.S))
+        {
+            cameraCenter.Y -= 0.1f;
+        }
+
+
         Console.WriteLine($"Center = {_camera.Center}");
-        _translationKeys.LastPressed = null;
         _camera.Center = cameraCenter;
     }
 }

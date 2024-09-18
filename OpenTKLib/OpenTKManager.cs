@@ -48,6 +48,7 @@ public class OpenTKManager
         // KeyDown handler
         Keyboard = new Keyboard(this, _window);
         _window.KeyDown += Keyboard.KeyDown;
+        _window.KeyUp += Keyboard.KeyUp;
     }
 
     // TODO, can probably be inlined

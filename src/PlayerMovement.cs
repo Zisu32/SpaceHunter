@@ -4,6 +4,7 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTKLib;
 using SpaceHunter.Models;
+using SpaceHunter.Models.Enums;
 
 namespace SpaceHunter;
 
@@ -11,7 +12,7 @@ public class PlayerMovement
 {
     private readonly Camera _camera;
     private readonly GameState _state;
-    private readonly BufferedKeyGroup _playerKeys;
+    private readonly KeyGroup _playerKeys;
     private readonly Keyboard _keyboard;
 
     // how many players heights the jump is high
@@ -25,8 +26,9 @@ public class PlayerMovement
     private const float PlayerSpeedAdd = 0.01f;
     private static float PlayerSpeedDiv = 1.1f;
     private double _attackTime = 0;
+    private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
 
-    public PlayerMovement(GameState state, BufferedKeyGroup playerKeys, Keyboard keyboard, Camera camera)
+    public PlayerMovement(GameState state, KeyGroup playerKeys, Keyboard keyboard, Camera camera)
     {
         _state = state;
         _playerKeys = playerKeys;
@@ -71,7 +73,7 @@ public class PlayerMovement
         {
             playerBoxMin.X += _playerSpeed;
             playerBoxMax.X += _playerSpeed;
-            Console.WriteLine($"Player Speed: {_playerSpeed:N4} MinBox:{playerBoxMin.X}");
+            // Console.WriteLine($"Player Speed: {_playerSpeed:N4} MinBox:{playerBoxMin.X}");
         }
 
         _playerSpeed /= PlayerSpeedDiv;
@@ -82,10 +84,12 @@ public class PlayerMovement
 
         // attac
         // F pressed an attack time over
-        // TODO, when Inputs are handled differently: ensure that holding attack does not work
-        if (_playerKeys.LastPressed == Keys.F && _attackTime <= 0)
+
+        // TODO animation
+        if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0)
         {
             _attackTime = ConstantBalancingValues.AttackDuration;
+            _playerKeys.RemovePressed(Keys.F); // F has to be pressed multiple times
 
             // set start time
             // create Attack Hitbox
@@ -135,7 +139,7 @@ public class PlayerMovement
         {
             // move down
             playerBoxMax.Y -= jumpDistance;
-            playerBoxMin.Y -= (jumpDistance);
+            playerBoxMin.Y -= jumpDistance;
         }
         else
         {
@@ -150,81 +154,58 @@ public class PlayerMovement
 
     private void MovePlayer()
     {
-        if (_playerKeys.LastPressed != null)
-        {
-            // Console.WriteLine($"PlayerKey: {_playerKeys.LastPressed}");
-        }
-
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
-
-        // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-        switch (_playerKeys.LastPressed)
+        if (_playerKeys.PressedKeys.Contains(Keys.Left))
         {
-            case Keys.Left:
-                if (playerBoxMin.X < 0)
-                {
-                    return;
-                }
+            if (playerBoxMin.X < 0)
+            {
+                return;
+            }
 
-                _playerSpeed -= PlayerSpeedAdd;
-                _state.playerState = PlayerState.run_l;
-                break;
-            case Keys.Right:
-                // 5f is size of player Box
-                if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + 5f / 2)
-                {
-                    return;
-                }
+            _playerSpeed -= PlayerSpeedAdd;
+            _state.playerState = PlayerState.run_l;
+            _playerDirection = SimpleDirection.LEFT;
+        }
+        else if (_playerKeys.PressedKeys.Contains(Keys.Right))
+        {
+            // 5f is size of player Box
+            if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + 5f / 2)
+            {
+                return;
+            }
 
-                _playerSpeed += PlayerSpeedAdd;
-                _state.playerState = PlayerState.run_r;
-                break;
-            case Keys.Space:
-                // TODO, this should only be set once to prevent somehow becoming invincible
-                if (_state.PlayerInAir)
-                {
-                    break;
-                }
+            _playerSpeed += PlayerSpeedAdd;
+            _state.playerState = PlayerState.run_r;
+            _playerDirection = SimpleDirection.RIGHT;
+        }
 
+        if (_playerKeys.PressedKeys.Contains(Keys.Space))
+        {
+            // TODO, this should only be set once to prevent somehow becoming invincible
+            if (!_state.PlayerInAir)
+            {
                 _state.PlayerInAir = true;
                 _jumpTime = 0;
                 _state.playerState = PlayerState.jump_r;
-                break;
+            }
 
-            case Keys.F:
-                _state.playerState = PlayerState.attack_r;
-                break;
-
-            default:
-                if (!_state.PlayerInAir)
-                {
-                    if (_playerKeys.LastPressed == Keys.Left)
-                    {
-                        _state.playerState = PlayerState.idle_l;
-                    }
-                    else
-                    {
-                        _state.playerState = PlayerState.idle_r;
-                    }
-                }
-
-                break;
+            _playerKeys.RemovePressed(Keys.Space);
         }
+
+        // TODO, these play pretty late
+        // playerSpeed reset should happen sooner
+        // idle animation
+        if (_playerSpeed == 0)
+        {
+            _state.playerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.idle_l : PlayerState.idle_r;
+        }
+
+        // TODO jump + move = light speed? 
+        // TODO change Jump to velocity based system
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
-
-        // TODO, this does not help, buffered Key Groups need to be replaced
-        Keys? lastKey = _playerKeys.LastPressed;
-        if (lastKey != null)
-        {
-            if (!_keyboard.CheckKeyDown((Keys)lastKey))
-            {
-                _playerKeys.LastPressed = null;
-            }
-        }
-
 
         // move camera
         Vector2 cameraCenter = _camera.Center;

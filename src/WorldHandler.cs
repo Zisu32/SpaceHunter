@@ -13,10 +13,10 @@ public class WorldHandler
 {
     private readonly Camera _camera;
     private readonly GameState _state;
-    private readonly BufferedKeyGroup _playerKeys;
+    private readonly KeyGroup _playerKeys;
     private readonly Keyboard _keyboard;
 
-    public WorldHandler(Camera camera, GameState state, BufferedKeyGroup playerKeys, Keyboard keyboard)
+    public WorldHandler(Camera camera, GameState state, KeyGroup playerKeys, Keyboard keyboard)
     {
         _camera = camera;
         _state = state;
