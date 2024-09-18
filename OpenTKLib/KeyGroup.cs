@@ -29,7 +29,6 @@ public class KeyGroup
             && !_ignoredKeys.Contains(keyEvent.Key))
         {
             PressedKeys.Add(keyEvent.Key);
-            Console.WriteLine($"KeyAdd: {keyEvent.Key}");
         }
     }
 
@@ -41,7 +40,6 @@ public class KeyGroup
 
             // after a key has been released it is cleared form ignored
             _ignoredKeys.Remove(keyEvent.Key);
-            Console.WriteLine($"KeyRemove: {keyEvent.Key}");
         }
     }
 }

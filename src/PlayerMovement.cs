@@ -24,7 +24,7 @@ public class PlayerMovement
 
     private float _playerSpeed = 0;
     private const float PlayerSpeedAdd = 0.01f;
-    private static float PlayerSpeedDiv = 1.1f;
+    private static float _playerSpeedDiv = 1.1f;
     private double _attackTime = 0;
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
 
@@ -49,15 +49,8 @@ public class PlayerMovement
         if (_state.PlayerInAir)
         {
             JumpMovement(frameArgs);
-            // TODO, no
-            PlayerSpeedDiv = 1.0001f;
         }
-        else
-        {
-            // TODO, stop SpeedDiv should be constant
-            PlayerSpeedDiv = 1.1f;
-        }
-
+        
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
@@ -71,12 +64,13 @@ public class PlayerMovement
 
         if (_playerSpeed != 0)
         {
+            // moves player
             playerBoxMin.X += _playerSpeed;
             playerBoxMax.X += _playerSpeed;
             // Console.WriteLine($"Player Speed: {_playerSpeed:N4} MinBox:{playerBoxMin.X}");
         }
 
-        _playerSpeed /= PlayerSpeedDiv;
+        _playerSpeed /= _playerSpeedDiv;
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
 
@@ -115,8 +109,6 @@ public class PlayerMovement
     }
 
     // TODO, switch to upwards speed approach, like left/right speed
-    // TODO, why does this not move left/right? --> space stops instantly reduces speed to zero
-    // maybe decrease move speed less in air? actual fix: no bufferedKeyGroups
     private void JumpMovement(FrameEventArgs frameArgs)
     {
         Vector2 playerBoxMin = _state.PlayerBox.Min;
@@ -202,7 +194,6 @@ public class PlayerMovement
             _state.playerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.idle_l : PlayerState.idle_r;
         }
 
-        // TODO jump + move = light speed? 
         // TODO change Jump to velocity based system
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
