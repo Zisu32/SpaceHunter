@@ -69,7 +69,7 @@ internal static class Program
         // player actions
         if (!_state.PlayerAlive)
         {
-            _state.playerState = PlayerState.death;
+            _state.PlayerState = PlayerState.death;
             Console.WriteLine("ded");
         }
 

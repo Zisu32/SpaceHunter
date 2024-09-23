@@ -41,7 +41,7 @@ public class CollisionHandler
         }
 
         // TODO LINQ first?
-        foreach (Enemy enemy in _state.enemies)
+        foreach (Enemy enemy in _state.Enemies)
         {
             if (TwoBoxCollisionCheck(_state.PlayerHitBox.Value, enemy.Box))
             {
@@ -57,7 +57,7 @@ public class CollisionHandler
     private void EnemyCollisionCheck()
     {
         // any enemy Box has collision with PlayerBox
-        if (_state.enemies.Any(enemy => TwoBoxCollisionCheck(_state.PlayerBox, enemy.Box)))
+        if (_state.Enemies.Any(enemy => TwoBoxCollisionCheck(_state.PlayerBox, enemy.Box)))
         {
             Console.WriteLine("Player collision");
 

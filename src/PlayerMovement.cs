@@ -50,24 +50,24 @@ public class PlayerMovement
         {
             JumpMovement(frameArgs);
         }
-        
+
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
-        if (MathF.Abs(_playerSpeed) < 0.00001f
-            || playerBoxMin.X + _playerSpeed < 0f
-            || playerBoxMax.X + _playerSpeed >= TextureManager.BackgroundRectangle.Max.X + 5f / 2)
+        if (
+            MathF.Abs(_playerSpeed) < 0.005f // playerSpeed small
+            || playerBoxMin.X + _playerSpeed < 0f // out of bound 0
+            || playerBoxMax.X + _playerSpeed >= TextureManager.BackgroundRectangle.Max.X + 5f / 2) // out of bounds max
         {
             _playerSpeed = 0;
         }
-
-
+        
         if (_playerSpeed != 0)
         {
             // moves player
             playerBoxMin.X += _playerSpeed;
             playerBoxMax.X += _playerSpeed;
-            // Console.WriteLine($"Player Speed: {_playerSpeed:N4} MinBox:{playerBoxMin.X}");
+            Console.WriteLine($"Player Speed: {_playerSpeed:N4} MinBox:{playerBoxMin.X}");
         }
 
         _playerSpeed /= _playerSpeedDiv;
@@ -77,18 +77,12 @@ public class PlayerMovement
         #endregion
 
         // attac
-        // F pressed an attack time over
 
         // TODO animation
         if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0)
         {
             _attackTime = ConstantBalancingValues.AttackDuration;
             _playerKeys.RemovePressed(Keys.F); // F has to be pressed multiple times
-
-            // set start time
-            // create Attack Hitbox
-            // check enemy collision in CollisionHandler
-            // when time is over remove hitbox
         }
 
         if (_attackTime > 0)
@@ -101,11 +95,34 @@ public class PlayerMovement
 
             _attackTime -= frameArgs.Time;
         }
-        else
+        else // _attackTime <= 0
         {
-            // _attackTime <= 0
             _state.PlayerHitBox = null;
         }
+
+        #region Animation
+
+        
+        
+        if (playerBoxMin.Y < 0.0001f)
+        {
+            if (_playerSpeed == 0)
+            {
+                // idle animation
+                _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.idle_l : PlayerState.idle_r;
+            }
+            else
+            {
+                // player run Animation
+                _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.run_l : PlayerState.run_r;
+            }
+        }
+        else // jump
+        {
+            _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.jump_l : PlayerState.jump_r;
+        }
+
+        #endregion
     }
 
     // TODO, switch to upwards speed approach, like left/right speed
@@ -121,7 +138,7 @@ public class PlayerMovement
             playerBoxMin.Y = 0;
             playerBoxMax.Y = 5F;
             _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
-            _state.playerState = PlayerState.idle_r;
+            _state.PlayerState = PlayerState.idle_r;
             return;
         }
 
@@ -157,7 +174,6 @@ public class PlayerMovement
             }
 
             _playerSpeed -= PlayerSpeedAdd;
-            _state.playerState = PlayerState.run_l;
             _playerDirection = SimpleDirection.LEFT;
         }
         else if (_playerKeys.PressedKeys.Contains(Keys.Right))
@@ -169,7 +185,6 @@ public class PlayerMovement
             }
 
             _playerSpeed += PlayerSpeedAdd;
-            _state.playerState = PlayerState.run_r;
             _playerDirection = SimpleDirection.RIGHT;
         }
 
@@ -180,18 +195,10 @@ public class PlayerMovement
             {
                 _state.PlayerInAir = true;
                 _jumpTime = 0;
-                _state.playerState = PlayerState.jump_r;
+                _state.PlayerState = PlayerState.jump_r;
             }
 
             _playerKeys.RemovePressed(Keys.Space);
-        }
-
-        // TODO, these play pretty late
-        // playerSpeed reset should happen sooner
-        // idle animation
-        if (_playerSpeed == 0)
-        {
-            _state.playerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.idle_l : PlayerState.idle_r;
         }
 
         // TODO change Jump to velocity based system
@@ -207,8 +214,5 @@ public class PlayerMovement
             cameraCenter.X = -playerBoxMin.X;
             _camera.Center = cameraCenter;
         }
-
-        // Console.WriteLine($"Camera: {cameraCenter.X}");
-        // Console.WriteLine("");
     }
 }

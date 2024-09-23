@@ -28,8 +28,8 @@ public class WorldHandler
         _camera.Scale = 4.0f;
 
         // TODO, actual enemy Logic
-        _state.enemies.Add(new Enemy { Box = new Box2(15f, 0f, 20f, 5f) });
-        _state.enemies.First().OnDeath += EnemyDeath;
+        _state.Enemies.Add(new Enemy { Box = new Box2(15f, 0f, 20f, 5f) });
+        _state.Enemies.First().OnDeath += EnemyDeath;
     }
 
     private void EnemyDeath(object? sender, EventArgs e)
@@ -39,7 +39,7 @@ public class WorldHandler
             throw new InvalidCastException("Enemy Death sender is not Enemy. Something is very wrong");
         }
 
-        _state.enemies.Remove(enemy);
+        _state.Enemies.Remove(enemy);
         Console.WriteLine("enemy death");
     }
 

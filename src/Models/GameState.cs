@@ -4,14 +4,21 @@ namespace SpaceHunter.Models;
 
 public class GameState
 {
+    #region Player Fields
+
     public Box2 PlayerBox = new Box2(0, 0, 5, 5);
 
     public Box2? PlayerHitBox = null;
 
     public bool PlayerAlive => PlayerHealth > 0;
+    
     public int PlayerHealth = ConstantBalancingValues.MaxPlayerHealth;
+    
+    public PlayerState PlayerState = PlayerState.idle_r;
 
-    public List<Enemy> enemies = new();
+    #endregion
+
+    public readonly List<Enemy> Enemies = new();
     public bool PlayerInAir = false;
-    public PlayerState playerState = PlayerState.idle_r;
+    
 }

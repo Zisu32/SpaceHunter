@@ -24,7 +24,7 @@ public class DrawComponent : IDrawComponent
     public async Task Draw(FrameEventArgs obj)
     {
         _textureManager.DrawBackground();
-        _textureManager.DrawPlayerTex(_state.PlayerBox, _state.playerState, obj);
+        _textureManager.DrawPlayerTex(_state.PlayerBox, _state.PlayerState, obj);
 
         DebugDrawHelper.DrawRectangle(_state.PlayerBox, Color.Blue);
         if (_state.PlayerHitBox != null)
@@ -32,7 +32,7 @@ public class DrawComponent : IDrawComponent
             DebugDrawHelper.DrawRectangle(_state.PlayerHitBox.Value, Color.Yellow);
         }
 
-        foreach (Enemy enemy in _state.enemies)
+        foreach (Enemy enemy in _state.Enemies)
         {
             _textureManager.DrawEnemy(enemy.Box);
             DebugDrawHelper.DrawRectangle(enemy.Box, Color.Red);
