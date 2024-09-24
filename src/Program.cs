@@ -64,7 +64,11 @@ internal static class Program
     {
         _worldHandler.Update(frameArgs);
         _collisionHandler.Update(frameArgs);
-        _playerMovementHandler.Update(frameArgs);
+
+        if (_state.PlayerAlive)
+        {
+            _playerMovementHandler.Update(frameArgs);
+        }
 
         // player actions
         if (!_state.PlayerAlive)

@@ -40,15 +40,15 @@ public class PlayerMovement
     {
         #region Movement
 
-        if (!_state.PlayerAlive)
+        // movement stopped while attacking
+        if (_attackTime <= 0)
         {
-            return;
-        }
+            ProcessKeys();
 
-        MovePlayer();
-        if (_state.PlayerInAir)
-        {
-            JumpMovement(frameArgs);
+            if (_state.PlayerInAir)
+            {
+                JumpMovement(frameArgs);
+            }
         }
 
         Vector2 playerBoxMin = _state.PlayerBox.Min;
@@ -61,7 +61,7 @@ public class PlayerMovement
         {
             _playerSpeed = 0;
         }
-        
+
         if (_playerSpeed != 0)
         {
             // moves player
@@ -78,11 +78,13 @@ public class PlayerMovement
 
         // attac
 
-        // TODO animation
         if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0)
         {
             _attackTime = ConstantBalancingValues.AttackDuration;
-            _playerKeys.RemovePressed(Keys.F); // F has to be pressed multiple times
+            _playerKeys.RemovePressed(Keys.F); // F has to be pressed multiple times, for multiple attacks
+            
+            // stop movement
+            _playerSpeed = 0;
         }
 
         if (_attackTime > 0)
@@ -102,8 +104,12 @@ public class PlayerMovement
 
         #region Animation
 
-        
-        
+        if (_attackTime > 0)
+        {
+            _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.attack_l : PlayerState.attack_r;
+            return;
+        }
+
         if (playerBoxMin.Y < 0.0001f)
         {
             if (_playerSpeed == 0)
@@ -161,7 +167,7 @@ public class PlayerMovement
         _jumpTime += (float)frameArgs.Time;
     }
 
-    private void MovePlayer()
+    private void ProcessKeys()
     {
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
