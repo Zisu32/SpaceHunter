@@ -78,11 +78,11 @@ public class PlayerMovement
 
         // attac
 
-        if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0)
+        if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0 && !_state.PlayerInAir)
         {
             _attackTime = ConstantBalancingValues.AttackDuration;
             _playerKeys.RemovePressed(Keys.F); // F has to be pressed multiple times, for multiple attacks
-            
+
             // stop movement
             _playerSpeed = 0;
         }

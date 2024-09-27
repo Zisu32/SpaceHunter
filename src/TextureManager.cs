@@ -105,7 +105,6 @@ public class TextureManager
         // Zeitberechnung für Animation der Sprites
         float clock = (float)(obj.Time);
         clockCounter += clock;
-        Console.WriteLine("clockCounter: " + clockCounter);
         if (clockCounter > 0.25)
         {
             // Console.WriteLine("Col: " + columns);
