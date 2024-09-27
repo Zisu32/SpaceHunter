@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -8,8 +9,7 @@ public class Keyboard
 {
     private readonly GameWindow _window;
     private readonly OpenTKManager _openTkManager;
-    private readonly List<Keys> _keyList = new();
-    private readonly List<BufferedKeyGroup> _keyGroups = new();
+    private readonly List<KeyGroup> _keyGroups = new();
 
     public Keyboard(OpenTKManager openTkManager, GameWindow window)
     {
@@ -17,31 +17,23 @@ public class Keyboard
         _window = window;
     }
 
-    public void AddKeyGroup(BufferedKeyGroup keyGroup)
+    public void AddKeyGroup(KeyGroup keyGroup)
     {
         _keyGroups.Add(keyGroup);
     }
 
-    // TODO unregister Method
-    public void RegisterKey(Keys key)
-    {
-        _keyList.Add(key);
-    }
-
     internal void KeyDown(KeyboardKeyEventArgs keyEvent)
     {
-        if (_keyList.Contains(keyEvent.Key))
-        {
-            KeyDownEvent?.Invoke(_openTkManager, keyEvent);
-        }
-        
-        _keyGroups.ForEach(keyGroup => keyGroup.Update(keyEvent));
+        _keyGroups.ForEach(keyGroup => keyGroup.KeyDown(keyEvent));
+    }
+
+    internal void KeyUp(KeyboardKeyEventArgs keyEvent)
+    {
+        _keyGroups.ForEach(keyGroup => keyGroup.KeyUp(keyEvent));
     }
 
     public bool CheckKeyDown(Keys key)
     {
         return _window.IsKeyDown(key);
     }
-
-    public event EventHandler<KeyboardKeyEventArgs> KeyDownEvent;
 }

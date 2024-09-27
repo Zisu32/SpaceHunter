@@ -3,6 +3,7 @@ using OpenTK.Windowing.Common;
 using OpenTKLib;
 using Zenseless.OpenTK;
 using OpenTK.Graphics.OpenGL;
+using SpaceHunter.Models;
 
 
 namespace SpaceHunter;
@@ -46,7 +47,8 @@ public class TextureManager
 
     public void DrawPlayerTex(Box2 position, PlayerState playerState, FrameEventArgs obj)
     {
-        Texture2D texture2D = null;
+        Texture2D texture2D;
+        bool playOnce = false;
         switch (playerState)
         {
             case PlayerState.idle_r:
@@ -87,14 +89,22 @@ public class TextureManager
                 break;
             case PlayerState.death:
                 texture2D = _player_death;
+                playOnce = true;
                 columns = 6;
                 break;
+
+            default:
+                throw new InvalidOperationException("unknown player state:" + playerState);
         }
+
+        // TODO, reset animation progress on start of new animation 
+        // Attack looks weird without this
+        // TODO, play Death anim (and others maybe) only once
+        // use playOnce var
 
         // Zeitberechnung für Animation der Sprites
         float clock = (float)(obj.Time);
         clockCounter += clock;
-        // Console.WriteLine("clockCounter: " + clockCounter);
         if (clockCounter > 0.25)
         {
             // Console.WriteLine("Col: " + columns);
@@ -102,7 +112,6 @@ public class TextureManager
             clockCounter = 0;
         }
         // Console.WriteLine("spriteID: " + spriteId);
-
 
 
         TextureHelper.DrawSprite(position, texture2D.Handle, spriteId, columns, rows);
@@ -125,10 +134,14 @@ public class TextureManager
         _player_idle_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_l_new.png");
         _player_run_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_run_r_new.png");
         _player_run_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_run_l_new.png");
-        _player_jump_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_doublejump_r_new.png");
-        _player_jump_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_doublejump_l_new.png");
-        _player_attack_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_attack3_r_new.png");
-        _player_attack_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_attack3_l_new.png");
+        _player_jump_r =
+            TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_doublejump_r_new.png");
+        _player_jump_l =
+            TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_doublejump_l_new.png");
+        _player_attack_r =
+            TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_attack3_r_new.png");
+        _player_attack_l =
+            TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_attack3_l_new.png");
         _player_hurt = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_hurt_r_new.png");
         _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_death_r_new.png");
         _enemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.Enemies.blueEnemy.Sprite_test.png");
