@@ -23,12 +23,13 @@ public class WorldHandler
         _playerKeys = playerKeys;
         _keyboard = keyboard;
 
-        // setup initial camera parameters
-        // TODO, this seems like the wrong place for this
-        _camera.Scale = 4.0f;
-
         // TODO, actual enemy Logic
-        _state.Enemies.Add(new Enemy { Box = new Box2(15f, 0f, 20f, 5f) });
+        Vector2 enemyPosition = new Vector2(15f, 0f);
+        _state.Enemies.Add(new Enemy
+        {
+            Box = new Box2(enemyPosition.X, enemyPosition.Y, enemyPosition.X + TextureSizes.Enemy1SizeX,
+                enemyPosition.Y + TextureSizes.Enemy1SizeY)
+        });
         _state.Enemies.First().OnDeath += EnemyDeath;
     }
 

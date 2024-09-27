@@ -32,7 +32,10 @@ public class TextureManager
     static uint rows = 1;
 
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
-    public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 20f, 20f);
+
+    // TODO, the aspect ratios of the background are different
+    // bg 1 is 16:10 aspect ratio
+    public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16 * 3f, 10 * 3f);
     public static readonly Box2 HealthbarRectangle = new Box2(0.25f, 7f, 1.5f, 8f);
 
     public void DrawBackground()
