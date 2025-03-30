@@ -45,7 +45,17 @@ internal static class Program
             Keys.Up, Keys.Right, Keys.Down, Keys.Left, Keys.Space, Keys.F
         });
 
+        #region Setup camera
+
         _camera = _manager.Camera;
+        _camera.Scale = 6f;
+
+        Console.WriteLine($"Camera Scale: {_camera.Scale}");
+        Console.WriteLine($"Camera Center: {_camera.Center}");
+        Console.WriteLine($"Camera Width: {_camera.ScreenWidth}");
+
+        #endregion
+
 
         _worldHandler = new WorldHandler(_camera, _state, _playerKeys, _manager.Keyboard);
         _playerMovementHandler = new PlayerMovement(_state, _playerKeys, _manager.Keyboard, _camera);
@@ -81,7 +91,7 @@ internal static class Program
 
         // Translation();
         // Rotation();
-        // Scale();
+        Scale();
         // PlayerMove();
 
         #endregion

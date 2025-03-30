@@ -22,10 +22,10 @@ public class PlayerMovement
     private const float JumpDuration = 0.5f;
     private float _jumpTime;
 
-    private float _playerSpeed = 0;
-    private const float PlayerSpeedAdd = 0.01f;
+    private float _playerSpeed;
+    private const float PlayerSpeedAdd = 0.005f;
     private static float _playerSpeedDiv = 1.1f;
-    private double _attackTime = 0;
+    private double _attackTime;
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
 
     public PlayerMovement(GameState state, KeyGroup playerKeys, Keyboard keyboard, Camera camera)
@@ -57,7 +57,8 @@ public class PlayerMovement
         if (
             MathF.Abs(_playerSpeed) < 0.005f // playerSpeed small
             || playerBoxMin.X + _playerSpeed < 0f // out of bound 0
-            || playerBoxMax.X + _playerSpeed >= TextureManager.BackgroundRectangle.Max.X + 5f / 2) // out of bounds max
+            || playerBoxMax.X + _playerSpeed >=
+            TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2) // out of bounds max
         {
             _playerSpeed = 0;
         }
@@ -131,6 +132,7 @@ public class PlayerMovement
         #endregion
     }
 
+    // TODO, camera does not move up/down
     // TODO, switch to upwards speed approach, like left/right speed
     private void JumpMovement(FrameEventArgs frameArgs)
     {
@@ -142,13 +144,13 @@ public class PlayerMovement
         {
             _state.PlayerInAir = false;
             playerBoxMin.Y = 0;
-            playerBoxMax.Y = 5F;
+            playerBoxMax.Y = TextureSizes.PlayerSizeY;
             _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
             _state.PlayerState = PlayerState.idle_r;
             return;
         }
 
-        float jumpDistance = (float)(5f * JumpHeight * (frameArgs.Time / JumpDuration));
+        float jumpDistance = (float)(TextureSizes.PlayerSizeY * JumpHeight * (frameArgs.Time / JumpDuration));
 
         if (_jumpTime > JumpDuration / 2)
         {
@@ -185,7 +187,7 @@ public class PlayerMovement
         else if (_playerKeys.PressedKeys.Contains(Keys.Right))
         {
             // 5f is size of player Box
-            if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + 5f / 2)
+            if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2)
             {
                 return;
             }

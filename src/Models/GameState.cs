@@ -6,7 +6,7 @@ public class GameState
 {
     #region Player Fields
 
-    public Box2 PlayerBox = new Box2(0, 0, 5, 5);
+    public Box2 PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY);
 
     public Box2? PlayerHitBox = null;
 
