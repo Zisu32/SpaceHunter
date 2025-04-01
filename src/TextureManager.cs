@@ -36,8 +36,7 @@ public class TextureManager
     // TODO, the aspect ratios of the background are different
     // bg 1 is 16:10 aspect ratio
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16 * 3f, 10 * 3f);
-    public static readonly Box2 HealthbarRectangle = new Box2(0.25f, 7f, 1.5f, 8f);
-
+    
     public void DrawBackground()
     {
         TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background.Handle);
@@ -120,11 +119,6 @@ public class TextureManager
         TextureHelper.DrawSprite(position, texture2D.Handle, spriteId, columns, rows);
     }
 
-    public void DrawHealthbar()
-    {
-        TextureHelper.DrawRectangularTexture(HealthbarRectangle, _healthbar.Handle);
-    }
-
 
     public void Initialize()
     {
@@ -132,7 +126,6 @@ public class TextureManager
 
         // Textures can only be loaded when a window is already being displayed (for some reason)
         _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Backgrounds.1.jpg");
-        _healthbar = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.UI.batterie_Lebensanzeige-full.png");
         _player_idle_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_r_new.png");
         _player_idle_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_l_new.png");
         _player_run_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_run_r_new.png");
