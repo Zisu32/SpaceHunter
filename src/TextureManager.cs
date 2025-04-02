@@ -21,8 +21,6 @@ public class TextureManager
     private Texture2D _player_jump_l;
     private Texture2D _player_attack_r;
     private Texture2D _player_attack_l;
-    private Texture2D _player_hurt_r;
-    private Texture2D _player_hurt_l;
     private Texture2D _player_death;
 
     private Texture2D _enemy;
@@ -31,7 +29,8 @@ public class TextureManager
     static uint spriteId = 0;
     static uint columns = 0;
     static uint rows = 1;
-
+    
+    private static readonly Vector4 redTint = new Vector4(1f, 0f, 0f, 1f);
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
 
     // TODO, the aspect ratios of the background are different
@@ -48,7 +47,7 @@ public class TextureManager
         TextureHelper.DrawRectangularTexture(position, _enemy.Handle);
     }
 
-    public void DrawPlayerTex(Box2 position, PlayerState playerState, FrameEventArgs obj)
+    public void DrawPlayerTex(Box2 position, PlayerState playerState, FrameEventArgs obj, bool isHurt)
     {
         Texture2D texture2D;
         bool playOnce = false;
@@ -86,14 +85,6 @@ public class TextureManager
                 texture2D = _player_attack_l;
                 columns = 8;
                 break;
-            case PlayerState.hurt_r:
-                texture2D = _player_hurt_r;
-                columns = 2;
-                break;
-            case PlayerState.hurt_l:
-                texture2D = _player_hurt_l;
-                columns = 2;
-                break;
             case PlayerState.death:
                 texture2D = _player_death;
                 playOnce = true;
@@ -121,7 +112,14 @@ public class TextureManager
         // Console.WriteLine("spriteID: " + spriteId);
 
 
-        TextureHelper.DrawSprite(position, texture2D.Handle, spriteId, columns, rows);
+        if (isHurt)
+        {
+            TextureHelper.DrawSprite(position, texture2D.Handle, spriteId, columns, rows, redTint);
+        }
+        else
+        {
+            TextureHelper.DrawSprite(position, texture2D.Handle, spriteId, columns, rows);
+        }
     }
 
 
@@ -143,8 +141,6 @@ public class TextureManager
             TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_attack3_r_new.png");
         _player_attack_l =
             TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_attack3_l_new.png");
-        _player_hurt_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_hurt_r_new.png");
-        _player_hurt_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_hurt_l_new.png");
         _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_death_r_new.png");
         _enemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.Enemies.blueEnemy.Sprite_test.png");
     }

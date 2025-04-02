@@ -59,13 +59,10 @@ public class CollisionHandler
         // any enemy Box has collision with PlayerBox
         if (_state.Enemies.Any(enemy => TwoBoxCollisionCheck(_state.PlayerBox, enemy.Box)))
         {
-            Console.WriteLine("Player collision");
-
-
-            // TODO player hurt anim
-
             _state.PlayerHealth -= ConstantBalancingValues.EnemyDamage;
             _damageCooldown = ConstantBalancingValues.InvincibleDuration;
+            _state.IsPlayerHurt = true;
+            _state.PlayerHurtTimer = 1.0;
         }
     }
 

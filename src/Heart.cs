@@ -16,44 +16,54 @@ public class Heart
 
     public static void DrawHeart(Box2 box, float time)
     {
-        int points = 30;
-
-        // Bouncing scale using sine wave
-        float bounce = 1f + 0.1f * MathF.Sin(time * 5f); // Frequency/speed multiplier
-        float baseScale = MathF.Min(box.Size.X, box.Size.Y) / 32f;
-        float scale = bounce * baseScale;
+        float bounce = 1f + 0.1f * MathF.Sin(time * 5f);
+        float pixelSize = MathF.Min(box.Size.X, box.Size.Y) / 8f * bounce;
 
         float centerX = (box.Min.X + box.Max.X) / 2f;
         float centerY = (box.Min.Y + box.Max.Y) / 2f;
 
-        // Black Border
-        GL.Color3(0f, 0f, 0f);
-        GL.Begin(PrimitiveType.TriangleFan);
-        GL.Vertex2(centerX, centerY);
-        for (int i = 0; i <= points; i++)
+        // 8x8 pixel heart layout (1 = pixel on, 0 = off)
+        int[,] heartPixels = new int[,]
         {
-            float t = i * MathF.PI * 2f / points;
-            float x = 16 * MathF.Pow(MathF.Sin(t), 3);
-            float y = 13 * MathF.Cos(t) - 5 * MathF.Cos(2 * t) - 2 * MathF.Cos(3 * t) - MathF.Cos(4 * t);
-            x *= scale * 1.3f;
-            y *= scale * 1.3f;
-            GL.Vertex2(centerX + x, centerY + y);
-        }
-        GL.End();
+            { 0, 1, 1, 0, 0, 1, 1, 0 },
+            { 1, 1, 1, 1, 1, 1, 1, 1 },
+            { 1, 1, 1, 1, 1, 1, 1, 1 },
+            { 1, 1, 1, 1, 1, 1, 1, 1 },
+            { 0, 1, 1, 1, 1, 1, 1, 0 },
+            { 0, 0, 1, 1, 1, 1, 0, 0 },
+            { 0, 0, 0, 1, 1, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0 },
+        };
 
-        // Red Heart
-        GL.Color3(1.0f, 0.0f, 0.0f);
-        GL.Begin(PrimitiveType.TriangleFan);
-        GL.Vertex2(centerX, centerY);
-        for (int i = 0; i <= points; i++)
+        // Calculate top-left of heart grid
+        float startX = centerX - 4 * pixelSize;
+        float startY = centerY + 4 * pixelSize;
+
+        GL.Color3(0.0f, 0.75f, 0.0f);
+
+        for (int y = 0; y < 8; y++)
         {
-            float t = i * MathF.PI * 2f / points;
-            float x = 16 * MathF.Pow(MathF.Sin(t), 3);
-            float y = 13 * MathF.Cos(t) - 5 * MathF.Cos(2 * t) - 2 * MathF.Cos(3 * t) - MathF.Cos(4 * t);
-            x *= scale;
-            y *= scale;
-            GL.Vertex2(centerX + x, centerY + y);
+            for (int x = 0; x < 8; x++)
+            {
+                if (heartPixels[y, x] == 1)
+                {
+                    float px = startX + x * pixelSize;
+                    float py = startY - y * pixelSize;
+                    DrawPixel(px, py, pixelSize);
+                }
+            }
         }
+    }
+
+    private static void DrawPixel(float x, float y, float size)
+    {
+        GL.Begin(PrimitiveType.Quads);
+        GL.Vertex2(x, y);
+        GL.Vertex2(x + size, y);
+        GL.Vertex2(x + size, y - size);
+        GL.Vertex2(x, y - size);
         GL.End();
     }
+
+
 }

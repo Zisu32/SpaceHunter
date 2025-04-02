@@ -33,8 +33,7 @@ public class DrawComponent : IDrawComponent
         _healthbar.DrawHealthBar(_state.PlayerHealth, ConstantBalancingValues.MaxPlayerHealth);
 
         //Draw Player Sprite inside the Blue Rectangle
-        _textureManager.DrawPlayerTex(_state.PlayerBox, _state.PlayerState, obj);
-
+        _textureManager.DrawPlayerTex(_state.PlayerBox, _state.PlayerState, obj, _state.IsPlayerHurt);
         //Debug Boxes (Blue for Player, Yellow for Hitbox)
         DebugDrawHelper.DrawRectangle(_state.PlayerBox, Color.Blue);
         if (_state.PlayerHitBox != null)
@@ -63,7 +62,6 @@ public class DrawComponent : IDrawComponent
             if (!heart.IsCollected)
             {
                 Heart.DrawHeart(heart.Box, _elapsedTime);
-                DebugDrawHelper.DrawRectangle(heart.Box, Color.Pink); // Optional debug
             }
         }
     }

@@ -75,17 +75,28 @@ internal static class Program
         Console.WriteLine($"Player Health: {_state.PlayerHealth}");
         _worldHandler.Update(frameArgs);
         _collisionHandler.Update(frameArgs);
-
+        // player alive
         if (_state.PlayerAlive)
         {
             _playerMovementHandler.Update(frameArgs);
         }
 
-        // player actions
+        // player death
         if (!_state.PlayerAlive)
         {
             _state.PlayerState = PlayerState.death;
             Console.WriteLine("dead");
+        }
+        
+        // player hurt
+        if (_state.IsPlayerHurt)
+        {
+            _state.PlayerHurtTimer -= frameArgs.Time;
+            if (_state.PlayerHurtTimer <= 0)
+            {
+                _state.IsPlayerHurt = false;
+                _state.PlayerHurtTimer = 0;
+            }
         }
         
         // Heart
