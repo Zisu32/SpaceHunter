@@ -18,6 +18,7 @@ public class GameState
 
     #endregion
 
+    public readonly List<Heart> Hearts = new(); 
     public readonly List<Enemy> Enemies = new();
     public bool PlayerInAir = false;
     

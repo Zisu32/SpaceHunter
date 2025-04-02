@@ -14,6 +14,7 @@ public class DrawComponent : IDrawComponent
     private readonly TextureManager _textureManager;
     private readonly GameState _state;
     private readonly Healthbar _healthbar;
+    private float _elapsedTime = 0f;
 
     //Constructur
     public DrawComponent(GameState state)
@@ -40,7 +41,7 @@ public class DrawComponent : IDrawComponent
         {
             DebugDrawHelper.DrawRectangle(_state.PlayerHitBox.Value, Color.Yellow);
         }
-
+        
         //Draw Enemies
         foreach (Enemy enemy in _state.Enemies)
         {
@@ -53,11 +54,24 @@ public class DrawComponent : IDrawComponent
         {
             Console.WriteLine($"OpenGL Error: {errorCode}");
         }
+        
+        //Draw Heart
+        _elapsedTime += (float)obj.Time; // Time for scale-animation
+
+        foreach (Heart heart in _state.Hearts)
+        {
+            if (!heart.IsCollected)
+            {
+                Heart.DrawHeart(heart.Box, _elapsedTime);
+                DebugDrawHelper.DrawRectangle(heart.Box, Color.Pink); // Optional debug
+            }
+        }
     }
 
     public void Initialize()
     {
         _textureManager.Initialize();
+        _state.Hearts.Add(new Heart(new Vector2(20f, 2f)));
     }
 
     public Camera Camera { get; set; }
