@@ -10,6 +10,7 @@ public enum PlayerState
     jump_l,
     attack_r,
     attack_l,
-    hurt,
+    hurt_r,
+    hurt_l,
     death
 }
