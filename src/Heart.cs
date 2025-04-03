@@ -8,19 +8,26 @@ public class Heart
     public Box2 Box { get; set; }
     public bool IsCollected { get; set; } = false;
 
+    private float _elapsedTime = 0f;
+
     public Heart(Vector2 position)
     {
         float size = 1f; // Heart size
         Box = new Box2(position.X, position.Y, position.X + size, position.Y + size);
     }
 
-    public static void DrawHeart(Box2 box, float time)
+    public void Update(float deltaTime)
     {
-        float bounce = 1f + 0.1f * MathF.Sin(time * 5f);
-        float pixelSize = MathF.Min(box.Size.X, box.Size.Y) / 8f * bounce;
+        _elapsedTime += deltaTime;
+    }
 
-        float centerX = (box.Min.X + box.Max.X) / 2f;
-        float centerY = (box.Min.Y + box.Max.Y) / 2f;
+    public void DrawHeart()
+    {
+        float bounce = 1f + 0.1f * MathF.Sin(_elapsedTime * 5f);
+        float pixelSize = MathF.Min(Box.Size.X, Box.Size.Y) / 8f * bounce;
+
+        float centerX = (Box.Min.X + Box.Max.X) / 2f;
+        float centerY = (Box.Min.Y + Box.Max.Y) / 2f;
 
         // 8x8 pixel heart layout (1 = pixel on, 0 = off)
         int[,] heartPixels = new int[,]
@@ -64,6 +71,4 @@ public class Heart
         GL.Vertex2(x, y - size);
         GL.End();
     }
-
-
 }
