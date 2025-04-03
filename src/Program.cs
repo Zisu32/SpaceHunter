@@ -23,6 +23,8 @@ internal static class Program
     {
         _state = new GameState();
 
+        // TODO, framemrate should probably be locked
+        // time between frames is not used anywhere
         _manager = new OpenTKManager(new DrawComponent(_state));
 
         _translationKeys = new KeyGroup(new List<Keys>

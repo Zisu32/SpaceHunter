@@ -24,7 +24,7 @@ public class TextureManager
     private Texture2D _player_hurt;
     private Texture2D _player_death;
 
-    private Texture2D _enemy;
+    private Texture2D _blueEnemy;
 
     static float clockCounter = 0;
     static uint spriteId = 0;
@@ -44,7 +44,7 @@ public class TextureManager
 
     public void DrawEnemy(Box2 position)
     {
-        TextureHelper.DrawRectangularTexture(position, _enemy.Handle);
+        TextureHelper.DrawRectangularTexture(position, _blueEnemy.Handle);
     }
 
     public void DrawPlayerTex(Box2 position, PlayerState playerState, FrameEventArgs obj)
@@ -140,6 +140,6 @@ public class TextureManager
             TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_attack3_l_new.png");
         _player_hurt = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_hurt_r_new.png");
         _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_death_r_new.png");
-        _enemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.Enemies.blueEnemy.Sprite_test.png");
+        _blueEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.Enemies.blueEnemy.Sprite_test.png");
     }
 }

@@ -15,6 +15,7 @@ public class WorldHandler
     private readonly GameState _state;
     private readonly KeyGroup _playerKeys;
     private readonly Keyboard _keyboard;
+    private readonly Random _random;
 
     public WorldHandler(Camera camera, GameState state, KeyGroup playerKeys, Keyboard keyboard)
     {
@@ -22,14 +23,18 @@ public class WorldHandler
         _state = state;
         _playerKeys = playerKeys;
         _keyboard = keyboard;
+        _random = new Random();
 
         // TODO, actual enemy Logic
-        Vector2 enemyPosition = new Vector2(15f, 0f);
-        _state.Enemies.Add(new Enemy
+        Vector2 enemyPosition = new Vector2(5, 0);
+        _state.Enemies.Add(new Enemy(2, 0.5)
         {
             Box = new Box2(enemyPosition.X, enemyPosition.Y, enemyPosition.X + TextureSizes.Enemy1SizeX,
+                enemyPosition.Y + TextureSizes.Enemy1SizeY),
+            TargetBox = new Box2(enemyPosition.X, enemyPosition.Y, enemyPosition.X + TextureSizes.Enemy1SizeX,
                 enemyPosition.Y + TextureSizes.Enemy1SizeY)
         });
+
         _state.Enemies.First().OnDeath += EnemyDeath;
     }
 
@@ -46,5 +51,45 @@ public class WorldHandler
 
     public void Update(FrameEventArgs frameArgs)
     {
+        foreach (Enemy enemyState in _state.Enemies)
+        {
+            if (enemyState.IdleMoving)
+            {
+                // this only moves the box on the X Axis
+                Box2 enemyBox = enemyState.Box;
+                Vector2 enemyBoxCenter = enemyBox.Center;
+                float differenceX = enemyState.TargetBox.Center.X - enemyBoxCenter.X;
+
+                // TODO this does not move linearly
+                enemyBoxCenter.X += differenceX * 0.01f;
+                enemyBox.Center = enemyBoxCenter;
+                enemyState.Box = enemyBox;
+
+
+                if (Vector2.Distance(enemyBoxCenter, enemyState.TargetBox.Center) <= 0.1f)
+                {
+                    enemyState.IdleMoving = false;
+                    enemyState.LastIdleMovement = 0;
+                    enemyState.CurrentIdleMovementRandom = _random.NextDouble(); // is between 0 and 1
+                }
+                
+                return;
+            }
+
+            enemyState.LastIdleMovement += frameArgs.Time;
+
+            if (enemyState.LastIdleMovement >
+                enemyState.IdleMovementDelay + enemyState.CurrentIdleMovementRandom)
+            {
+                enemyState.IdleMoving = true;
+
+                Box2 newTarget = new Box2(enemyState.Box.Min, enemyState.Box.Max);
+                Vector2 newTargetCenter = newTarget.Center;
+                newTargetCenter.X += 5;
+
+                newTarget.Center = newTargetCenter;
+                enemyState.TargetBox = newTarget;
+            }
+        }
     }
 }
