@@ -43,7 +43,7 @@ public class TextureManager
     {
         TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background.Handle);
     }
-
+    
     public void DrawMenuScreen()
     {
         TextureHelper.DrawRectangularTexture(MenuRectangle, _menuscreen.Handle);
