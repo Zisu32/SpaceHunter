@@ -74,21 +74,52 @@ internal static class Program
 
     private static void GameUpdate(object? sender, FrameEventArgs frameArgs)
     {
+        Console.WriteLine($"Player Health: {_state.PlayerHealth}");
         _worldHandler.Update(frameArgs);
         _collisionHandler.Update(frameArgs);
-
+        // player alive
         if (_state.PlayerAlive)
         {
             _playerMovementHandler.Update(frameArgs);
         }
 
-        // player actions
+        // player death
         if (!_state.PlayerAlive)
         {
             _state.PlayerState = PlayerState.death;
-            Console.WriteLine("ded");
+            Console.WriteLine("dead");
         }
+        
+        // player hurt
+        if (_state.IsPlayerHurt)
+        {
+            _state.PlayerHurtTimer -= frameArgs.Time;
+            if (_state.PlayerHurtTimer <= 0)
+            {
+                _state.IsPlayerHurt = false;
+                _state.PlayerHurtTimer = 0;
+            }
+        }
+        
+        // Heart
+        foreach (Heart heart in _state.Hearts)
+        {
+            if (!heart.IsCollected &&
+                heart.Box.Min.X < _state.PlayerBox.Max.X &&
+                heart.Box.Max.X > _state.PlayerBox.Min.X &&
+                heart.Box.Min.Y < _state.PlayerBox.Max.Y &&
+                heart.Box.Max.Y > _state.PlayerBox.Min.Y)
+            {
+                heart.IsCollected = true;
 
+                _state.PlayerHealth += 10;
+                Console.WriteLine("+10 Health");
+                if (_state.PlayerHealth > ConstantBalancingValues.MaxPlayerHealth)
+                {
+                    _state.PlayerHealth = ConstantBalancingValues.MaxPlayerHealth;
+                }
+            }
+        }
         #region Camera debug
 
         // Translation();
