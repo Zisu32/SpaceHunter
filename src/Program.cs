@@ -83,10 +83,14 @@ internal static class Program
         if (!_state.IsGameStarted && _startKey.PressedKeys.Contains(Keys.Enter))
         {
             _state.IsGameStarted = true;
+            
+        }
+        
+        if (!_state.IsGameStarted)
+        {
             return;
         }
-
-
+        
         Console.WriteLine($"Player Health: {_state.PlayerHealth}");
         _worldHandler.Update(frameArgs);
         _collisionHandler.Update(frameArgs);
