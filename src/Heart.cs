@@ -46,7 +46,7 @@ public class Heart
         float startX = centerX - 4 * pixelSize;
         float startY = centerY + 4 * pixelSize;
 
-        GL.Color3(0.0f, 0.75f, 0.0f);
+        GL.Color3(0.80f, 0.0f, 0.0f);
 
         for (int y = 0; y < 8; y++)
         {
