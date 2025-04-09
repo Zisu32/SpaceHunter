@@ -18,6 +18,8 @@ internal static class Program
     private static WorldHandler _worldHandler = null!;
     private static PlayerMovement _playerMovementHandler = null!;
     private static OpenTKManager _manager = null!;
+    private static KeyGroup _startKey = null!;
+
 
     public static void Main(string[] args)
     {
@@ -47,6 +49,10 @@ internal static class Program
             Keys.Up, Keys.Right, Keys.Down, Keys.Left, Keys.Space, Keys.F
         });
 
+        _startKey = new KeyGroup(new List<Keys> { Keys.Enter });
+        _manager.Keyboard.AddKeyGroup(_startKey);
+
+
         #region Setup camera
 
         _camera = _manager.Camera;
@@ -74,6 +80,13 @@ internal static class Program
 
     private static void GameUpdate(object? sender, FrameEventArgs frameArgs)
     {
+        if (!_state.IsGameStarted && _startKey.PressedKeys.Contains(Keys.Enter))
+        {
+            _state.IsGameStarted = true;
+            return;
+        }
+
+
         Console.WriteLine($"Player Health: {_state.PlayerHealth}");
         _worldHandler.Update(frameArgs);
         _collisionHandler.Update(frameArgs);

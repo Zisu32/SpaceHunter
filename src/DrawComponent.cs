@@ -25,6 +25,12 @@ public class DrawComponent : IDrawComponent
 
     public async Task Draw(FrameEventArgs obj)
     {
+        if (!_state.IsGameStarted)
+        {
+            DrawMenu();
+            return;
+        }
+
         //Draw Background First
         _textureManager.DrawBackground();
 
@@ -63,6 +69,12 @@ public class DrawComponent : IDrawComponent
             }
         }
     }
+
+    private void DrawMenu()
+    {
+        _textureManager.DrawMenuScreen();
+    }
+
 
     public void Initialize()
     {
