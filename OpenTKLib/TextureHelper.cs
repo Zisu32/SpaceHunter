@@ -10,6 +10,7 @@ namespace OpenTKLib;
 public static class TextureHelper
 {
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
+    private static readonly Box2 MenuBox = new Box2(-1f, -1f, 1f, 1f);
 
     /// <summary>
     /// Enables Capability to display textures including alpha channels
@@ -46,6 +47,31 @@ public static class TextureHelper
 
         GL.End();
     }
+    public static void DrawFullScreenTexture(Box2 rectangle, Handle<Texture> texture)
+{
+        GL.BindTexture(TextureTarget.Texture2D, texture);
+
+        // prevent color problems
+        GL.Color4(Color.White);
+
+        GL.Begin(PrimitiveType.Quads);
+
+        // bottom left
+        GL.TexCoord2(MenuBox.Min);
+        GL.Vertex2(rectangle.Min);
+        // bottom right
+        GL.TexCoord2(MenuBox.Max.X, MenuBox.Min.Y);
+        GL.Vertex2(rectangle.Max.X, rectangle.Min.Y);
+        // top right
+        GL.TexCoord2(MenuBox.Max);
+        GL.Vertex2(rectangle.Max);
+        // top left
+        GL.TexCoord2(MenuBox.Min.X, MenuBox.Max.Y);
+        GL.Vertex2(rectangle.Min.X, rectangle.Max.Y);
+
+        GL.End();
+    }
+
     public static void DrawSprite(Box2 rectangle, Handle<Texture> texture, uint spriteId, uint columns, uint rows)
     {
         GL.BindTexture(TextureTarget.Texture2D, texture);

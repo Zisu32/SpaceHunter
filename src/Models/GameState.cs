@@ -20,5 +20,8 @@ public class GameState
 
     public readonly List<Enemy> Enemies = new();
     public bool PlayerInAir = false;
-    
+
+    // Spielstatus-Flag für Menüsteuerung
+    public bool IsGameStarted = false;
+
 }

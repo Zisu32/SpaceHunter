@@ -12,6 +12,7 @@ public class TextureManager
 {
     // TODO, find better way to handle loaded Textures
     private Texture2D _background;
+    private Texture2D _menuscreen;
     private Texture2D _healthbar;
     private Texture2D _player_idle_r;
     private Texture2D _player_idle_l;
@@ -36,10 +37,16 @@ public class TextureManager
     // TODO, the aspect ratios of the background are different
     // bg 1 is 16:10 aspect ratio
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16 * 3f, 10 * 3f);
+    public static readonly Box2 MenuRectangle = new Box2(0f, 0f, 4 * 3f, 4 * 3f);
     
     public void DrawBackground()
     {
         TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background.Handle);
+    }
+
+    public void DrawMenuScreen()
+    {
+        TextureHelper.DrawRectangularTexture(MenuRectangle, _menuscreen.Handle);
     }
 
     public void DrawEnemy(Box2 position)
@@ -126,6 +133,7 @@ public class TextureManager
 
         // Textures can only be loaded when a window is already being displayed (for some reason)
         _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Backgrounds.1.jpg");
+        _menuscreen = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Screen.title.png");
         _player_idle_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_r_new.png");
         _player_idle_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_l_new.png");
         _player_run_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_run_r_new.png");
