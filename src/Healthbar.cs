@@ -8,8 +8,8 @@ public class Healthbar
     {
         if (health <= 0) return;
 
-        float barWidth = 200f;  
-        float barHeight = 20f;  
+        float barWidth = 100f;  
+        float barHeight = 15f;  
         float healthPercentage = health / maxHealth;
 
         float x = 10f; 
@@ -22,7 +22,7 @@ public class Healthbar
         GL.MatrixMode(MatrixMode.Projection);
         GL.PushMatrix();
         GL.LoadIdentity();
-        GL.Ortho(0, 640, 360, 0, -1, 1);
+        GL.Ortho(-10, 640, 360, 0, -1, 1);
 
         GL.MatrixMode(MatrixMode.Modelview);
         GL.PushMatrix();
@@ -34,8 +34,8 @@ public class Healthbar
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-        //Draw Background (Gray)
-        GL.Color3(0.2f, 0.2f, 0.2f);
+        //Draw Background (black)
+        GL.Color3(0.0f, 0.0f, 0.0f);
         GL.Begin(PrimitiveType.Quads);
         GL.Vertex2(x, y);
         GL.Vertex2(x + barWidth, y);
@@ -56,9 +56,9 @@ public class Healthbar
         GL.Vertex2(x, y + barHeight);
         GL.End();
 
-        //Draw Border (White)
-        GL.Color3(1.0f, 1.0f, 1.0f);
-        GL.LineWidth(2);
+        //Draw Border (black)
+        GL.Color3(0.0f, 0.0f, 0.0f);
+        GL.LineWidth(3);
         GL.Begin(PrimitiveType.LineLoop);
         GL.Vertex2(x, y);
         GL.Vertex2(x + barWidth, y);

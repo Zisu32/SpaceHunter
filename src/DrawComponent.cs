@@ -38,8 +38,7 @@ public class DrawComponent : IDrawComponent
         _healthbar.DrawHealthBar(_state.PlayerHealth, ConstantBalancingValues.MaxPlayerHealth);
 
         //Draw Player Sprite inside the Blue Rectangle
-        _textureManager.DrawPlayerTex(_state.PlayerBox, _state.PlayerState, obj);
-
+        _textureManager.DrawPlayerTex(_state.PlayerBox, _state.PlayerState, obj, _state.IsPlayerHurt);
         //Debug Boxes (Blue for Player, Yellow for Hitbox)
         DebugDrawHelper.DrawRectangle(_state.PlayerBox, Color.Blue);
         if (_state.PlayerHitBox != null)
@@ -59,6 +58,16 @@ public class DrawComponent : IDrawComponent
         {
             Console.WriteLine($"OpenGL Error: {errorCode}");
         }
+
+        //Draw Heart
+        foreach (Heart heart in _state.Hearts)
+        {
+            if (!heart.IsCollected)
+            {
+                heart.Update((float)obj.Time);
+                heart.DrawHeart();
+            }
+        }
     }
 
     private void DrawMenu()
@@ -70,6 +79,7 @@ public class DrawComponent : IDrawComponent
     public void Initialize()
     {
         _textureManager.Initialize();
+        _state.Hearts.Add(new Heart(new Vector2(30f, 2f)));
     }
 
     public Camera Camera { get; set; }

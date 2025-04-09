@@ -15,9 +15,13 @@ public class GameState
     public int PlayerHealth = ConstantBalancingValues.MaxPlayerHealth;
     
     public PlayerState PlayerState = PlayerState.idle_r;
-
+    
+    //red flash on damage
+    public bool IsPlayerHurt { get; set; } = false;
+    public double PlayerHurtTimer { get; set; } = 0.0;
     #endregion
 
+    public readonly List<Heart> Hearts = new(); 
     public readonly List<Enemy> Enemies = new();
     public bool PlayerInAir = false;
 
