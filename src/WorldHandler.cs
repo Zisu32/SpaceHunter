@@ -52,44 +52,7 @@ public class WorldHandler
         foreach (Enemy enemyState in _state.Enemies)
         {
             EnemyLogic.FloatMovement(enemyState);
-            
-            // if (enemyState.IdleMoving)
-            // {
-            //     // this only moves the box on the X Axis
-            //     Box2 enemyBox = enemyState.Box;
-            //     Vector2 enemyBoxCenter = enemyBox.Center;
-            //     float differenceX = enemyState.TargetBox.Center.X - enemyBoxCenter.X;
-            //
-            //     // TODO this does not move linearly
-            //     enemyBoxCenter.X += differenceX * 0.01f;
-            //     enemyBox.Center = enemyBoxCenter;
-            //     enemyState.Box = enemyBox;
-            //
-            //
-            //     if (Vector2.Distance(enemyBoxCenter, enemyState.TargetBox.Center) <= 0.1f)
-            //     {
-            //         enemyState.IdleMoving = false;
-            //         enemyState.LastIdleMovement = 0;
-            //         enemyState.CurrentIdleMovementRandom = _random.NextDouble(); // is between 0 and 1
-            //     }
-            //     
-            //     return;
-            // }
-            //
-            // enemyState.LastIdleMovement += frameArgs.Time;
-            //
-            // if (enemyState.LastIdleMovement >
-            //     enemyState.IdleMovementDelay + enemyState.CurrentIdleMovementRandom)
-            // {
-            //     enemyState.IdleMoving = true;
-            //
-            //     Box2 newTarget = new Box2(enemyState.Box.Min, enemyState.Box.Max);
-            //     Vector2 newTargetCenter = newTarget.Center;
-            //     newTargetCenter.X += 5;
-            //
-            //     newTarget.Center = newTargetCenter;
-            //     enemyState.TargetBox = newTarget;
-            // }
+            EnemyLogic.SidewaysMovement(enemyState, frameArgs);
         }
     }
 }
