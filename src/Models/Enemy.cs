@@ -16,9 +16,14 @@ public class Enemy
         // IdleMovementDelayRandom = idleMovementDelayRandom;
     }
 
+    // goes from 0, at ground to 100, on top 
+    public float FloatingPosition { get; set; }
+    // false = up, true = down
+    public bool FloatingDirection { get; set; }
+    
+    public Box2 GroundBox { get; set; }
+    
     public Box2 Box { get; set; }
-
-    public Box2 TargetBox { get; set; }
 
     public int Health
     {
