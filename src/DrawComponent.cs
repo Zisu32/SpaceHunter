@@ -39,6 +39,17 @@ public class DrawComponent : IDrawComponent
 
         //Draw Player Sprite inside the Blue Rectangle
         _textureManager.DrawPlayerTex(_state.PlayerBox, _state.PlayerState, obj, _state.IsPlayerHurt);
+
+        // Vector2 playerBoxMax = _state.PlayerBox.Max;
+        //
+        // playerBoxMax.X += 2;
+        //
+        // Vector2 end = new Vector2(playerBoxMax.X, playerBoxMax.Y);
+        //
+        // end.X += 3;
+
+        DrawEffects.DrawStaticEnemyLaser(new Vector2(5,5) , new Vector2(7,5));
+        
         //Debug Boxes (Blue for Player, Yellow for Hitbox)
         DebugDrawHelper.DrawRectangle(_state.PlayerBox, Color.Blue);
         if (_state.PlayerHitBox != null)
@@ -49,7 +60,7 @@ public class DrawComponent : IDrawComponent
         //Draw Enemies
         foreach (Enemy enemy in _state.Enemies)
         {
-            _textureManager.DrawEnemy(enemy.Box);
+            _textureManager.DrawBlueEnemy(enemy.Box);
             DebugDrawHelper.DrawRectangle(enemy.Box, Color.Red);
         }
 

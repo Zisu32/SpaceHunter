@@ -25,6 +25,8 @@ public class TextureManager
     private Texture2D _player_death;
 
     private Texture2D _blueEnemy;
+    // TODO, animate flying enemy
+    private Texture2D _flyingEnemy;
 
     static float clockCounter = 0;
     static uint spriteId = 0;
@@ -49,10 +51,12 @@ public class TextureManager
         TextureHelper.DrawRectangularTexture(MenuRectangle, _menuscreen.Handle);
     }
 
-    public void DrawEnemy(Box2 position)
+    public void DrawBlueEnemy(Box2 position)
     {
         TextureHelper.DrawRectangularTexture(position, _blueEnemy.Handle);
     }
+    
+    
 
     public void DrawPlayerTex(Box2 position, PlayerState playerState, FrameEventArgs obj, bool isHurt)
     {
@@ -151,5 +155,6 @@ public class TextureManager
             TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_attack3_l_new.png");
         _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_death_r_new.png");
         _blueEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.Enemies.blueEnemy.Sprite_test.png");
+        _flyingEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.flyingEnemy.FlyingEnemy.png");
     }
 }
