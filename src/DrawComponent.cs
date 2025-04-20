@@ -79,7 +79,7 @@ public class DrawComponent : IDrawComponent
     public void Initialize()
     {
         _textureManager.Initialize();
-        _state.Hearts.Add(new Heart(new Vector2(30f, 2f)));
+        _state.Hearts.Add(new Heart(new Vector2(15f, 2f)));
     }
 
     public Camera Camera { get; set; }
