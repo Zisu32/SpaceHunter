@@ -14,6 +14,9 @@ public class DrawComponent : IDrawComponent
     private readonly TextureManager _textureManager;
     private readonly GameState _state;
     private readonly Healthbar _healthbar;
+    private Portal _portal;
+    private bool _enteredPortal = false;
+
 
     //Constructur
     public DrawComponent(GameState state)
@@ -68,6 +71,19 @@ public class DrawComponent : IDrawComponent
                 heart.DrawHeart();
             }
         }
+        //Draw Portal if all enemies are defeated
+        _portal.IsVisible = !_state.Enemies.Any();
+        _portal.Update((float)obj.Time);
+        _portal.DrawPortal();
+        if (_portal.IsVisible &&
+            _state.PlayerBox.Max.X > _portal.Bounds.Min.X &&
+            _state.PlayerBox.Min.X < _portal.Bounds.Max.X &&
+            _state.PlayerBox.Max.Y > _portal.Bounds.Min.Y &&
+            _state.PlayerBox.Min.Y < _portal.Bounds.Max.Y)
+        {
+            _enteredPortal = true;
+            Console.WriteLine($"Enter Portal");
+        }
     }
 
     private void DrawMenu()
@@ -80,6 +96,7 @@ public class DrawComponent : IDrawComponent
     {
         _textureManager.Initialize();
         _state.Hearts.Add(new Heart(new Vector2(15f, 2f)));
+        _portal = new Portal(TextureManager.PortalRectangle, _textureManager._portalTexture);
     }
 
     public Camera Camera { get; set; }

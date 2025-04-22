@@ -14,6 +14,7 @@ public class TextureManager
     private Texture2D _background;
     private Texture2D _menuscreen;
     private Texture2D _healthbar;
+    public Texture2D _portalTexture;
     private Texture2D _player_idle_r;
     private Texture2D _player_idle_l;
     private Texture2D _player_run_r;
@@ -33,6 +34,7 @@ public class TextureManager
     
     private static readonly Vector4 redTint = new Vector4(1f, 0f, 0f, 1f);
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
+    public static readonly Box2 PortalRectangle = new Box2(64f, 0f, 68f, 6f);
 
     // TODO, the aspect ratios of the background are different
     // bg 1 is 16:10 aspect ratio
@@ -137,6 +139,7 @@ public class TextureManager
         // Textures can only be loaded when a window is already being displayed (for some reason)
         _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Backgrounds.1-new.jpg");
         _menuscreen = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Screen.MainMenu.png");
+        _portalTexture = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Portal.Portal-new.png");
         _player_idle_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_r_new.png");
         _player_idle_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_l_new.png");
         _player_run_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_run_r_new.png");
