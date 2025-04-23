@@ -71,15 +71,14 @@ public class DrawComponent : IDrawComponent
                 heart.DrawHeart();
             }
         }
+        
+        // TODO, extract gameLogic, only draw portal here
         //Draw Portal if all enemies are defeated
         _portal.IsVisible = !_state.Enemies.Any();
         _portal.Update((float)obj.Time);
         _portal.DrawPortal();
         if (_portal.IsVisible &&
-            _state.PlayerBox.Max.X > _portal.Bounds.Min.X &&
-            _state.PlayerBox.Min.X < _portal.Bounds.Max.X &&
-            _state.PlayerBox.Max.Y > _portal.Bounds.Min.Y &&
-            _state.PlayerBox.Min.Y < _portal.Bounds.Max.Y)
+            CollisionHandler.TwoBoxCollisionCheck(_state.PlayerBox, _portal.Bounds))
         {
             _enteredPortal = true;
             Console.WriteLine($"Enter Portal");
