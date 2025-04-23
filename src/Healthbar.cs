@@ -35,7 +35,7 @@ public class Healthbar
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
         //Draw Background (black)
-        GL.Color3(0.0f, 0.0f, 0.0f);
+        GL.Color4(0.0f, 0.0f, 0.0f, 1.0f);
         GL.Begin(PrimitiveType.Quads);
         GL.Vertex2(x, y);
         GL.Vertex2(x + barWidth, y);
@@ -46,9 +46,10 @@ public class Healthbar
         //Dynamic Health Color (Green to Red)
         float green = healthPercentage;
         float red = 1.0f - healthPercentage;
-        GL.Color3(red, green, 0.0f);
+        GL.Color4(red, green, 0.0f, 1.0f);
 
         //Draw Health Foreground
+        GL.Disable(EnableCap.Texture2D); // Disable texturing
         GL.Begin(PrimitiveType.Quads);
         GL.Vertex2(x, y);
         GL.Vertex2(x + (barWidth * healthPercentage), y);
@@ -57,8 +58,8 @@ public class Healthbar
         GL.End();
 
         //Draw Border (black)
-        GL.Color3(0.0f, 0.0f, 0.0f);
-        GL.LineWidth(3);
+        GL.Color4(1f, 1f, 1f, 1.0f);
+        GL.LineWidth(2);
         GL.Begin(PrimitiveType.LineLoop);
         GL.Vertex2(x, y);
         GL.Vertex2(x + barWidth, y);
