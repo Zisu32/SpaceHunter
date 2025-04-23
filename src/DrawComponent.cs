@@ -52,7 +52,7 @@ public class DrawComponent : IDrawComponent
             laserSection = 0;
         }
         
-        DrawEffects.DrawStaticEnemyLaser(new Vector2(5,5) ,7, laserSection);
+        // DrawEffects.DrawStaticEnemyLaser(new Vector2(5,5) ,7, laserSection);
         
         //Debug Boxes (Blue for Player, Yellow for Hitbox)
         DebugDrawHelper.DrawRectangle(_state.PlayerBox, Color.Blue);
