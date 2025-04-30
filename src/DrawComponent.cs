@@ -35,7 +35,21 @@ public class DrawComponent : IDrawComponent
         }
 
         //Draw Background First
-        _textureManager.DrawBackground();
+        _textureManager.DrawBackground(_state.CurrentLevel);
+
+        //Draw Portal
+        _portal.Update((float)obj.Time, _state.Enemies, _state.PlayerBox);
+        if (_portal.PlayerEntered && !_enteredPortal)
+        {
+            _enteredPortal = true;
+            _state.NextLevel();
+        }
+        else if (!_portal.PlayerEntered)
+        {
+            _enteredPortal = false;
+        }
+
+        _portal.DrawPortal();
 
         //Draw health bar
         _healthbar.DrawHealthBar(_state.PlayerHealth, ConstantBalancingValues.MaxPlayerHealth);
@@ -70,9 +84,7 @@ public class DrawComponent : IDrawComponent
                 heart.DrawHeart();
             }
         }
-        //Draw Portal
-        _portal.Update((float)obj.Time, _state.Enemies, _state.PlayerBox);
-        _portal.DrawPortal();
+        
 
     }
 
