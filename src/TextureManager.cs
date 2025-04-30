@@ -118,8 +118,6 @@ public class TextureManager
             spriteId = (spriteId + 1) % columns;
             clockCounter = 0;
         }
-        // Console.WriteLine("spriteID: " + spriteId);
-
 
         if (isHurt)
         {

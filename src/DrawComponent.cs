@@ -55,7 +55,6 @@ public class DrawComponent : IDrawComponent
             _textureManager.DrawEnemy(enemy.Box);
             DebugDrawHelper.DrawRectangle(enemy.Box, Color.Red);
         }
-
         ErrorCode errorCode = GL.GetError();
         if (errorCode != ErrorCode.NoError)
         {
@@ -71,18 +70,10 @@ public class DrawComponent : IDrawComponent
                 heart.DrawHeart();
             }
         }
-        
-        // TODO, extract gameLogic, only draw portal here
-        //Draw Portal if all enemies are defeated
-        _portal.IsVisible = !_state.Enemies.Any();
-        _portal.Update((float)obj.Time);
+        //Draw Portal
+        _portal.Update((float)obj.Time, _state.Enemies, _state.PlayerBox);
         _portal.DrawPortal();
-        if (_portal.IsVisible &&
-            CollisionHandler.TwoBoxCollisionCheck(_state.PlayerBox, _portal.Bounds))
-        {
-            _enteredPortal = true;
-            Console.WriteLine($"Enter Portal");
-        }
+
     }
 
     private void DrawMenu()
