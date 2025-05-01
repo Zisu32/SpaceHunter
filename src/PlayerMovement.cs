@@ -18,8 +18,8 @@ public class PlayerMovement
     // how many players heights the jump is high
     // TODO, move the consts in seperate classes
     // TODO extract player box size (5f) to const somewhere, or auto generate
-    private const float JumpHeight = 2.5f;
-    private const float JumpDuration = 0.5f;
+    private const float JumpHeight = 3.5f;
+    private const float JumpDuration = 0.8f;
     private float _jumpTime;
 
     private float _playerSpeed;

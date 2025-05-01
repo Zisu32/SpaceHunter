@@ -31,10 +31,9 @@ public class Portal
         IsVisible = false;
     }
 
-    public void Update(float deltaTime, IReadOnlyCollection<Enemy> enemies, Box2 playerBox)
+    public void Update(float deltaTime, IReadOnlyCollection<Enemy> enemies, IReadOnlyCollection<FlyingEnemy> flyingEnemies, Box2 playerBox)
     {
-        // Update visibility
-        IsVisible = (_state.CurrentLevel == 1) && !enemies.Any();
+        IsVisible = !enemies.Any() && !flyingEnemies.Any();
         Console.WriteLine($"Portal visible: {IsVisible}");
 
         // Animate

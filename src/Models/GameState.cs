@@ -20,7 +20,8 @@ public class GameState
     public bool IsPlayerHurt { get; set; } = false;
     public double PlayerHurtTimer { get; set; } = 0.0;
     #endregion
-
+    
+    public Portal? Portal { get; set; }
     public readonly List<Heart> Hearts = new(); 
     public readonly List<FlyingEnemy> FlyingEnemies = new();
     public readonly List<Enemy> Enemies = new();

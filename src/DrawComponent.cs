@@ -1,6 +1,5 @@
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTKLib;
 using SpaceHunter.Models;
@@ -14,10 +13,8 @@ public class DrawComponent : IDrawComponent
     private readonly TextureManager _textureManager;
     private readonly GameState _state;
     private readonly Healthbar _healthbar;
-    private Portal _portal;
     private bool _enteredPortal = false;
     private readonly CollisionHandler _collisionHandler;
-    private FlyingEnemy _flyingEnemy;
 
 
     //Constructur
@@ -59,8 +56,8 @@ public class DrawComponent : IDrawComponent
         //Draw Enemies
         foreach (Enemy enemy in _state.Enemies)
         {
-            _textureManager.DrawEnemy(enemy.Box);
-            DebugDrawHelper.DrawRectangle(enemy.Box, Color.Red);
+            enemy.Update((float)obj.Time);
+            enemy.DrawEnemy(_textureManager._staticEnemy);
         }
 
         //Draw Heart
@@ -69,19 +66,19 @@ public class DrawComponent : IDrawComponent
             if (!heart.IsCollected)
             {
                 heart.Update((float)obj.Time);
+                Console.WriteLine($"Drawing heart at {heart.Box.Min} - Collected: {heart.IsCollected}");
                 heart.DrawHeart();
             }
         }
         //Draw Portal
-        _portal.Update((float)obj.Time, _state.Enemies, _state.PlayerBox);
-        _portal.DrawPortal();
+        _state.Portal.Update((float)obj.Time, _state.Enemies, _state.FlyingEnemies, _state.PlayerBox);
+        _state.Portal.DrawPortal();
         
         
         // Draw FlyingEnemy
         foreach (FlyingEnemy flyingEnemy in _state.FlyingEnemies)
         {
             flyingEnemy.Update((float)obj.Time, _state.PlayerBox);
-            DebugDrawHelper.DrawRectangle(TextureManager.FlyingEnemyRectangle, Color.Red);
             flyingEnemy.DrawFlyingEnemy();
         }
         
@@ -102,9 +99,6 @@ public class DrawComponent : IDrawComponent
 
     public void Initialize()
     {
-        _textureManager.Initialize();
-        _state.Hearts.Add(new Heart(new Vector2(15f, 2f)));
-        _portal = new Portal(_state,TextureManager.PortalRectangle, _textureManager._portalTexture);
     }
 
     public Camera Camera { get; set; }

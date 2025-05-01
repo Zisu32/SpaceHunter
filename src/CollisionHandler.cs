@@ -21,9 +21,9 @@ public class CollisionHandler
         if (_damageCooldown > 0f)
             _damageCooldown -= (float)frameArgs.Time;
 
-        if (_damageCooldown <= 0f)
+        if (_damageCooldown < 0f)
         {
-            _state.IsPlayerHurt = false;
+            _damageCooldown = 0f;
         }
 
         PlayerAttackCheck();
