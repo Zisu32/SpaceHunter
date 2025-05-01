@@ -43,7 +43,6 @@ public class TextureManager
     // TODO, the aspect ratios of the background are different
     // bg 1 is 16:10 aspect ratio
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16*4.5f, 10*1.5f);
-    public static readonly Box2 BackgroundRectangle2 = new Box2(0f, 0f, 16*4.5f, 8*1.5f);
     public static readonly Box2 MenuRectangle = new Box2(0f, 0f, 4 * 3f, 4 * 3f);
 
     public void DrawBackground(int CurrentLevel)
@@ -54,7 +53,7 @@ public class TextureManager
         }
         else
         {
-            TextureHelper.DrawRectangularTexture(BackgroundRectangle2, _background2.Handle);
+            TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background2.Handle);
         }
     }
     
