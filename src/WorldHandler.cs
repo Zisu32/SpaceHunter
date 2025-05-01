@@ -28,8 +28,8 @@ public class WorldHandler
     public void SpawnInitial()
     {
         SpawnGroundEnemies(3);
-        SpawnFlyingEnemies(5);
-        SpawnHearts(2);
+        SpawnFlyingEnemies(4);
+        SpawnHearts(1);
         SpawnPortal();
     }
     private void SpawnGroundEnemies(int count)

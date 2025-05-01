@@ -79,8 +79,29 @@ public class CollisionHandler
     {
         CheckCollisionWithEnemies(_state.Enemies.Select(e => e.Box));
         CheckCollisionWithEnemies(_state.FlyingEnemies.Select(e => e.Bounds));
+        CheckLaserCollisions();
     }
 
+    private void CheckLaserCollisions()
+    {
+        if (_damageCooldown > 0f) return;
+
+        foreach (var enemy in _state.Enemies)
+        {
+            foreach (var laser in enemy.LaserBeams)
+            {
+                if (TwoBoxCollisionCheck(_state.PlayerBox, laser))
+                {
+                    _state.PlayerHealth -= 10;
+                    _damageCooldown = ConstantBalancingValues.InvincibleDuration;
+                    _state.IsPlayerHurt = true;
+                    _state.PlayerHurtTimer = 1.0;
+                    Console.WriteLine("Player hit by laser!");
+                    return; // Only one laser hit per frame
+                }
+            }
+        }
+    }
 
     public static bool TwoBoxCollisionCheck(Box2 a, Box2 b)
     {
