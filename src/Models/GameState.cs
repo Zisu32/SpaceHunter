@@ -27,4 +27,25 @@ public class GameState
     public bool PlayerInAir = false;
     public bool IsGameStarted = false;
 
+
+    // Neue Level-Logik
+    public int CurrentLevel = 1;
+    public int MaxLevels = 2; 
+
+    public void NextLevel()
+    {
+        if (CurrentLevel < MaxLevels)
+        {
+            CurrentLevel++;
+            Enemies.Clear();
+            PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY); // Spieler zurücksetzen
+        }
+        else
+        {
+            // Spiel beenden oder zurücksetzen
+            CurrentLevel = 1;
+            IsGameStarted = false; // Zurück zum Hauptmenü
+        }
+    }
+
 }

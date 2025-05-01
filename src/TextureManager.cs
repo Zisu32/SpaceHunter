@@ -35,17 +35,24 @@ public class TextureManager
     
     private static readonly Vector4 redTint = new Vector4(1f, 0f, 0f, 1f);
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
-    public static readonly Box2 PortalRectangle = new Box2(64f, 0f, 66f, 6f);
-    public static readonly Box2 FlyingEnemyRectangle = new Box2(5f, 0f, 7f, 6f);
+    public static readonly Box2 PortalRectangle = new Box2(64f, 0f, 68f, 6f);
 
     // TODO, the aspect ratios of the background are different
     // bg 1 is 16:10 aspect ratio
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16*4.5f, 10*1.5f);
+    public static readonly Box2 BackgroundRectangle2 = new Box2(0f, 0f, 11*4.5f, 10*1.5f);
     public static readonly Box2 MenuRectangle = new Box2(0f, 0f, 4 * 3f, 4 * 3f);
-    
-    public void DrawBackground()
+
+    public void DrawBackground(int CurrentLevel)
     {
-        TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background.Handle);
+        if (CurrentLevel == 1)
+        {
+            TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background.Handle);
+        }
+        else
+        {
+            TextureHelper.DrawRectangularTexture(BackgroundRectangle2, _background2.Handle);
+        }
     }
     
     public void DrawMenuScreen()
