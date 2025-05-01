@@ -42,7 +42,7 @@ public class DrawComponent : IDrawComponent
         _collisionHandler.UpdateCooldown(obj);
 
         //Draw Background First
-        _textureManager.DrawBackground();
+        _textureManager.DrawBackground(_state.CurrentLevel);
 
         //Draw health bar
         _healthbar.DrawHealthBar(_state.PlayerHealth, ConstantBalancingValues.MaxPlayerHealth);
@@ -74,7 +74,6 @@ public class DrawComponent : IDrawComponent
         }
         //Draw Portal
         _portal.Update((float)obj.Time, _state.Enemies, _state.PlayerBox);
-        DebugDrawHelper.DrawRectangle(TextureManager.PortalRectangle, Color.GreenYellow);
         _portal.DrawPortal();
         
         
@@ -105,7 +104,7 @@ public class DrawComponent : IDrawComponent
     {
         _textureManager.Initialize();
         _state.Hearts.Add(new Heart(new Vector2(15f, 2f)));
-        _portal = new Portal(TextureManager.PortalRectangle, _textureManager._portalTexture);
+        _portal = new Portal(_state,TextureManager.PortalRectangle, _textureManager._portalTexture);
     }
 
     public Camera Camera { get; set; }

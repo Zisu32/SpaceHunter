@@ -12,6 +12,7 @@ public class TextureManager
 {
     // TODO, find better way to handle loaded Textures
     private Texture2D _background;
+    private Texture2D _background2;
     private Texture2D _menuscreen;
     private Texture2D _healthbar;
     public Texture2D _portalTexture;
@@ -35,12 +36,14 @@ public class TextureManager
     
     private static readonly Vector4 redTint = new Vector4(1f, 0f, 0f, 1f);
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
-    public static readonly Box2 PortalRectangle = new Box2(64f, 0f, 68f, 6f);
+    public static readonly Box2 PortalRectangle = new Box2(64f, 0f, 66f, 6f);
+    public static readonly Box2 FlyingEnemyRectangle = new Box2(5f, 0f, 7f, 6f);
+
 
     // TODO, the aspect ratios of the background are different
     // bg 1 is 16:10 aspect ratio
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16*4.5f, 10*1.5f);
-    public static readonly Box2 BackgroundRectangle2 = new Box2(0f, 0f, 11*4.5f, 10*1.5f);
+    public static readonly Box2 BackgroundRectangle2 = new Box2(0f, 0f, 16*4.5f, 8*1.5f);
     public static readonly Box2 MenuRectangle = new Box2(0f, 0f, 4 * 3f, 4 * 3f);
 
     public void DrawBackground(int CurrentLevel)
@@ -144,7 +147,8 @@ public class TextureManager
         TextureHelper.InitalizeOpenGLTextures();
 
         // Textures can only be loaded when a window is already being displayed (for some reason)
-        _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Backgrounds.1-new.jpg");
+        _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Backgrounds.1.jpg");
+        _background2 = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Backgrounds.2.png");
         _menuscreen = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Screen.MainMenu.png");
         _portalTexture = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Portal.Portal-new.png");
         _player_idle_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_r_new.png");
