@@ -16,14 +16,18 @@ public class DrawComponent : IDrawComponent
     private readonly Healthbar _healthbar;
     private Portal _portal;
     private bool _enteredPortal = false;
+    private readonly CollisionHandler _collisionHandler;
+    private FlyingEnemy _flyingEnemy;
 
 
     //Constructur
-    public DrawComponent(GameState state)
+    public DrawComponent(GameState state, TextureManager textureManager)
     {
         this._state = state;
-        this._textureManager = new TextureManager();
+        this._textureManager = textureManager;
         this._healthbar = new Healthbar();
+        this._collisionHandler = new CollisionHandler(_state);
+
     }
 
     public async Task Draw(FrameEventArgs obj)
@@ -33,6 +37,9 @@ public class DrawComponent : IDrawComponent
             DrawMenu();
             return;
         }
+        
+        // Update damage cooldown
+        _collisionHandler.UpdateCooldown(obj);
 
         //Draw Background First
         _textureManager.DrawBackground();
@@ -55,11 +62,6 @@ public class DrawComponent : IDrawComponent
             _textureManager.DrawEnemy(enemy.Box);
             DebugDrawHelper.DrawRectangle(enemy.Box, Color.Red);
         }
-        ErrorCode errorCode = GL.GetError();
-        if (errorCode != ErrorCode.NoError)
-        {
-            Console.WriteLine($"OpenGL Error: {errorCode}");
-        }
 
         //Draw Heart
         foreach (Heart heart in _state.Hearts)
@@ -73,9 +75,25 @@ public class DrawComponent : IDrawComponent
         //Draw Portal
         _portal.Update((float)obj.Time, _state.Enemies, _state.PlayerBox);
         _portal.DrawPortal();
-
+        
+        
+        // Draw FlyingEnemy
+        foreach (FlyingEnemy flyingEnemy in _state.FlyingEnemies)
+        {
+            flyingEnemy.Update((float)obj.Time, _state.PlayerBox);
+            DebugDrawHelper.DrawRectangle(TextureManager.FlyingEnemyRectangle, Color.Red);
+            flyingEnemy.DrawFlyingEnemy();
+        }
+        
+        // Check for collisions with all enemies (normal + flying)
+        _collisionHandler.CheckAllEnemyCollisions();
+        
+        ErrorCode errorCode = GL.GetError();
+        if (errorCode != ErrorCode.NoError)
+            Console.WriteLine($"OpenGL Error: {errorCode}");
+        
     }
-
+    
     private void DrawMenu()
     {
         _textureManager.DrawMenuScreen();

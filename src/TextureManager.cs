@@ -26,7 +26,8 @@ public class TextureManager
     private Texture2D _player_death;
 
     private Texture2D _blueEnemy;
-
+    public Texture2D _flyingEnemy;
+    
     static float clockCounter = 0;
     static uint spriteId = 0;
     static uint columns = 0;
@@ -35,6 +36,7 @@ public class TextureManager
     private static readonly Vector4 redTint = new Vector4(1f, 0f, 0f, 1f);
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
     public static readonly Box2 PortalRectangle = new Box2(64f, 0f, 68f, 6f);
+    public static readonly Box2 FlyingEnemyRectangle = new Box2(5f, 0f, 7f, 6f);
 
     // TODO, the aspect ratios of the background are different
     // bg 1 is 16:10 aspect ratio
@@ -152,5 +154,6 @@ public class TextureManager
             TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_attack3_l_new.png");
         _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_death_r_new.png");
         _blueEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Sprites.Enemies.blueEnemy.Sprite_test.png");
+        _flyingEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.flyingEnemy.FlyingEnemy.png");
     }
 }

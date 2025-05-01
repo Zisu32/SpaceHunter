@@ -9,6 +9,7 @@ namespace SpaceHunter;
 internal static class Program
 {
     private static CollisionHandler _collisionHandler;
+    private static TextureManager _textureManager;
     private static Camera _camera = null!;
     private static KeyGroup _translationKeys = null!;
     private static KeyGroup _rotationKeys = null!;
@@ -24,35 +25,17 @@ internal static class Program
     public static void Main(string[] args)
     {
         _state = new GameState();
-
-        // TODO, framemrate should probably be locked
-        // time between frames is not used anywhere
-        _manager = new OpenTKManager(new DrawComponent(_state));
-
-        _translationKeys = new KeyGroup(new List<Keys>
-        {
-            Keys.A, Keys.D, Keys.W, Keys.S
-        });
-
-        _rotationKeys = new KeyGroup(new List<Keys>
-        {
-            Keys.Q, Keys.E
-        });
-
-        _scaleKeys = new KeyGroup(new List<Keys>
-        {
-            Keys.Z, Keys.X
-        });
-
-        _playerKeys = new KeyGroup(new List<Keys>
-        {
-            Keys.Up, Keys.Right, Keys.Down, Keys.Left, Keys.Space, Keys.F
-        });
-
+        _textureManager = new TextureManager();
+        
+        // Setup Keys
+        _translationKeys = new KeyGroup(new List<Keys> { Keys.A, Keys.D, Keys.W, Keys.S });
+        _rotationKeys = new KeyGroup(new List<Keys> { Keys.Q, Keys.E });
+        _scaleKeys = new KeyGroup(new List<Keys> { Keys.Z, Keys.X });
+        _playerKeys = new KeyGroup(new List<Keys> { Keys.Up, Keys.Right, Keys.Down, Keys.Left, Keys.Space, Keys.F });
         _startKey = new KeyGroup(new List<Keys> { Keys.Enter });
-        _manager.Keyboard.AddKeyGroup(_startKey);
-
-
+        
+        // Setup camera and keyboard
+        _manager = new OpenTKManager(new DrawComponent(_state, _textureManager));
         #region Setup camera
 
         _camera = _manager.Camera;
@@ -61,11 +44,12 @@ internal static class Program
         Console.WriteLine($"Camera Scale: {_camera.Scale}");
         Console.WriteLine($"Camera Center: {_camera.Center}");
         Console.WriteLine($"Camera Width: {_camera.ScreenWidth}");
+        
+        _manager.Keyboard.AddKeyGroup(_startKey);
 
         #endregion
-
-
-        _worldHandler = new WorldHandler(_camera, _state, _playerKeys, _manager.Keyboard);
+        
+        _worldHandler = new WorldHandler(_camera, _state, _playerKeys, _manager.Keyboard, _textureManager);
         _playerMovementHandler = new PlayerMovement(_state, _playerKeys, _manager.Keyboard, _camera);
         _collisionHandler = new CollisionHandler(_state);
 
@@ -73,8 +57,10 @@ internal static class Program
         _manager.Keyboard.AddKeyGroup(_rotationKeys);
         _manager.Keyboard.AddKeyGroup(_scaleKeys);
         _manager.Keyboard.AddKeyGroup(_playerKeys);
-        _manager.GameStateUpdateEvent += GameUpdate;
 
+        _textureManager.Initialize();
+        _worldHandler.SpawnInitialEnemiesAndHearts();
+        _manager.GameStateUpdateEvent += GameUpdate;
         _manager.DisplayWindow();
     }
 
@@ -93,7 +79,7 @@ internal static class Program
         
         Console.WriteLine($"Player Health: {_state.PlayerHealth}");
         _worldHandler.Update(frameArgs);
-        _collisionHandler.Update(frameArgs);
+        _collisionHandler.UpdateCooldown(frameArgs);
         // player alive
         if (_state.PlayerAlive)
         {
