@@ -2,7 +2,7 @@ Program.cs:
     - Initializes GameState, TextureManager, WorldHandler, DrawComponent, and PlayerMovement.
     - Creates OpenTKManager (window and OpenGL context).
     - Calls TextureManager.Initialize() AFTER OpenGL is ready.
-    - Calls WorldHandler.SpawnInitialEnemies() AFTER textures are loaded.
+    - Calls WorldHandler.SpawnInitialEnemiesAndHearts() AFTER textures are loaded.
     - Main game update loop.
 
 WorldHandler:
@@ -41,7 +41,6 @@ GameState:
 TextureManager:
     - Loads and stores all textures.
     - Draws textureboxes for background, player, enemies, flying enemies, hearts, and portal.
-    - TextureManager.Initialize() must be called AFTER OpenGL context is ready.
 
 PlayerMovement:
     - Handles player input and updates player position and state.

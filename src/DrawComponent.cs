@@ -74,6 +74,7 @@ public class DrawComponent : IDrawComponent
         }
         //Draw Portal
         _portal.Update((float)obj.Time, _state.Enemies, _state.PlayerBox);
+        DebugDrawHelper.DrawRectangle(TextureManager.PortalRectangle, Color.GreenYellow);
         _portal.DrawPortal();
         
         

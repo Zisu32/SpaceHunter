@@ -35,7 +35,7 @@ public class TextureManager
     
     private static readonly Vector4 redTint = new Vector4(1f, 0f, 0f, 1f);
     private static readonly Box2 DefaultBox = new Box2(0f, 0f, 1f, 1f);
-    public static readonly Box2 PortalRectangle = new Box2(64f, 0f, 68f, 6f);
+    public static readonly Box2 PortalRectangle = new Box2(64f, 0f, 66f, 6f);
     public static readonly Box2 FlyingEnemyRectangle = new Box2(5f, 0f, 7f, 6f);
 
     // TODO, the aspect ratios of the background are different
