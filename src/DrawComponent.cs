@@ -29,6 +29,12 @@ public class DrawComponent : IDrawComponent
 
     public async Task Draw(FrameEventArgs obj)
     {
+        if (_state.IsShowingLevelTransition)
+        {
+            _textureManager.DrawLevelTransition();
+            return;
+        }
+
         if (!_state.IsGameStarted)
         {
             DrawMenu();

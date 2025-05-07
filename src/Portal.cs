@@ -48,8 +48,10 @@ public class Portal
         if (IsVisible && CollisionHandler.TwoBoxCollisionCheck(playerBox, Bounds))
         {
             Console.WriteLine("Enter Portal");
+            _state.IsShowingLevelTransition = true;
+            _state.LevelTransitionTimer = 5.0;
             PlayerEntered = true;
-            _state.NextLevel();
+            //_state.NextLevel();
         }
         else
         {

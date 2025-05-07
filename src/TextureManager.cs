@@ -13,6 +13,7 @@ public class TextureManager
     // TODO, find better way to handle loaded Textures
     private Texture2D _background;
     private Texture2D _background2;
+    private Texture2D _background_transition;
     private Texture2D _menuscreen;
     private Texture2D _healthbar;
     public Texture2D _portalTexture;
@@ -53,7 +54,11 @@ public class TextureManager
             TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background2.Handle);
         }
     }
-    
+    public void DrawLevelTransition()
+    {
+        TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background_transition.Handle);
+    }
+
     public void DrawMenuScreen()
     {
         TextureHelper.DrawRectangularTexture(MenuRectangle, _menuscreen.Handle);
@@ -145,6 +150,7 @@ public class TextureManager
         // Textures can only be loaded when a window is already being displayed (for some reason)
         _background = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Backgrounds.1.jpg");
         _background2 = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Backgrounds.2.png");
+        _background_transition = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.VideoFrames.001.png");
         _menuscreen = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Screen.MainMenu.png");
         _portalTexture = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Portal.Portal-new.png");
         _player_idle_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_r_new.png");

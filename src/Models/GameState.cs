@@ -28,6 +28,8 @@ public class GameState
     public bool PlayerInAir = false;
     public bool IsGameStarted = false;
 
+    public bool IsShowingLevelTransition { get; set; }
+    public double LevelTransitionTimer { get; set; }
 
     // Neue Level-Logik
     public int CurrentLevel = 1;

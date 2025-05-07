@@ -60,6 +60,17 @@ internal static class Program
 
     private static void GameUpdate(object? sender, FrameEventArgs frameArgs)
     {
+        if (_state.IsShowingLevelTransition)
+        {
+            _state.LevelTransitionTimer -= frameArgs.Time;
+            if (_state.LevelTransitionTimer <= 0)
+            {
+                _state.IsShowingLevelTransition = false;
+                _state.NextLevel();
+            }
+            return;
+        }
+
         if (!_state.IsGameStarted && _startKey.PressedKeys.Contains(Keys.Enter))
         {
             _state.IsGameStarted = true;
