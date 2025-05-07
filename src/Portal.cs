@@ -7,6 +7,7 @@ namespace SpaceHunter;
 
 public class Portal
 {
+    private readonly GameState _state;
     private readonly Texture2D _texture;
     private readonly Box2 _position;
     private float _animationTimer;
@@ -15,12 +16,11 @@ public class Portal
     private readonly uint _columns;
     private readonly uint _rows;
     public Box2 Bounds => _position;
-
-
     public bool IsVisible { get; set; }
 
-    public Portal(Box2 position, Texture2D texture, uint columns = 8, uint rows = 1)
+    public Portal(GameState state, Box2 position, Texture2D texture, uint columns = 8, uint rows = 1)
     {
+        _state = state;
         _texture = texture;
         _position = position;
         _frameCount = columns * rows;
@@ -31,10 +31,9 @@ public class Portal
         IsVisible = false;
     }
 
-    public void Update(float deltaTime, IReadOnlyCollection<Enemy> enemies, Box2 playerBox)
+    public void Update(float deltaTime, IReadOnlyCollection<Enemy> enemies, IReadOnlyCollection<FlyingEnemy> flyingEnemies, Box2 playerBox)
     {
-        // Update visibility
-        IsVisible = !enemies.Any();
+        IsVisible = !enemies.Any() && !flyingEnemies.Any();
         Console.WriteLine($"Portal visible: {IsVisible}");
 
         // Animate
@@ -49,7 +48,10 @@ public class Portal
         if (IsVisible && CollisionHandler.TwoBoxCollisionCheck(playerBox, Bounds))
         {
             Console.WriteLine("Enter Portal");
+            _state.IsShowingLevelTransition = true;
+            _state.LevelTransitionTimer = 5.0;
             PlayerEntered = true;
+            //_state.NextLevel();
         }
         else
         {

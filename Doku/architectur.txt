@@ -1,0 +1,52 @@
+Program.cs:
+    - Initializes GameState, TextureManager, WorldHandler, DrawComponent, and PlayerMovement.
+    - Creates OpenTKManager (window and OpenGL context).
+    - Calls TextureManager.Initialize() AFTER OpenGL is ready.
+    - Calls WorldHandler.SpawnInitialEnemiesAndHearts() AFTER textures are loaded.
+    - Main game update loop.
+
+WorldHandler:
+    - Manages all enemies and flying enemies.
+    - Creates enemies and flying enemies after textures are loaded.
+    - Removes enemies and flying enemies on death.
+    - Updates enemy movement.
+
+DrawComponent:
+    - Draws all game objects (background, player, enemies, flying enemies, hearts, portal).
+    - Calls CollisionHandler every frame.
+    - Uses the shared TextureManager passed from Program.cs.
+    - Manages the health bar drawing.
+
+CollisionHandler:
+    - Checks for collisions between player and enemies/flying enemies.
+    - Applies damage to the player (with invincibility cooldown).
+    - Checks if player's attack hits any enemy or flying enemy.
+    - Reduces enemy or flying enemy health if hit.
+
+FlyingEnemy / Enemy:
+    - Hold position (Box2 bounds).
+    - Have health.
+    - Fire OnDeath event when health <= 0.
+
+GameState:
+    - Stores:
+        - PlayerBox and PlayerHitBox.
+        - Player health and state.
+        - Lists of all entities:
+            - Enemies
+            - FlyingEnemies
+            - Hearts
+        - Player hurt flags and timers.
+
+TextureManager:
+    - Loads and stores all textures.
+    - Draws textureboxes for background, player, enemies, flying enemies, hearts, and portal.
+
+PlayerMovement:
+    - Handles player input and updates player position and state.
+    - Supports movement and attacks.
+
+OpenTKManager:
+    - Creates the OpenGL window and context.
+    - Manages keyboard input.
+    - Manages the game loop and frame events.

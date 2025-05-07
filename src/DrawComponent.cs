@@ -1,6 +1,5 @@
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTKLib;
 using SpaceHunter.Models;
@@ -14,46 +13,45 @@ public class DrawComponent : IDrawComponent
     private readonly TextureManager _textureManager;
     private readonly GameState _state;
     private readonly Healthbar _healthbar;
-    private Portal _portal;
     private bool _enteredPortal = false;
+    private readonly CollisionHandler _collisionHandler;
 
 
     //Constructur
-    public DrawComponent(GameState state)
+    public DrawComponent(GameState state, TextureManager textureManager)
     {
         this._state = state;
-        this._textureManager = new TextureManager();
+        this._textureManager = textureManager;
         this._healthbar = new Healthbar();
+        this._collisionHandler = new CollisionHandler(_state);
+
     }
 
-    private int laserSection = 0;
-    
     public async Task Draw(FrameEventArgs obj)
     {
+        if (_state.IsShowingLevelTransition)
+        {
+            _textureManager.DrawLevelTransition();
+            return;
+        }
+
         if (!_state.IsGameStarted)
         {
             DrawMenu();
             return;
         }
+        
+        // Update damage cooldown
+        _collisionHandler.UpdateCooldown(obj);
 
         //Draw Background First
-        _textureManager.DrawBackground();
+        _textureManager.DrawBackground(_state.CurrentLevel);
 
         //Draw health bar
         _healthbar.DrawHealthBar(_state.PlayerHealth, ConstantBalancingValues.MaxPlayerHealth);
 
         //Draw Player Sprite inside the Blue Rectangle
         _textureManager.DrawPlayerTex(_state.PlayerBox, _state.PlayerState, obj, _state.IsPlayerHurt);
-
-        // TODO, move into class
-        laserSection++;
-        if (laserSection > 9)
-        {
-            laserSection = 0;
-        }
-        
-        // DrawEffects.DrawStaticEnemyLaser(new Vector2(5,5) ,7, laserSection);
-        
         //Debug Boxes (Blue for Player, Yellow for Hitbox)
         DebugDrawHelper.DrawRectangle(_state.PlayerBox, Color.Blue);
         if (_state.PlayerHitBox != null)
@@ -64,13 +62,8 @@ public class DrawComponent : IDrawComponent
         //Draw Enemies
         foreach (Enemy enemy in _state.Enemies)
         {
-            _textureManager.DrawBlueEnemy(enemy.Box);
-            DebugDrawHelper.DrawRectangle(enemy.Box, Color.Red);
-        }
-        ErrorCode errorCode = GL.GetError();
-        if (errorCode != ErrorCode.NoError)
-        {
-            Console.WriteLine($"OpenGL Error: {errorCode}");
+            enemy.Update((float)obj.Time);
+            enemy.DrawEnemy(_textureManager._staticEnemy);
         }
 
         //Draw Heart
@@ -79,15 +72,31 @@ public class DrawComponent : IDrawComponent
             if (!heart.IsCollected)
             {
                 heart.Update((float)obj.Time);
+                Console.WriteLine($"Drawing heart at {heart.Box.Min} - Collected: {heart.IsCollected}");
                 heart.DrawHeart();
             }
         }
         //Draw Portal
-        _portal.Update((float)obj.Time, _state.Enemies, _state.PlayerBox);
-        _portal.DrawPortal();
-
+        _state.Portal.Update((float)obj.Time, _state.Enemies, _state.FlyingEnemies, _state.PlayerBox);
+        _state.Portal.DrawPortal();
+        
+        
+        // Draw FlyingEnemy
+        foreach (FlyingEnemy flyingEnemy in _state.FlyingEnemies)
+        {
+            flyingEnemy.Update((float)obj.Time, _state.PlayerBox);
+            flyingEnemy.DrawFlyingEnemy();
+        }
+        
+        // Check for collisions with all enemies (normal + flying)
+        _collisionHandler.CheckAllEnemyCollisions();
+        
+        ErrorCode errorCode = GL.GetError();
+        if (errorCode != ErrorCode.NoError)
+            Console.WriteLine($"OpenGL Error: {errorCode}");
+        
     }
-
+    
     private void DrawMenu()
     {
         _textureManager.DrawMenuScreen();
@@ -96,9 +105,6 @@ public class DrawComponent : IDrawComponent
 
     public void Initialize()
     {
-        _textureManager.Initialize();
-        _state.Hearts.Add(new Heart(new Vector2(15f, 2f)));
-        _portal = new Portal(TextureManager.PortalRectangle, _textureManager._portalTexture);
     }
 
     public Camera Camera { get; set; }

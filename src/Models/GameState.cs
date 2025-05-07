@@ -20,12 +20,35 @@ public class GameState
     public bool IsPlayerHurt { get; set; } = false;
     public double PlayerHurtTimer { get; set; } = 0.0;
     #endregion
-
+    
+    public Portal? Portal { get; set; }
     public readonly List<Heart> Hearts = new(); 
+    public readonly List<FlyingEnemy> FlyingEnemies = new();
     public readonly List<Enemy> Enemies = new();
     public bool PlayerInAir = false;
-
-    // Spielstatus-Flag f�r Men�steuerung
     public bool IsGameStarted = false;
+
+    public bool IsShowingLevelTransition { get; set; }
+    public double LevelTransitionTimer { get; set; }
+
+    // Neue Level-Logik
+    public int CurrentLevel = 1;
+    public int MaxLevels = 2; 
+
+    public void NextLevel()
+    {
+        if (CurrentLevel < MaxLevels)
+        {
+            CurrentLevel++;
+            Enemies.Clear();
+            PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY); // Spieler zurücksetzen
+        }
+        else
+        {
+            // Spiel beenden oder zurücksetzen
+            CurrentLevel = 1;
+            IsGameStarted = false; // Zurück zum Hauptmenü
+        }
+    }
 
 }
