@@ -34,7 +34,7 @@ public class PlayerMovement
         _playerKeys = playerKeys;
         _keyboard = keyboard;
         _camera = camera;
-    }
+    } 
 
     public void Update(FrameEventArgs frameArgs)
     {

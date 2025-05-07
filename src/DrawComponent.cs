@@ -26,6 +26,8 @@ public class DrawComponent : IDrawComponent
         this._healthbar = new Healthbar();
     }
 
+    private int laserSection = 0;
+    
     public async Task Draw(FrameEventArgs obj)
     {
         if (!_state.IsGameStarted)
@@ -42,6 +44,16 @@ public class DrawComponent : IDrawComponent
 
         //Draw Player Sprite inside the Blue Rectangle
         _textureManager.DrawPlayerTex(_state.PlayerBox, _state.PlayerState, obj, _state.IsPlayerHurt);
+
+        // TODO, move into class
+        laserSection++;
+        if (laserSection > 9)
+        {
+            laserSection = 0;
+        }
+        
+        // DrawEffects.DrawStaticEnemyLaser(new Vector2(5,5) ,7, laserSection);
+        
         //Debug Boxes (Blue for Player, Yellow for Hitbox)
         DebugDrawHelper.DrawRectangle(_state.PlayerBox, Color.Blue);
         if (_state.PlayerHitBox != null)
@@ -52,7 +64,7 @@ public class DrawComponent : IDrawComponent
         //Draw Enemies
         foreach (Enemy enemy in _state.Enemies)
         {
-            _textureManager.DrawEnemy(enemy.Box);
+            _textureManager.DrawBlueEnemy(enemy.Box);
             DebugDrawHelper.DrawRectangle(enemy.Box, Color.Red);
         }
         ErrorCode errorCode = GL.GetError();
