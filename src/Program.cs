@@ -44,10 +44,11 @@ internal static class Program
         Console.WriteLine($"Camera Center: {_camera.Center}");
         Console.WriteLine($"Camera Width: {_camera.ScreenWidth}");
 
-        _manager.Keyboard.AddKeyGroup(_startKey);
-        _worldHandler = new WorldHandler(_camera, _state, _playerKeys, _manager.Keyboard, _textureManager);
-        _playerMovementHandler = new PlayerMovement(_state, _playerKeys, _manager.Keyboard, _camera);
         _collisionHandler = new CollisionHandler(_state);
+        _manager.Keyboard.AddKeyGroup(_startKey);
+        _worldHandler = new WorldHandler(_camera, _state, _playerKeys, _manager.Keyboard, _textureManager, _collisionHandler);
+        _playerMovementHandler = new PlayerMovement(_state, _playerKeys, _manager.Keyboard, _camera);
+        
         _manager.Keyboard.AddKeyGroup(_translationKeys);
         _manager.Keyboard.AddKeyGroup(_rotationKeys);
         _manager.Keyboard.AddKeyGroup(_scaleKeys);
