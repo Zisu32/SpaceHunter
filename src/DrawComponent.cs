@@ -30,7 +30,7 @@ public class DrawComponent : IDrawComponent
     {
         if (_state.IsShowingLevelTransition)
         {
-            _textureManager.DrawLevelTransition();
+            _textureManager.DrawLevelTransition(_state.LevelTransitionTimer);
             return;
         }
 

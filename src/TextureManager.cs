@@ -10,6 +10,9 @@ namespace SpaceHunter;
 
 public class TextureManager
 {
+    // In TextureManager.cs
+    private List<Texture2D> _transitionTextures = new();
+
     // TODO, find better way to handle loaded Textures
     private Texture2D _background;
     private Texture2D _background2;
@@ -54,9 +57,17 @@ public class TextureManager
             TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background2.Handle);
         }
     }
-    public void DrawLevelTransition()
+
+    public void DrawLevelTransition(double transitionTimer)
     {
-        TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background_transition.Handle);
+        if (_transitionTextures.Count == 0) return;
+
+        // Berechne den Frame basierend auf der verbleibenden Zeit (5 Sekunden gesamt)
+        double progress = 1 - (transitionTimer / 5.0);
+        int frameIndex = (int)(progress * 120); // 0-120 (da 121 Frames)
+        frameIndex = Math.Clamp(frameIndex, 0, _transitionTextures.Count - 1);
+
+        TextureHelper.DrawRectangularTexture(BackgroundRectangle, _transitionTextures[frameIndex].Handle);
     }
 
     public void DrawMenuScreen()
@@ -169,6 +180,14 @@ public class TextureManager
         _staticEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.staticEnemy.staticEnemy.png");        
         _flyingEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.flyingEnemy.FlyingEnemy.png");
         _heart = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Heart.heart.png");
+
+        // Initialize all VideoFrames
+        _transitionTextures.Clear();
+        for (int i = 1; i <= 121; i++)
+        {
+            Texture2D frame = TextureHelper.LoadNonFilteringTexture($"SpaceHunter.Assets.VideoFrames.{i.ToString("D3")}.png");
+            _transitionTextures.Add(frame);
+        }
 
     }
 }
