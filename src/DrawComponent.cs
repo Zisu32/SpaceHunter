@@ -80,6 +80,15 @@ public class DrawComponent : IDrawComponent
         _state.Portal.Update((float)obj.Time, _state.Enemies, _state.FlyingEnemies, _state.PlayerBox);
         _state.Portal.DrawPortal();
         
+        //Draw Endboss
+        if (_state.Endboss != null)
+        {
+            _state.Endboss.Update((float)obj.Time, _state.PlayerBox);
+            _state.Endboss.DrawEndboss();
+            DebugDrawHelper.DrawRectangle(TextureManager.EndbossRectangle, Color.Yellow);
+
+        }
+
         
         // Draw FlyingEnemy
         foreach (FlyingEnemy flyingEnemy in _state.FlyingEnemies)

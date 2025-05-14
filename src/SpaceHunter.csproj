@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Assets\Enemy\" />
+      <Folder Include="Assets\Enemy\endboss\" />
     </ItemGroup>
 
 </Project>

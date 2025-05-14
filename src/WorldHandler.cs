@@ -30,6 +30,7 @@ public class WorldHandler
         SpawnGroundEnemies(3);
         SpawnFlyingEnemies(4);
         SpawnHearts(1);
+        SpawnEndboss();
         SpawnPortal();
     }
     private void SpawnGroundEnemies(int count)
@@ -72,6 +73,23 @@ public class WorldHandler
             _state.FlyingEnemies.Add(flying);
         }
     }
+    
+    private void SpawnEndboss()
+    {
+        if (_state.CurrentLevel == 2)
+        {
+            _state.Endboss = new Endboss(
+                _state,
+                TextureManager.EndbossRectangle,
+                _textureManager._endbossTexture
+            );
+        }
+        else
+        {
+            _state.Endboss = null; // Clear Endboss if it's not level 2
+        }
+    }
+    
     private void SpawnHearts(int count)
     {
         for (int i = 0; i < count; i++)

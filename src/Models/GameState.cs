@@ -25,6 +25,7 @@ public class GameState
     public readonly List<Heart> Hearts = new(); 
     public readonly List<FlyingEnemy> FlyingEnemies = new();
     public readonly List<Enemy> Enemies = new();
+    public Endboss? Endboss {  get; set; }
     public bool PlayerInAir = false;
     public bool IsGameStarted = false;
 
@@ -41,6 +42,7 @@ public class GameState
         {
             CurrentLevel++;
             Enemies.Clear();
+            FlyingEnemies.Clear();
             PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY); // Spieler zurücksetzen
         }
         else
