@@ -34,7 +34,7 @@ public class PlayerMovement
         _playerKeys = playerKeys;
         _keyboard = keyboard;
         _camera = camera;
-    } 
+    }
 
     public void Update(FrameEventArgs frameArgs)
     {
@@ -92,7 +92,15 @@ public class PlayerMovement
         {
             Vector2 hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
             // TODO extract HitBox Size ( + 2) to const 
-            Vector2 hitBoxMax = new Vector2(_state.PlayerBox.Max.X + 2, _state.PlayerBox.Max.Y);
+
+            // TODO, implement attack rotation
+            Vector2 hitBoxMax = _playerDirection switch
+            {
+                SimpleDirection.RIGHT => new Vector2(_state.PlayerBox.Max.X + 2, _state.PlayerBox.Max.Y),
+                // SimpleDirection.LEFT => new Vector2(_state.PlayerBox.Max.X - 2, _state.PlayerBox.Max.Y),
+                SimpleDirection.LEFT => new Vector2(_state.PlayerBox.Max.X + 2, _state.PlayerBox.Max.Y),
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
             _state.PlayerHitBox = new Box2(hitBoxMin, hitBoxMax);
 
