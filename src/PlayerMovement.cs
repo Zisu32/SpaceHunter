@@ -90,17 +90,20 @@ public class PlayerMovement
 
         if (_attackTime > 0)
         {
-            Vector2 hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
+            Vector2 hitBoxMin;
+            Vector2 hitBoxMax;
             // TODO extract HitBox Size ( + 2) to const 
-
-            // TODO, implement attack rotation
-            Vector2 hitBoxMax = _playerDirection switch
+            if (_playerDirection == SimpleDirection.LEFT)
             {
-                SimpleDirection.RIGHT => new Vector2(_state.PlayerBox.Max.X + 2, _state.PlayerBox.Max.Y),
-                // SimpleDirection.LEFT => new Vector2(_state.PlayerBox.Max.X - 2, _state.PlayerBox.Max.Y),
-                SimpleDirection.LEFT => new Vector2(_state.PlayerBox.Max.X + 2, _state.PlayerBox.Max.Y),
-                _ => throw new ArgumentOutOfRangeException()
-            };
+                hitBoxMin = new Vector2(_state.PlayerBox.Min.X, _state.PlayerBox.Min.Y);
+                hitBoxMax = new Vector2(_state.PlayerBox.Min.X - 2, _state.PlayerBox.Max.Y);
+            }
+            else
+            {
+                // just use Player to right as default case
+                hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
+                hitBoxMax = new Vector2(_state.PlayerBox.Max.X + 2, _state.PlayerBox.Max.Y);
+            }
 
             _state.PlayerHitBox = new Box2(hitBoxMin, hitBoxMax);
 
