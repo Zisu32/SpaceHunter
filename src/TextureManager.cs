@@ -41,7 +41,7 @@ public class TextureManager
     
     private static readonly Vector4 redTint = new Vector4(1f, 0f, 0f, 1f);
     public static readonly Box2 PortalRectangle = new Box2(64f, 0f, 66f, 6f);
-    public static readonly Box2 EndbossRectangle = new Box2(64f, 0f, 66f, 6f);
+    public static readonly Box2 EndbossRectangle = new Box2(45f, 0f, 52f, 13f);
     public static readonly Box2 FlyingEnemyRectangle = new Box2(3f, 0f, 4f, 4f);
     public static readonly Box2 StaticEnemyRectangle = new Box2(3f, 0f, 4f, 3f);
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16*4.5f, 10*1.5f);
@@ -180,7 +180,7 @@ public class TextureManager
         _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_death_r_new.png");
         _staticEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.staticEnemy.staticEnemy.png");        
         _flyingEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.flyingEnemy.FlyingEnemy.png");
-        _endbossTexture = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Idle.png");
+        _endbossTexture = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Walk.png");
         _heart = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Heart.heart.png");
 
         // Initialize all VideoFrames

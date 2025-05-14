@@ -76,14 +76,18 @@ public class DrawComponent : IDrawComponent
         //Draw Portal
         _state.Portal?.DrawPortal();
 
-
+        //Draw Endboss
+        if (_state.Endboss != null)
+        {
+            _state.Endboss.Update((float)obj.Time, _state.PlayerBox);
+            _state.Endboss.DrawEndboss();
+        }
+        
         // Draw FlyingEnemy
         foreach (FlyingEnemy flyingEnemy in _state.FlyingEnemies)
         {
             flyingEnemy.DrawFlyingEnemy();
         }
-
-        // Check for collisions with all enemies (normal + flying)
         
 
         ErrorCode errorCode = GL.GetError();
