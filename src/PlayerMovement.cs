@@ -225,9 +225,10 @@ public class PlayerMovement
         Vector2 cameraCenter = _camera.Center;
 
         // prevent the camera from moving outside of background
+        // TODO, fix clipping
         if (playerBoxMin.X + _camera.ScreenWidth < TextureManager.BackgroundRectangle.Max.X)
         {
-            cameraCenter.X = -playerBoxMin.X;
+            cameraCenter.X = -playerBoxMin.X + 5;
             _camera.Center = cameraCenter;
         }
     }
