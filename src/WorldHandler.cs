@@ -74,7 +74,7 @@ public class WorldHandler
         }
     }
     
-    private void SpawnEndboss()
+    public void SpawnEndboss()
     {
         if (_state.CurrentLevel == 2)
         {

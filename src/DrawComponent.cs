@@ -85,7 +85,7 @@ public class DrawComponent : IDrawComponent
         {
             _state.Endboss.Update((float)obj.Time, _state.PlayerBox);
             _state.Endboss.DrawEndboss();
-            DebugDrawHelper.DrawRectangle(TextureManager.EndbossRectangle, Color.Yellow);
+            // DebugDrawHelper.DrawRectangle(TextureManager.EndbossRectangle, Color.Yellow);
 
         }
 
