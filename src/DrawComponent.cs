@@ -24,14 +24,13 @@ public class DrawComponent : IDrawComponent
         this._textureManager = textureManager;
         this._healthbar = new Healthbar();
         this._collisionHandler = new CollisionHandler(_state);
-
     }
 
     public async Task Draw(FrameEventArgs obj)
     {
         if (_state.IsShowingLevelTransition)
         {
-            _textureManager.DrawLevelTransition();
+            _textureManager.DrawLevelTransition(_state.LevelTransitionTimer);
             return;
         }
 
@@ -40,7 +39,7 @@ public class DrawComponent : IDrawComponent
             DrawMenu();
             return;
         }
-        
+
         // Update damage cooldown
         _collisionHandler.UpdateCooldown(obj);
 
@@ -62,7 +61,6 @@ public class DrawComponent : IDrawComponent
         //Draw Enemies
         foreach (Enemy enemy in _state.Enemies)
         {
-            enemy.Update((float)obj.Time);
             enemy.DrawEnemy(_textureManager._staticEnemy);
         }
 
@@ -71,41 +69,28 @@ public class DrawComponent : IDrawComponent
         {
             if (!heart.IsCollected)
             {
-                heart.Update((float)obj.Time);
-                Console.WriteLine($"Drawing heart at {heart.Box.Min} - Collected: {heart.IsCollected}");
                 heart.DrawHeart();
             }
         }
+
         //Draw Portal
-        _state.Portal.Update((float)obj.Time, _state.Enemies, _state.FlyingEnemies, _state.PlayerBox);
-        _state.Portal.DrawPortal();
-        
-        //Draw Endboss
-        if (_state.Endboss != null)
-        {
-            _state.Endboss.Update((float)obj.Time, _state.PlayerBox);
-            _state.Endboss.DrawEndboss();
-            // DebugDrawHelper.DrawRectangle(TextureManager.EndbossRectangle, Color.Yellow);
+        _state.Portal?.DrawPortal();
 
-        }
 
-        
         // Draw FlyingEnemy
         foreach (FlyingEnemy flyingEnemy in _state.FlyingEnemies)
         {
-            flyingEnemy.Update((float)obj.Time, _state.PlayerBox);
             flyingEnemy.DrawFlyingEnemy();
         }
-        
+
         // Check for collisions with all enemies (normal + flying)
-        _collisionHandler.CheckAllEnemyCollisions();
         
+
         ErrorCode errorCode = GL.GetError();
         if (errorCode != ErrorCode.NoError)
             Console.WriteLine($"OpenGL Error: {errorCode}");
-        
     }
-    
+
     private void DrawMenu()
     {
         _textureManager.DrawMenuScreen();
