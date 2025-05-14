@@ -92,17 +92,16 @@ public class PlayerMovement
         {
             Vector2 hitBoxMin;
             Vector2 hitBoxMax;
-            // TODO extract HitBox Size ( + 2) to const 
             if (_playerDirection == SimpleDirection.LEFT)
             {
                 hitBoxMin = new Vector2(_state.PlayerBox.Min.X, _state.PlayerBox.Min.Y);
-                hitBoxMax = new Vector2(_state.PlayerBox.Min.X - 2, _state.PlayerBox.Max.Y);
+                hitBoxMax = new Vector2(_state.PlayerBox.Min.X - ConstantBalancingValues.AttackBoxLength, _state.PlayerBox.Max.Y);
             }
             else
             {
                 // just use Player to right as default case
                 hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
-                hitBoxMax = new Vector2(_state.PlayerBox.Max.X + 2, _state.PlayerBox.Max.Y);
+                hitBoxMax = new Vector2(_state.PlayerBox.Max.X +  ConstantBalancingValues.AttackBoxLength, _state.PlayerBox.Max.Y);
             }
 
             _state.PlayerHitBox = new Box2(hitBoxMin, hitBoxMax);
