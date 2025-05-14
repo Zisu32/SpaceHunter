@@ -13,9 +13,10 @@ public class WorldHandler
     private readonly Keyboard _keyboard;
     private readonly Random _random;
     private readonly TextureManager _textureManager;
+    private readonly CollisionHandler _collisionHandler;
 
     public WorldHandler(Camera camera, GameState state, KeyGroup playerKeys, Keyboard keyboard,
-        TextureManager textureManager)
+        TextureManager textureManager, CollisionHandler collisionHandler)
     {
         _camera = camera;
         _state = state;
@@ -23,6 +24,7 @@ public class WorldHandler
         _keyboard = keyboard;
         _random = new Random();
         _textureManager = textureManager;
+        _collisionHandler = collisionHandler;
     }
 
     public void SpawnInitial()
@@ -32,6 +34,7 @@ public class WorldHandler
         SpawnHearts(1);
         SpawnPortal();
     }
+
     private void SpawnGroundEnemies(int count)
     {
         for (int i = 0; i < count; i++)
@@ -55,6 +58,7 @@ public class WorldHandler
             _state.Enemies.Add(enemy);
         }
     }
+
     private void SpawnFlyingEnemies(int count)
     {
         for (int i = 0; i < count; i++)
@@ -72,6 +76,7 @@ public class WorldHandler
             _state.FlyingEnemies.Add(flying);
         }
     }
+
     private void SpawnHearts(int count)
     {
         for (int i = 0; i < count; i++)
@@ -81,6 +86,7 @@ public class WorldHandler
             _state.Hearts.Add(new Heart(randomPos, _textureManager._heart));
         }
     }
+
     private void SpawnPortal()
     {
         _state.Portal = new Portal(
@@ -89,6 +95,7 @@ public class WorldHandler
             _textureManager._portalTexture
         );
     }
+
     private Vector2 GetRandomFlyingEnemyStartPosition()
     {
         float x = (float)(_random.NextDouble() * 45f) + 5f;
@@ -102,12 +109,14 @@ public class WorldHandler
         float y = 0.7f;
         return new Vector2(x, y);
     }
+
     private Vector2 GetRandomHeartStartPosition()
     {
         float x = (float)(_random.NextDouble() * 45f) + 5f;
         float y = 2f;
         return new Vector2(x, y);
     }
+
     private void EnemyDeath(object? sender, EventArgs e)
     {
         if (sender is not Enemy enemy)
@@ -125,9 +134,14 @@ public class WorldHandler
         _state.FlyingEnemies.Remove(flyingEnemy);
         Console.WriteLine("Flying enemy died!");
     }
-    
+
     public void Update(FrameEventArgs frameArgs)
     {
+        _state.Enemies.ForEach(enemy => enemy.Update((float)frameArgs.Time));
+        _state.FlyingEnemies.ForEach(enemy => enemy.Update((float)frameArgs.Time, _state.PlayerBox));
+        _state.Hearts.ForEach(enemy => enemy.Update((float)frameArgs.Time));
+        _state.Portal?.Update((float)frameArgs.Time, _state.Enemies, _state.FlyingEnemies, _state.PlayerBox);
 
+        _collisionHandler.CheckAllEnemyCollisions();
     }
 }
