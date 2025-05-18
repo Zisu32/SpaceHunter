@@ -79,8 +79,7 @@ public class DrawComponent : IDrawComponent
         //Draw Endboss
         if (_state.Endboss != null)
         {
-            _state.Endboss.Update((float)obj.Time, _state.PlayerBox);
-            _state.Endboss.DrawEndboss();
+            _state.Endboss.Draw(obj);
         }
         
         // Draw FlyingEnemy

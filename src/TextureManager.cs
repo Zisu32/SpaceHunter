@@ -33,7 +33,22 @@ public class TextureManager
 
     public Texture2D _staticEnemy;
     public Texture2D _flyingEnemy;
-    public Texture2D _endbossTexture;
+
+    public Texture2D _endbossIdleL;
+    public Texture2D _endbossIdleR;
+    public Texture2D _endbossWalkL;
+    public Texture2D _endbossWalkR;
+    public Texture2D _endbossAttackL;
+    public Texture2D _endbossAttackR;
+    public Texture2D _endbossShootL;
+    public Texture2D _endbossShootR;
+    public Texture2D _endbossHurtL;    
+    public Texture2D _endbossHurtR;    
+    public Texture2D _endbossDeath;
+
+    
+    
+    
     static float clockCounter = 0;
     static uint spriteId = 0;
     static uint columns = 0;
@@ -180,7 +195,17 @@ public class TextureManager
         _player_death = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_death_r_new.png");
         _staticEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.staticEnemy.staticEnemy.png");        
         _flyingEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.flyingEnemy.FlyingEnemy.png");
-        _endbossTexture = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Walk.png");
+        _endbossIdleL = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Idle.png");
+        _endbossIdleR = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Idle.png");
+        _endbossWalkL = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Walk.png");
+        _endbossWalkR = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Walk.png");
+        _endbossAttackL = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Attack_2.png");
+        _endbossAttackR = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Attack_2.png");
+        _endbossShootL = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Shot_1.png");
+        _endbossShootR = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Shot_1.png");
+        _endbossHurtL = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Hurt.png");
+        _endbossHurtR = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Hurt.png");
+        _endbossDeath = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Dead.png");
         _heart = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Heart.heart.png");
 
         // Initialize all VideoFrames
