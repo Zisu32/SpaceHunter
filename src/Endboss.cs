@@ -24,8 +24,8 @@ public class Endboss
     private double _hurtTimer = 0;
     private const double HurtDuration = 0.5;
     private const float AttackRange = 2.5f;
-    private const float ShootRange = 12f;
-    private const float FollowSpeed = 2.5f;
+    private const float ShootRange = 20f;
+    private const float FollowSpeed = 5f;
 
     private double _animationLockTimer = 0;
     private bool IsLocked => _animationLockTimer > 0;
@@ -68,16 +68,10 @@ public class Endboss
         _position = position;
         _textureManager = textureManager;
         SetAnimationState(EndbossState.idle_l);
-        Console.WriteLine("[Endboss] Constructor called.");
     }
 
     private void SetAnimationState(EndbossState state)
     {
-        if (_currentState != state)
-        {
-            Console.WriteLine($"[Endboss] State changed: {_currentState} → {state}");
-        }
-
         _currentState = state;
         _currentFrame = 0;
         _animationTimer = 0;
@@ -135,7 +129,7 @@ public class Endboss
             _position.Center.Y + 0.05f
         );
         LaserBeams.Add(laser);
-        Console.WriteLine("[Endboss] Fired laser!");
+        Console.WriteLine("Endboss Fired laser!");
     }
 
     private void UpdateLasers(float deltaTime)
@@ -205,7 +199,7 @@ public class Endboss
             _state.PlayerHealth -= 20;
             _state.IsPlayerHurt = true;
             _state.PlayerHurtTimer = 1.0;
-            Console.WriteLine("[Endboss] Melee attack!");
+            Console.WriteLine("Endboss Melee attack!");
             performedAction = true;
         }
         else if (distance <= ShootRange && _laserCooldown <= 0f)
@@ -214,7 +208,7 @@ public class Endboss
             ShootLaser(playerLeft);
             _laserCooldown = LaserCooldownTime;
             _animationLockTimer = 1.8;
-            Console.WriteLine("[Endboss] Shooting laser!");
+            Console.WriteLine("Endboss Shooting laser!");
             performedAction = true;
         }
 
