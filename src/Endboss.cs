@@ -18,7 +18,7 @@ public class Endboss
     private uint _currentFrame;
     private uint _columns;
     private uint _rows;
-    private int _health = ConstantBalancingValues.EnemyHealth;
+    private int _health = ConstantBalancingValues.EnemyHealth*5;
 
     private double _attackCooldown = 0;
     private double _hurtTimer = 0;

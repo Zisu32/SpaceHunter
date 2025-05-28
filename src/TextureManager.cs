@@ -45,9 +45,6 @@ public class TextureManager
     public Texture2D _endbossHurtL;    
     public Texture2D _endbossHurtR;    
     public Texture2D _endbossDeath;
-
-    
-    
     
     static float clockCounter = 0;
     static uint spriteId = 0;
