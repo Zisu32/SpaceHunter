@@ -229,10 +229,12 @@ public class PlayerMovement
         Vector2 cameraCenter = _camera.Center;
 
         // prevent the camera from moving outside of background
-        if (playerBoxMin.X + _camera.ScreenWidth < TextureManager.BackgroundRectangle.Max.X + 5 &&
+        const float cameraCenterVal = 2.1f;
+        
+        if (playerBoxMin.X + _camera.ScreenWidth < TextureManager.BackgroundRectangle.Max.X + cameraCenterVal &&
             playerBoxMin.X - _camera.ScreenWidth / 2 > 0.5)
         {
-            cameraCenter.X = -playerBoxMin.X + 5;
+            cameraCenter.X = -playerBoxMin.X + cameraCenterVal;
             _camera.Center = cameraCenter;
         }
         // TODO, this has a slight jump when switching 
