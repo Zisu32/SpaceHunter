@@ -95,13 +95,15 @@ public class PlayerMovement
             if (_playerDirection == SimpleDirection.LEFT)
             {
                 hitBoxMin = new Vector2(_state.PlayerBox.Min.X, _state.PlayerBox.Min.Y);
-                hitBoxMax = new Vector2(_state.PlayerBox.Min.X - ConstantBalancingValues.AttackBoxLength, _state.PlayerBox.Max.Y);
+                hitBoxMax = new Vector2(_state.PlayerBox.Min.X - ConstantBalancingValues.AttackBoxLength,
+                    _state.PlayerBox.Max.Y);
             }
             else
             {
                 // just use Player to right as default case
                 hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
-                hitBoxMax = new Vector2(_state.PlayerBox.Max.X +  ConstantBalancingValues.AttackBoxLength, _state.PlayerBox.Max.Y);
+                hitBoxMax = new Vector2(_state.PlayerBox.Max.X + ConstantBalancingValues.AttackBoxLength,
+                    _state.PlayerBox.Max.Y);
             }
 
             _state.PlayerHitBox = new Box2(hitBoxMin, hitBoxMax);
@@ -227,10 +229,17 @@ public class PlayerMovement
         Vector2 cameraCenter = _camera.Center;
 
         // prevent the camera from moving outside of background
-        // TODO, fix clipping
-        if (playerBoxMin.X + _camera.ScreenWidth < TextureManager.BackgroundRectangle.Max.X)
+        if (playerBoxMin.X + _camera.ScreenWidth < TextureManager.BackgroundRectangle.Max.X + 5 &&
+            playerBoxMin.X - _camera.ScreenWidth / 2 > 0.5)
         {
             cameraCenter.X = -playerBoxMin.X + 5;
+            _camera.Center = cameraCenter;
+        }
+        // TODO, this has a slight jump when switching 
+        else if (playerBoxMin.X - _camera.ScreenWidth / 2 < 0.5)
+        {
+            Console.WriteLine("Player at edge");
+            cameraCenter.X = 0;
             _camera.Center = cameraCenter;
         }
     }
