@@ -18,8 +18,9 @@ public class Endboss
     private uint _currentFrame;
     private uint _columns;
     private uint _rows;
-    private int _health = ConstantBalancingValues.EnemyHealth*5;
-
+    private int _health = ConstantBalancingValues.EndbossHealth;
+    private double _invincibleTimer = 0;
+    private const double InvincibleDuration = 2;
     private double _attackCooldown = 0;
     private double _hurtTimer = 0;
     private const double HurtDuration = 0.5;
@@ -29,6 +30,7 @@ public class Endboss
 
     private double _animationLockTimer = 0;
     private bool IsLocked => _animationLockTimer > 0;
+    private const float FrameDuration = 0.15f;
 
     // Laser
     public readonly List<Box2> LaserBeams = new();
@@ -40,34 +42,37 @@ public class Endboss
     public Box2 Bounds => _position;
 
     public event EventHandler? OnDeath;
-
-    public int Health
-    {
-        get => _health;
-        set
-        {
-            if (_health > 0 && value < _health) // took damage
-            {
-                _hurtTimer = HurtDuration;
-                SetAnimationState(_position.Center.X > _state.PlayerBox.Center.X ? EndbossState.hurt_l : EndbossState.hurt_r);
-            }
-
-            _health = value;
-
-            if (_health <= 0)
-            {
-                SetAnimationState(EndbossState.death);
-                OnDeath?.Invoke(this, EventArgs.Empty);
-            }
-        }
-    }
-
     public Endboss(GameState state, Box2 position, TextureManager textureManager)
     {
         _state = state;
         _position = position;
         _textureManager = textureManager;
         SetAnimationState(EndbossState.idle_l);
+    }
+    public int Health
+    {
+        get => _health;
+        set
+        {
+            if (_invincibleTimer > 0 || _health <= 0) return; // ignore damage if invincible or dead
+
+            if (value < _health) // took damage
+            {
+                _hurtTimer = HurtDuration;
+                _invincibleTimer = InvincibleDuration;
+                SetAnimationState(_position.Center.X > _state.PlayerBox.Center.X ? EndbossState.hurt_l : EndbossState.hurt_r);
+            }
+
+            _health = value;
+
+            Console.WriteLine($"Endboss new health: {_health}");
+
+            if (_health <= 0 && _currentState != EndbossState.death)
+            {
+                SetAnimationState(EndbossState.death);
+                _hurtTimer = 0;
+            }
+        }
     }
 
     private void SetAnimationState(EndbossState state)
@@ -80,9 +85,6 @@ public class Endboss
         {
             case EndbossState.idle_r:
             case EndbossState.idle_l:
-                _columns = 6;
-                _rows = 1;
-                break;
             case EndbossState.walk_r:
             case EndbossState.walk_l:
                 _columns = 6;
@@ -90,6 +92,8 @@ public class Endboss
                 break;
             case EndbossState.attack_r:
             case EndbossState.attack_l:
+            case EndbossState.hurt_r:
+            case EndbossState.hurt_l:
                 _columns = 4;
                 _rows = 1;
                 break;
@@ -98,27 +102,41 @@ public class Endboss
                 _columns = 11;
                 _rows = 1;
                 break;
-            case EndbossState.hurt_r:
-            case EndbossState.hurt_l:
-                _columns = 4;
-                _rows = 1;
-                break;
             case EndbossState.death:
                 _columns = 5;
                 _rows = 1;
                 break;
         }
+
+        // Lock duration for all animations to allow them to finish
+        _animationLockTimer = FrameDuration * _columns;
     }
 
     private void Animate(float deltaTime)
     {
         _animationTimer += deltaTime;
-        if (_animationTimer > 0.15f)
+
+        if (_animationTimer > FrameDuration)
         {
-            _currentFrame = (_currentFrame + 1) % _columns;
             _animationTimer = 0f;
+
+            if (_currentState == EndbossState.death)
+            {
+                // Play death animation only once
+                if (_currentFrame < _columns - 1)
+                {
+                    _currentFrame++;
+                }
+                // Don't reset to 0 — stay on last frame
+            }
+            else
+            {
+                // Loop other animations
+                _currentFrame = (_currentFrame + 1) % _columns;
+            }
         }
     }
+
 
     private void ShootLaser(bool toLeft)
     {
@@ -160,15 +178,30 @@ public class Endboss
 
     public void Update(float deltaTime, Box2 playerBox)
     {
-        if (_currentState == EndbossState.death) return;
+        if (_invincibleTimer > 0)
+        {
+            _invincibleTimer -= deltaTime;
+        }
+        
+        if (_currentState == EndbossState.death)
+        {
+            if (!IsLocked)
+            {
+                OnDeath?.Invoke(this, EventArgs.Empty);
+            }
+
+            Animate(deltaTime);
+            _animationLockTimer -= deltaTime;
+            return;
+        }
 
         if (_hurtTimer > 0)
         {
             _hurtTimer -= deltaTime;
             if (_hurtTimer <= 0)
             {
-                var state = _movingLeft ? EndbossState.idle_l : EndbossState.idle_r;
-                SetAnimationState(state);
+                var walkState = _movingLeft ? EndbossState.walk_l : EndbossState.walk_r;
+                SetAnimationState(walkState);
             }
 
             Animate(deltaTime);
@@ -195,7 +228,6 @@ public class Endboss
         {
             SetAnimationState(playerLeft ? EndbossState.attack_l : EndbossState.attack_r);
             _attackCooldown = 3f;
-            _animationLockTimer = 1.0;
             _state.PlayerHealth -= 20;
             _state.IsPlayerHurt = true;
             _state.PlayerHurtTimer = 1.0;
@@ -207,7 +239,6 @@ public class Endboss
             SetAnimationState(playerLeft ? EndbossState.shoot_l : EndbossState.shoot_r);
             ShootLaser(playerLeft);
             _laserCooldown = LaserCooldownTime;
-            _animationLockTimer = 1.8;
             Console.WriteLine("Endboss Shooting laser!");
             performedAction = true;
         }
@@ -219,7 +250,6 @@ public class Endboss
 
             float move = direction * FollowSpeed * deltaTime;
             Vector2 movement = new Vector2(move, 0);
-
             _position = new Box2(_position.Min + movement, _position.Max + movement);
 
             var walkState = _movingLeft ? EndbossState.walk_l : EndbossState.walk_r;
@@ -252,11 +282,11 @@ public class Endboss
         };
 
         TextureHelper.DrawSprite(_position, tex.Handle, _currentFrame, _columns, _rows);
-
+        DebugDrawHelper.DrawRectangle(_position, Color.Cyan);
+        
         foreach (var laser in LaserBeams)
         {
             DebugDrawHelper.DrawRectangle(laser, Color.Cyan);
         }
     }
-
 }

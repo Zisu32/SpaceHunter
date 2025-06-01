@@ -194,7 +194,7 @@ public class TextureManager
         _flyingEnemy = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.flyingEnemy.FlyingEnemy.png");
         _endbossIdleL = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Idle.png");
         _endbossIdleR = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Idle.png");
-        _endbossWalkL = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Walk-l.png");
+        _endbossWalkL = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Walk-l-resized.png");
         _endbossWalkR = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Walk.png");
         _endbossAttackL = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Attack_2-l.png");
         _endbossAttackR = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Attack_2.png");
