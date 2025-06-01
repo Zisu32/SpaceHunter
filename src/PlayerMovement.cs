@@ -208,6 +208,7 @@ public class PlayerMovement
             _playerDirection = SimpleDirection.RIGHT;
         }
 
+
         if (_playerKeys.PressedKeys.Contains(Keys.Space))
         {
             // TODO, this should only be set once to prevent somehow becoming invincible
@@ -230,15 +231,18 @@ public class PlayerMovement
 
         // prevent the camera from moving outside of background
         const float cameraCenterVal = 2.1f;
+
+        Console.WriteLine($"playerBoxMin.X: {playerBoxMin.X}, val: {playerBoxMin.X - _camera.ScreenWidth / 2}");
+
         
         if (playerBoxMin.X + _camera.ScreenWidth < TextureManager.BackgroundRectangle.Max.X + cameraCenterVal &&
-            playerBoxMin.X - _camera.ScreenWidth / 2 > 0.5)
+            playerBoxMin.X - _camera.ScreenWidth / 2 > -3.7)
         {
             cameraCenter.X = -playerBoxMin.X + cameraCenterVal;
             _camera.Center = cameraCenter;
         }
         // TODO, this has a slight jump when switching 
-        else if (playerBoxMin.X - _camera.ScreenWidth / 2 < 0.5)
+        else if (playerBoxMin.X - _camera.ScreenWidth / 2 < -3.7)
         {
             Console.WriteLine("Player at edge");
             cameraCenter.X = 0;
