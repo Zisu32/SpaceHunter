@@ -90,17 +90,21 @@ public class PlayerMovement
 
         if (_attackTime > 0)
         {
-            Vector2 hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
-            // TODO extract HitBox Size ( + 2) to const 
-
-            // TODO, implement attack rotation
-            Vector2 hitBoxMax = _playerDirection switch
+            Vector2 hitBoxMin;
+            Vector2 hitBoxMax;
+            if (_playerDirection == SimpleDirection.LEFT)
             {
-                SimpleDirection.RIGHT => new Vector2(_state.PlayerBox.Max.X + 2, _state.PlayerBox.Max.Y),
-                // SimpleDirection.LEFT => new Vector2(_state.PlayerBox.Max.X - 2, _state.PlayerBox.Max.Y),
-                SimpleDirection.LEFT => new Vector2(_state.PlayerBox.Max.X + 2, _state.PlayerBox.Max.Y),
-                _ => throw new ArgumentOutOfRangeException()
-            };
+                hitBoxMin = new Vector2(_state.PlayerBox.Min.X, _state.PlayerBox.Min.Y);
+                hitBoxMax = new Vector2(_state.PlayerBox.Min.X - ConstantBalancingValues.AttackBoxLength,
+                    _state.PlayerBox.Max.Y);
+            }
+            else
+            {
+                // just use Player to right as default case
+                hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
+                hitBoxMax = new Vector2(_state.PlayerBox.Max.X + ConstantBalancingValues.AttackBoxLength,
+                    _state.PlayerBox.Max.Y);
+            }
 
             _state.PlayerHitBox = new Box2(hitBoxMin, hitBoxMax);
 
@@ -204,6 +208,7 @@ public class PlayerMovement
             _playerDirection = SimpleDirection.RIGHT;
         }
 
+
         if (_playerKeys.PressedKeys.Contains(Keys.Space))
         {
             // TODO, this should only be set once to prevent somehow becoming invincible
@@ -225,9 +230,22 @@ public class PlayerMovement
         Vector2 cameraCenter = _camera.Center;
 
         // prevent the camera from moving outside of background
-        if (playerBoxMin.X + _camera.ScreenWidth < TextureManager.BackgroundRectangle.Max.X)
+        const float cameraCenterVal = 2.1f;
+
+        Console.WriteLine($"playerBoxMin.X: {playerBoxMin.X}, val: {playerBoxMin.X - _camera.ScreenWidth / 2}");
+
+        
+        if (playerBoxMin.X + _camera.ScreenWidth < TextureManager.BackgroundRectangle.Max.X + cameraCenterVal &&
+            playerBoxMin.X - _camera.ScreenWidth / 2 > -3.7)
         {
-            cameraCenter.X = -playerBoxMin.X;
+            cameraCenter.X = -playerBoxMin.X + cameraCenterVal;
+            _camera.Center = cameraCenter;
+        }
+        // TODO, this has a slight jump when switching 
+        else if (playerBoxMin.X - _camera.ScreenWidth / 2 < -3.7)
+        {
+            Console.WriteLine("Player at edge");
+            cameraCenter.X = 0;
             _camera.Center = cameraCenter;
         }
     }

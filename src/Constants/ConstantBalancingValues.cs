@@ -8,4 +8,5 @@ public static class ConstantBalancingValues
     public const double InvincibleDuration = 1.0; // seconds
     public const double AttackDuration = 0.5; // seconds
     public const int AttackDamage = 10;
+    public const int AttackBoxLength = 2; 
 }
