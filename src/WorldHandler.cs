@@ -29,16 +29,16 @@ public class WorldHandler
 
     public void SpawnInitial()
     {
-        SpawnGroundEnemies(3);
-        SpawnFlyingEnemies(4);
+        List<Vector2> usedPositions = new();
+        SpawnGroundEnemies(3, usedPositions);
+        SpawnFlyingEnemies(4, usedPositions);
         SpawnHearts(1);
         SpawnPortal();
     }
 
-    private void SpawnGroundEnemies(int count)
+    private void SpawnGroundEnemies(int count, List<Vector2> existing)
     {
         float minDistance = 3.0f;
-        List<Vector2> existing = new();
 
         for (int i = 0; i < count; i++)
         {
@@ -74,10 +74,9 @@ public class WorldHandler
 
 
 
-    private void SpawnFlyingEnemies(int count)
+    private void SpawnFlyingEnemies(int count, List<Vector2> existing)
     {
         float minDistance = 2f;
-        List<Vector2> existing = new();
 
         for (int i = 0; i < count; i++)
         {
