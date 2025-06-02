@@ -85,6 +85,9 @@ public class Endboss
         {
             case EndbossState.idle_r:
             case EndbossState.idle_l:
+                _columns = 2;
+                _rows = 1;
+                break;
             case EndbossState.walk_r:
             case EndbossState.walk_l:
                 _columns = 6;
@@ -92,6 +95,9 @@ public class Endboss
                 break;
             case EndbossState.attack_r:
             case EndbossState.attack_l:
+                _columns = 3;
+                _rows = 1;
+                break;
             case EndbossState.hurt_r:
             case EndbossState.hurt_l:
                 _columns = 4;
@@ -99,7 +105,7 @@ public class Endboss
                 break;
             case EndbossState.shoot_r:
             case EndbossState.shoot_l:
-                _columns = 11;
+                _columns = 7;
                 _rows = 1;
                 break;
             case EndbossState.death:
@@ -142,9 +148,9 @@ public class Endboss
     {
         var laser = new Box2(
             toLeft ? _position.Min.X - 0.5f : _position.Max.X,
-            _position.Center.Y - 0.05f,
+            _position.Center.Y - 0.2f,
             toLeft ? _position.Min.X : _position.Max.X + 0.5f,
-            _position.Center.Y + 0.05f
+            _position.Center.Y + 0.2f
         );
         LaserBeams.Add(laser);
         Console.WriteLine("Endboss Fired laser!");
