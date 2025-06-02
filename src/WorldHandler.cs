@@ -29,17 +29,29 @@ public class WorldHandler
 
     public void SpawnInitial()
     {
-        SpawnGroundEnemies(3);
-        SpawnFlyingEnemies(4);
+        List<Vector2> usedPositions = new();
+        SpawnGroundEnemies(3, usedPositions);
+        SpawnFlyingEnemies(4, usedPositions);
         SpawnHearts(1);
         SpawnPortal();
     }
 
-    private void SpawnGroundEnemies(int count)
+    private void SpawnGroundEnemies(int count, List<Vector2> existing)
     {
+        float minDistance = 3.0f;
+
         for (int i = 0; i < count; i++)
         {
-            Vector2 pos = GetRandomGroundEnemyStartPosition();
+            Vector2 pos;
+            int tries = 0;
+            do
+            {
+                pos = GetRandomGroundEnemyStartPosition();
+                tries++;
+            } while (IsTooClose(pos, existing, minDistance) && tries < 20);
+
+            existing.Add(pos);
+
             var enemy = new Enemy(2, 0.5)
             {
                 Box = new Box2(
@@ -54,21 +66,35 @@ public class WorldHandler
                     pos.X + TextureManager.StaticEnemyRectangle.Size.X,
                     pos.Y + TextureManager.StaticEnemyRectangle.Size.Y)
             };
+
             enemy.OnDeath += EnemyDeath;
             _state.Enemies.Add(enemy);
         }
     }
 
-    private void SpawnFlyingEnemies(int count)
+
+
+    private void SpawnFlyingEnemies(int count, List<Vector2> existing)
     {
+        float minDistance = 2f;
+
         for (int i = 0; i < count; i++)
         {
-            Vector2 randomPos = GetRandomFlyingEnemyStartPosition();
+            Vector2 pos;
+            int tries = 0;
+            do
+            {
+                pos = GetRandomFlyingEnemyStartPosition();
+                tries++;
+            } while (IsTooClose(pos, existing, minDistance) && tries < 20);
+
+            existing.Add(pos);
+
             Box2 startBox = new Box2(
-                randomPos.X,
-                randomPos.Y,
-                randomPos.X + TextureManager.FlyingEnemyRectangle.Size.X,
-                randomPos.Y + TextureManager.FlyingEnemyRectangle.Size.Y
+                pos.X,
+                pos.Y,
+                pos.X + TextureManager.FlyingEnemyRectangle.Size.X,
+                pos.Y + TextureManager.FlyingEnemyRectangle.Size.Y
             );
 
             var flying = new FlyingEnemy(startBox, _textureManager._flyingEnemy);
@@ -93,7 +119,6 @@ public class WorldHandler
         }
     }
 
-    
     private void SpawnHearts(int count)
     {
         for (int i = 0; i < count; i++)
@@ -151,6 +176,20 @@ public class WorldHandler
         _state.FlyingEnemies.Remove(flyingEnemy);
         Console.WriteLine("Flying enemy died!");
     }
+
+    private bool IsTooClose(Vector2 newPos, List<Vector2> existingPositions, float minDistance)
+    {
+        foreach (var pos in existingPositions)
+        {
+            float distance = (pos - newPos).Length;
+            if (distance < minDistance)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public void Update(FrameEventArgs frameArgs)
     {
