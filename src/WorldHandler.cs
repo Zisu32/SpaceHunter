@@ -102,7 +102,22 @@ public class WorldHandler
             _state.FlyingEnemies.Add(flying);
         }
     }
-
+    
+    public void SpawnEndboss()
+    {
+        if (_state.CurrentLevel == 2)
+        {
+            _state.Endboss = new Endboss(
+                _state,
+                TextureManager.EndbossRectangle,
+                _textureManager
+            );
+        }
+        else
+        {
+            _state.Endboss = null; // Clear Endboss if it's not level 2
+        }
+    }
 
     private void SpawnHearts(int count)
     {
@@ -182,6 +197,7 @@ public class WorldHandler
         _state.FlyingEnemies.ForEach(enemy => enemy.Update((float)frameArgs.Time, _state.PlayerBox));
         _state.Hearts.ForEach(enemy => enemy.Update((float)frameArgs.Time));
         _state.Portal?.Update((float)frameArgs.Time, _state.Enemies, _state.FlyingEnemies, _state.PlayerBox);
+        _state.Endboss?.Update((float)frameArgs.Time, _state.PlayerBox);
 
         _collisionHandler.CheckAllEnemyCollisions();
     }

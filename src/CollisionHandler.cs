@@ -43,20 +43,31 @@ public class CollisionHandler
             {
                 enemy.Health -= ConstantBalancingValues.AttackDamage;
                 Console.WriteLine("Enemy took damage");
-                
+
                 // player can only damage one enemy
                 return;
             }
         }
+
         foreach (FlyingEnemy flyingEnemy in _state.FlyingEnemies)
         {
             if (TwoBoxCollisionCheck(_state.PlayerHitBox.Value, flyingEnemy.Bounds))
             {
                 flyingEnemy.Health -= ConstantBalancingValues.AttackDamage;
                 Console.WriteLine("Flying took enemy damage");
-                
+
                 // player can only damage one enemy
-                return; 
+                return;
+            }
+        }
+
+        if (_state.Endboss != null)
+        {
+            if (TwoBoxCollisionCheck(_state.PlayerHitBox.Value, _state.Endboss.Bounds))
+            {
+                _state.Endboss.Health -= ConstantBalancingValues.AttackDamage;
+                Console.WriteLine("Endboss took damage");
+                return;
             }
         }
     }
@@ -75,13 +86,6 @@ public class CollisionHandler
 
         }
     }
-    public void CheckAllEnemyCollisions()
-    {
-        CheckCollisionWithEnemies(_state.Enemies.Select(e => e.Box));
-        CheckCollisionWithEnemies(_state.FlyingEnemies.Select(e => e.Bounds));
-        CheckLaserCollisions();
-    }
-
     private void CheckLaserCollisions()
     {
         if (_damageCooldown > 0f) return;
@@ -97,12 +101,38 @@ public class CollisionHandler
                     _state.IsPlayerHurt = true;
                     _state.PlayerHurtTimer = 1.0;
                     Console.WriteLine("Player hit by laser!");
-                    return; // Only one laser hit per frame
+                    return;
+                }
+            }
+        }
+        if (_state.Endboss != null)
+        {
+            foreach (var laser in _state.Endboss.LaserBeams)
+            {
+                if (TwoBoxCollisionCheck(_state.PlayerBox, laser))
+                {
+                    _state.PlayerHealth -= 20;
+                    _damageCooldown = ConstantBalancingValues.InvincibleDuration;
+                    _state.IsPlayerHurt = true;
+                    _state.PlayerHurtTimer = 1.0;
+                    Console.WriteLine("Player hit by ENDBOSS laser!");
+                    return;
                 }
             }
         }
     }
 
+    public void CheckAllEnemyCollisions()
+    {
+        CheckCollisionWithEnemies(_state.Enemies.Select(e => e.Box));
+        CheckCollisionWithEnemies(_state.FlyingEnemies.Select(e => e.Bounds));
+        if (_state.Endboss != null)
+        {
+            CheckCollisionWithEnemies(new[] { _state.Endboss.Bounds });
+        }        
+        CheckLaserCollisions();
+    }
+    
     public static bool TwoBoxCollisionCheck(Box2 a, Box2 b)
     {
         bool xCollision = !(a.Max.X <= b.Min.X || a.Min.X >= b.Max.X);

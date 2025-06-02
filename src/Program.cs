@@ -48,6 +48,7 @@ internal static class Program
         _manager.Keyboard.AddKeyGroup(_startKey);
         _worldHandler = new WorldHandler(_camera, _state, _playerKeys, _manager.Keyboard, _textureManager, _collisionHandler);
         _playerMovementHandler = new PlayerMovement(_state, _playerKeys, _manager.Keyboard, _camera);
+        _state.WorldHandler = _worldHandler;
         
         _manager.Keyboard.AddKeyGroup(_translationKeys);
         _manager.Keyboard.AddKeyGroup(_rotationKeys);
