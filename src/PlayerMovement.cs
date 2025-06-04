@@ -1,6 +1,5 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
-using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTKLib;
 using SpaceHunter.Models;
@@ -15,19 +14,17 @@ public class PlayerMovement
     private readonly KeyGroup _playerKeys;
     private readonly Keyboard _keyboard;
 
-    // how many players heights the jump is high
-    // TODO, move the consts in seperate classes
-    // TODO extract player box size (5f) to const somewhere, or auto generate
-    private const float JumpHeight = 3.5f;
-    private const float JumpDuration = 0.8f;
-    private float _jumpTime;
-
+    private float _velocityY = 0f;
+    private const float Gravity = -85f;
+    private const float JumpVelocity = 37f;
+    private bool _isJumpKeyHeld = false;
+    
     private float _playerSpeed;
     private const float PlayerSpeedAdd = 0.005f;
     private static float _playerSpeedDiv = 1.1f;
     private double _attackTime;
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
-
+    
     public PlayerMovement(GameState state, KeyGroup playerKeys, Keyboard keyboard, Camera camera)
     {
         _state = state;
@@ -77,7 +74,7 @@ public class PlayerMovement
 
         #endregion
 
-        // attac
+        // attack
 
         if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0 && !_state.PlayerInAir)
         {
@@ -123,7 +120,7 @@ public class PlayerMovement
             return;
         }
 
-        if (playerBoxMin.Y < 0.0001f)
+        if (_state.PlayerBox.Min.Y < 0.0001f)
         {
             if (_playerSpeed == 0)
             {
@@ -144,41 +141,38 @@ public class PlayerMovement
         #endregion
     }
 
-    // TODO, camera does not move up/down
-    // TODO, switch to upwards speed approach, like left/right speed
     private void JumpMovement(FrameEventArgs frameArgs)
     {
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
-        // stop jump, first wait the predefined time. Then wait for play to return to ground
-        if (_jumpTime > JumpDuration - 0.02f && playerBoxMin.Y < 0.0001f)
+        // If jump key is released and player is moving upward, increase gravity to cut jump short
+        if (!_isJumpKeyHeld && _velocityY > 0)
         {
-            _state.PlayerInAir = false;
-            playerBoxMin.Y = 0;
-            playerBoxMax.Y = TextureSizes.PlayerSizeY;
-            _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
-            _state.PlayerState = PlayerState.idle_r;
-            return;
-        }
-
-        float jumpDistance = (float)(TextureSizes.PlayerSizeY * JumpHeight * (frameArgs.Time / JumpDuration));
-
-        if (_jumpTime > JumpDuration / 2)
-        {
-            // move down
-            playerBoxMax.Y -= jumpDistance;
-            playerBoxMin.Y -= jumpDistance;
+            _velocityY += Gravity * 3f * (float)frameArgs.Time; // stronger gravity to cut jump
+            if (_velocityY < 0)
+                _velocityY = 0;
         }
         else
         {
-            // move up
-            playerBoxMax.Y += jumpDistance;
-            playerBoxMin.Y += jumpDistance;
+            // normal gravity
+            _velocityY += Gravity * (float)frameArgs.Time;
+        }
+
+        // Move player vertically
+        playerBoxMin.Y += _velocityY * (float)frameArgs.Time;
+        playerBoxMax.Y += _velocityY * (float)frameArgs.Time;
+
+        // Check for ground collision
+        if (playerBoxMin.Y <= 0f)
+        {
+            playerBoxMin.Y = 0f;
+            playerBoxMax.Y = TextureSizes.PlayerSizeY;
+            _velocityY = 0f;
+            _state.PlayerInAir = false;
         }
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
-        _jumpTime += (float)frameArgs.Time;
     }
 
     private void ProcessKeys()
@@ -186,7 +180,7 @@ public class PlayerMovement
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
-        if (_playerKeys.PressedKeys.Contains(Keys.Left))
+        if (_playerKeys.PressedKeys.Contains(Keys.A))
         {
             if (playerBoxMin.X < 0)
             {
@@ -196,7 +190,7 @@ public class PlayerMovement
             _playerSpeed -= PlayerSpeedAdd;
             _playerDirection = SimpleDirection.LEFT;
         }
-        else if (_playerKeys.PressedKeys.Contains(Keys.Right))
+        else if (_playerKeys.PressedKeys.Contains(Keys.D))
         {
             // 5f is size of player Box
             if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2)
@@ -208,45 +202,49 @@ public class PlayerMovement
             _playerDirection = SimpleDirection.RIGHT;
         }
 
-
-        if (_playerKeys.PressedKeys.Contains(Keys.Space))
+        // Update jump key held status and start jump if needed
+        if (_playerKeys.PressedKeys.Contains(Keys.W))
         {
-            // TODO, this should only be set once to prevent somehow becoming invincible
             if (!_state.PlayerInAir)
             {
                 _state.PlayerInAir = true;
-                _jumpTime = 0;
+                _velocityY = JumpVelocity;
                 _state.PlayerState = PlayerState.jump_r;
             }
-
-            _playerKeys.RemovePressed(Keys.Space);
+            _isJumpKeyHeld = true;
         }
-
-        // TODO change Jump to velocity based system
-
-        _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
+        else
+        {
+            _isJumpKeyHeld = false;
+        }
 
         // move camera
         Vector2 cameraCenter = _camera.Center;
 
         // prevent the camera from moving outside of background
-        const float cameraCenterVal = 2.1f;
-
         Console.WriteLine($"playerBoxMin.X: {playerBoxMin.X}, val: {playerBoxMin.X - _camera.ScreenWidth / 2}");
 
-        
-        if (playerBoxMin.X + _camera.ScreenWidth < TextureManager.BackgroundRectangle.Max.X + cameraCenterVal &&
-            playerBoxMin.X - _camera.ScreenWidth / 2 > -3.7)
+        // calculate camera X to center player
+        cameraCenter.X = -playerBoxMin.X + _camera.ScreenWidth / 2 - TextureSizes.PlayerSizeX / 2;
+
+        // clamp camera to not show black background
+        float minCameraX = 0f;
+        float maxCameraX = TextureManager.BackgroundRectangle.Max.X - _camera.ScreenWidth;
+        float screenLeft = -cameraCenter.X;
+
+        if (screenLeft < minCameraX)
         {
-            cameraCenter.X = -playerBoxMin.X + cameraCenterVal;
-            _camera.Center = cameraCenter;
+            // snap to background start
+            cameraCenter.X = -minCameraX;
+            Console.WriteLine("Camera clamped to left edge");
         }
-        // TODO, this has a slight jump when switching 
-        else if (playerBoxMin.X - _camera.ScreenWidth / 2 < -3.7)
+        else if (screenLeft > maxCameraX)
         {
-            Console.WriteLine("Player at edge");
-            cameraCenter.X = 0;
-            _camera.Center = cameraCenter;
+            // snap to background end
+            cameraCenter.X = -maxCameraX;
+            Console.WriteLine("Camera clamped to right edge");
         }
+
+        _camera.Center = cameraCenter;
     }
 }
