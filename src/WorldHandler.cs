@@ -112,11 +112,19 @@ public class WorldHandler
                 TextureManager.EndbossRectangle,
                 _textureManager
             );
+
+            _state.Endboss.OnDeath += (_, _) => {
+                _camera.Center = Vector2.Zero;
+                _state.IsGameWon = true;
+                _state.IsGameStarted = false;
+            };
         }
         else
         {
             _state.Endboss = null; // Clear Endboss if it's not level 2
         }
+
+        
     }
 
     private void SpawnHearts(int count)

@@ -3,6 +3,7 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTKLib;
 using SpaceHunter.Models;
+using System.Runtime.Intrinsics;
 
 namespace SpaceHunter;
 
@@ -73,6 +74,13 @@ internal static class Program
             return;
         }
 
+        if ((_state.IsGameOver || _state.IsGameWon) && _startKey.PressedKeys.Contains(Keys.Enter))
+        {
+           
+            _state.ResetGame();
+            return;
+        }
+
         if (!_state.IsGameStarted && _startKey.PressedKeys.Contains(Keys.Enter))
         {
             _state.IsGameStarted = true;
@@ -83,23 +91,22 @@ internal static class Program
             return;
         }
 
-        Console.WriteLine($"Player Health: {_state.PlayerHealth}");
-
         _worldHandler.Update(frameArgs);
         _collisionHandler.UpdateCooldown(frameArgs);
 
-        // Player alive
+        // PLayer alive
         if (_state.PlayerAlive)
         {
             _playerMovementHandler.Update(frameArgs);
         }
         else
         {
+            _camera.Center = Vector2.Zero;
             _state.PlayerState = PlayerState.death;
-            Console.WriteLine("dead");
+            _state.IsGameOver = true;
+            _state.IsGameStarted = false;
         }
 
-        // Player hurt
         if (_state.IsPlayerHurt)
         {
             _state.PlayerHurtTimer -= frameArgs.Time;

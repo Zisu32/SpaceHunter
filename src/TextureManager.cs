@@ -18,6 +18,8 @@ public class TextureManager
     private Texture2D _background2;
     private Texture2D _background_transition;
     private Texture2D _menuscreen;
+    private Texture2D _victoryscreen;
+    private Texture2D _gameoverscreen;
     private Texture2D _healthbar;
     public Texture2D _portalTexture;
     private Texture2D _player_idle_r;
@@ -58,6 +60,7 @@ public class TextureManager
     public static readonly Box2 StaticEnemyRectangle = new Box2(3f, 0f, 4f, 3f);
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16*4.5f, 10*1.5f);
     public static readonly Box2 MenuRectangle = new Box2(0f, 0f, 4 * 3f, 4 * 3f);
+    public static readonly Box2 EndScreenRectangle = new Box2(0f, 0f, 12f, 12f);
 
     public void DrawBackground(int CurrentLevel)
     {
@@ -86,6 +89,15 @@ public class TextureManager
     public void DrawMenuScreen()
     {
         TextureHelper.DrawRectangularTexture(MenuRectangle, _menuscreen.Handle);
+    }
+    
+    public void DrawGameOver()
+    {
+        TextureHelper.DrawRectangularTexture(EndScreenRectangle, _gameoverscreen.Handle);
+    }
+    public void DrawVictoryScreen()
+    {
+        TextureHelper.DrawRectangularTexture(EndScreenRectangle, _victoryscreen.Handle);
     }
 
     public void DrawEnemy(Box2 position)
@@ -176,6 +188,8 @@ public class TextureManager
         _background2 = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Backgrounds.2.png");
         _background_transition = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.VideoFrames.001.png");
         _menuscreen = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Screen.MainMenu.png");
+        _victoryscreen = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Screen.VictoryScreen.png");
+        _gameoverscreen = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Screen.GameOver.png");
         _portalTexture = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Portal.Portal-new.png");
         _player_idle_r = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_r_new.png");
         _player_idle_l = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.MainChar.Cyborg_idle_l_new.png");

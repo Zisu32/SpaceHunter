@@ -28,6 +28,18 @@ public class DrawComponent : IDrawComponent
 
     public async Task Draw(FrameEventArgs obj)
     {
+        if (_state.IsGameOver)
+        {
+            DrawGameOverScreen();
+            return;
+        }
+        if (_state.IsGameWon)
+        {
+            DrawVictoryScreen();
+            return;
+        }
+
+
         if (_state.IsShowingLevelTransition)
         {
             _textureManager.DrawLevelTransition(_state.LevelTransitionTimer);
@@ -92,6 +104,16 @@ public class DrawComponent : IDrawComponent
         ErrorCode errorCode = GL.GetError();
         if (errorCode != ErrorCode.NoError)
             Console.WriteLine($"OpenGL Error: {errorCode}");
+    }
+
+    private void DrawVictoryScreen()
+    {
+        _textureManager.DrawVictoryScreen();
+    }
+
+    private void DrawGameOverScreen()
+    {
+        _textureManager.DrawGameOver();
     }
 
     private void DrawMenu()

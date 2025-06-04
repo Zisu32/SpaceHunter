@@ -1,4 +1,5 @@
 using OpenTK.Mathematics;
+using OpenTKLib;
 
 namespace SpaceHunter.Models;
 
@@ -29,6 +30,8 @@ public class GameState
     public Endboss? Endboss { get; set; }
     public bool PlayerInAir = false;
     public bool IsGameStarted = false;
+    public bool IsGameOver { get; set; } = false;
+    public bool IsGameWon { get; set; } = false;
 
     public WorldHandler WorldHandler { get; set; }
 
@@ -55,5 +58,29 @@ public class GameState
             CurrentLevel = 1;
             IsGameStarted = false; // Zurück zum Hauptmenü
         }
+    }
+
+    public void ResetGame()
+    {
+        PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY); // Spieler zurücksetzen
+        IsGameOver = false;
+        IsGameWon = false;
+        IsGameStarted = true;
+
+        CurrentLevel = 1;
+        PlayerHealth = ConstantBalancingValues.MaxPlayerHealth;
+        PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY);
+        PlayerHitBox = null;
+        IsPlayerHurt = false;
+        PlayerHurtTimer = 0;
+        PlayerInAir = false;
+
+        Enemies.Clear();
+        FlyingEnemies.Clear();
+        Hearts.Clear();
+        Portal = null;
+        Endboss = null;
+
+        WorldHandler.SpawnInitial();
     }
 }
