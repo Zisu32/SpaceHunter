@@ -268,6 +268,40 @@ public class Endboss
         Animate(deltaTime);
         UpdateLasers(deltaTime);
     }
+    private void DrawHealthBarAboveHead(Box2 bossPosition, int currentHealth, int maxHealth)
+    {
+        float barWidth = bossPosition.Size.X * 0.5f;
+        float barHeight = 0.1f;
+        
+        float barX = bossPosition.Center.X - (barWidth / 2f); // Center the health bar above the boss
+        float barY = bossPosition.Max.Y + 0.2f; // vertical offset above head
+
+        Vector2 barMin = new Vector2(barX, barY);
+        Vector2 barMax = new Vector2(barX + barWidth, barY + barHeight);
+        Box2 backgroundBar = new Box2(barMin, barMax);
+
+        // Draw background
+        DebugDrawHelper.DrawRectangle(backgroundBar, Color.Black);
+
+        // Calculate health percent
+        float healthPercent = Math.Clamp((float)currentHealth / maxHealth, 0f, 1f);
+        float fillWidth = barWidth * healthPercent;
+
+        Vector2 fillMax = new Vector2(barMin.X + fillWidth, barMax.Y);
+        Box2 filledBar = new Box2(barMin, fillMax);
+
+        // Color interpolation from green to red
+        int r = (int)(255 * (1 - healthPercent));
+        int g = (int)(255 * healthPercent);
+        int b = 0;
+
+        Color healthColor = Color.FromArgb(r, g, b);
+
+        // Draw filled bar
+        DebugDrawHelper.DrawRectangle(filledBar, healthColor);
+    }
+
+
 
     public void Draw(FrameEventArgs args)
     {
@@ -289,6 +323,7 @@ public class Endboss
 
         TextureHelper.DrawSprite(_position, tex.Handle, _currentFrame, _columns, _rows);
         DebugDrawHelper.DrawRectangle(_position, Color.Cyan);
+        DrawHealthBarAboveHead(_position, _health, ConstantBalancingValues.EndbossHealth);
         
         foreach (var laser in LaserBeams)
         {

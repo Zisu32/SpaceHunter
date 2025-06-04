@@ -4,38 +4,37 @@ namespace SpaceHunter;
 
 public class Healthbar
 {
-        public void DrawHealthBar(float health, float maxHealth)
+    public void DrawHealthBar(float health, float maxHealth)
     {
         if (health <= 0) return;
 
-        float barWidth = 100f;  
-        float barHeight = 15f;  
-        float healthPercentage = health / maxHealth;
+        float barWidth = 100f;
+        float barHeight = 15f;
+        float healthPercentage = Math.Clamp(health / maxHealth, 0f, 1f);
 
-        float x = 10f; 
+        float x = 10f; // screen position
         float y = 10f;
 
-        // Save previous OpenGL state
+        // Save OpenGL state
         GL.PushAttrib(AttribMask.AllAttribBits);
 
-        // Set up 2D projection
+        // Setup 2D orthographic projection
         GL.MatrixMode(MatrixMode.Projection);
         GL.PushMatrix();
         GL.LoadIdentity();
-        GL.Ortho(-10, 640, 360, 0, -1, 1);
+        GL.Ortho(0, 640, 360, 0, -1, 1); // match screen size
 
         GL.MatrixMode(MatrixMode.Modelview);
         GL.PushMatrix();
         GL.LoadIdentity();
 
-        // Disable unwanted states
         GL.Disable(EnableCap.DepthTest);
-        GL.Disable(EnableCap.Lighting);
+        GL.Disable(EnableCap.Texture2D);
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-        //Draw Background (black)
-        GL.Color4(0.0f, 0.0f, 0.0f, 1.0f);
+        // Background (black)
+        GL.Color4(0f, 0f, 0f, 1f);
         GL.Begin(PrimitiveType.Quads);
         GL.Vertex2(x, y);
         GL.Vertex2(x + barWidth, y);
@@ -43,13 +42,11 @@ public class Healthbar
         GL.Vertex2(x, y + barHeight);
         GL.End();
 
-        //Dynamic Health Color (Green to Red)
-        float green = healthPercentage;
-        float red = 1.0f - healthPercentage;
-        GL.Color4(red, green, 0.0f, 1.0f);
+        // Fill color (green → red)
+        float r = 1f - healthPercentage;
+        float g = healthPercentage;
+        GL.Color4(r, g, 0f, 1f);
 
-        //Draw Health Foreground
-        GL.Disable(EnableCap.Texture2D); // Disable texturing
         GL.Begin(PrimitiveType.Quads);
         GL.Vertex2(x, y);
         GL.Vertex2(x + (barWidth * healthPercentage), y);
@@ -57,9 +54,9 @@ public class Healthbar
         GL.Vertex2(x, y + barHeight);
         GL.End();
 
-        //Draw Border (black)
-        GL.Color4(1f, 1f, 1f, 1.0f);
-        GL.LineWidth(2);
+        // Border (black)
+        GL.Color4(0f, 0f, 0f, 1f);
+        GL.LineWidth(2f);
         GL.Begin(PrimitiveType.LineLoop);
         GL.Vertex2(x, y);
         GL.Vertex2(x + barWidth, y);
@@ -67,10 +64,11 @@ public class Healthbar
         GL.Vertex2(x, y + barHeight);
         GL.End();
 
-        GL.PopMatrix();
+        // Restore OpenGL state
+        GL.PopMatrix(); // modelview
         GL.MatrixMode(MatrixMode.Projection);
         GL.PopMatrix();
         GL.MatrixMode(MatrixMode.Modelview);
-        GL.PopAttrib();  // Restore OpenGL settings
+        GL.PopAttrib();
     }
 }
