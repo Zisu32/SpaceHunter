@@ -7,7 +7,7 @@ namespace SpaceHunter;
 
 public class FlyingEnemy
 {
-    private static readonly Random _random = new Random();
+    private static readonly Random _random = new();
     private readonly Texture2D _texture;
     private Box2 _position;
     private float _animationTimer;
@@ -15,11 +15,18 @@ public class FlyingEnemy
     private readonly uint _frameCount;
     private readonly uint _columns;
     private readonly uint _rows;
+
     private int _health = ConstantBalancingValues.EnemyHealth;
-    private bool _idleMoving = false;
-    private double _lastIdleMovement = 0;
-    private double _currentIdleMovementRandom = 0;
-    private Box2 _targetBox;
+
+    private Vector2 _patrolStart;
+    private Vector2 _patrolEnd;
+    private float _patrolSpeed = 1.5f;
+    private int _patrolDirection = 1; // 1 = right, -1 = left
+
+    private bool _chasingPlayer = false;
+    private const float PatrolDistance = 8f;
+    private const float PlayerDetectionRange = 4f;
+    private const float ChaseSpeed = 2.5f;
 
     public Box2 Bounds => _position;
 
@@ -37,23 +44,36 @@ public class FlyingEnemy
     }
 
     public event EventHandler? OnDeath;
+
     public FlyingEnemy(Box2 position, Texture2D texture, uint columns = 5, uint rows = 1)
     {
         _texture = texture;
         _position = position;
-        _frameCount = columns * rows;
         _columns = columns;
         _rows = rows;
+        _frameCount = columns * rows;
+
         _animationTimer = 0f;
         _currentFrame = 0;
-        _targetBox = _position;
+
+        var center = _position.Center;
+        _patrolStart = new Vector2(center.X - PatrolDistance / 2f, center.Y);
+        _patrolEnd = new Vector2(center.X + PatrolDistance / 2f, center.Y);
     }
 
     public void Update(float deltaTime, Box2 playerBox)
     {
         Animate(deltaTime);
-        Move(deltaTime);
+
+        float distanceToPlayer = Math.Abs(playerBox.Center.X - _position.Center.X);
+        _chasingPlayer = distanceToPlayer <= PlayerDetectionRange;
+
+        if (_chasingPlayer)
+            ChasePlayer(deltaTime, playerBox);
+        else
+            Patrol(deltaTime);
     }
+
     private void Animate(float deltaTime)
     {
         _animationTimer += deltaTime;
@@ -63,90 +83,51 @@ public class FlyingEnemy
             _animationTimer = 0f;
         }
     }
-    private void Move(float deltaTime)
-{
-    if (_idleMoving)
+
+    private void ChasePlayer(float deltaTime, Box2 playerBox)
     {
-        Vector2 center = _position.Center;
-        float differenceX = _targetBox.Center.X - center.X;
+        float playerX = playerBox.Center.X;
+        float currentX = _position.Center.X;
 
-        // Move smoothly towards target
-        center.X += differenceX * 0.01f;
+        float direction = Math.Sign(playerX - currentX);
+        float move = direction * ChaseSpeed * deltaTime;
 
-        Vector2 min = _position.Min;
-        Vector2 max = _position.Max;
+        float newX = currentX + move;
 
-        float move = differenceX * 0.01f;
-        min.X += move;
-        max.X += move;
+        // Clamp to patrol range
+        newX = Math.Clamp(newX, _patrolStart.X, _patrolEnd.X);
 
+        UpdatePositionX(newX);
+    }
+
+    private void Patrol(float deltaTime)
+    {
+        float currentX = _position.Center.X;
+        float move = _patrolDirection * _patrolSpeed * deltaTime;
+        float newX = currentX + move;
+
+        // Reverse direction at patrol bounds
+        if (newX > _patrolEnd.X)
+        {
+            newX = _patrolEnd.X;
+            _patrolDirection = -1;
+        }
+        else if (newX < _patrolStart.X)
+        {
+            newX = _patrolStart.X;
+            _patrolDirection = 1;
+        }
+
+        UpdatePositionX(newX);
+    }
+
+    private void UpdatePositionX(float newCenterX)
+    {
+        Vector2 size = _position.Size;
+        Vector2 min = new Vector2(newCenterX - size.X / 2f, _position.Min.Y);
+        Vector2 max = new Vector2(newCenterX + size.X / 2f, _position.Max.Y);
         _position = new Box2(min, max);
-
-        // Close enough to stop moving
-        if (Math.Abs(differenceX) <= 0.1f)
-        {
-            _idleMoving = false;
-            _lastIdleMovement = 0;
-            _currentIdleMovementRandom = _random.NextDouble();
-        }
-
-        return;
     }
-
-    // Not moving: check if time to move
-    _lastIdleMovement += deltaTime;
-
-    if (_lastIdleMovement > 2.0 + _currentIdleMovementRandom)
-    {
-        // 50% chance to decide to move at all
-        if (_random.NextDouble() < 0.5)
-        {
-            _idleMoving = true;
-
-            // Border checks
-            float offset = 0f;
-            float leftBorder = 0f;
-            float rightBorder = 16f * 4.5f;  // Use same value as your background width (BackgroundRectangle)
-
-            float buffer = 1.0f;  // Buffer zone so it doesn't "stick" to the edge
-
-            Vector2 currentCenter = _position.Center;
-
-            // At left edge? Always move right
-            if (currentCenter.X <= leftBorder + buffer)
-            {
-                offset = 5f;  // Move right
-            }
-            // At right edge? Always move left
-            else if (currentCenter.X >= rightBorder - buffer)
-            {
-                offset = -5f;  // Move left
-            }
-            else
-            {
-                // Otherwise, random choice
-                offset = (_random.Next(0, 2) == 0 ? -1f : 1f) * 5f;
-            }
-
-            // Set new target
-            Vector2 newCenter = currentCenter;
-            newCenter.X += offset;
-
-            Vector2 min = _position.Min;
-            Vector2 max = _position.Max;
-            Vector2 size = _position.Size;
-
-            min.X = newCenter.X - size.X / 2f;
-            max.X = newCenter.X + size.X / 2f;
-
-            _targetBox = new Box2(min, max);
-        }
-
-        // Reset timer even if no move was chosen
-        _lastIdleMovement = 0;
-        _currentIdleMovementRandom = _random.NextDouble();
-    }
-}
 
     public void DrawFlyingEnemy()
     {
