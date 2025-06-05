@@ -102,7 +102,7 @@ internal static class Program
         }
         else
         {
-            _camera.Center = Vector2.Zero;
+            _camera.Center = Vector2.Zero; // zentiert camera damit man screen sehen kann
             _state.PlayerState = PlayerState.death;
             _state.IsGameOver = true;
             _state.IsGameStarted = false;
