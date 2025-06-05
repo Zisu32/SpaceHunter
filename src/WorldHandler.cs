@@ -114,7 +114,6 @@ public class WorldHandler
             );
 
             _state.Endboss.OnDeath += (_, _) => {
-                _camera.Center = Vector2.Zero;
                 _state.IsGameWon = true;
                 _state.IsGameStarted = false;
             };

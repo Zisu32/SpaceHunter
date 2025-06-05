@@ -69,7 +69,6 @@ public class GameState
 
         CurrentLevel = 1;
         PlayerHealth = ConstantBalancingValues.MaxPlayerHealth;
-        PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY);
         PlayerHitBox = null;
         IsPlayerHurt = false;
         PlayerHurtTimer = 0;

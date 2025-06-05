@@ -78,6 +78,7 @@ internal static class Program
         {
            
             _state.ResetGame();
+            _camera.Center = Vector2.Zero;
             return;
         }
 
