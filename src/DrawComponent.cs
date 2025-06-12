@@ -1,5 +1,6 @@
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTKLib;
 using SpaceHunter.Models;
@@ -53,6 +54,9 @@ public class DrawComponent : IDrawComponent
         _textureManager.DrawPlayerTex(_state.PlayerBox, _state.PlayerState, obj, _state.IsPlayerHurt);
         //Debug Boxes (Blue for Player, Yellow for Hitbox)
         DebugDrawHelper.DrawRectangle(_state.PlayerBox, Color.Blue);
+        DebugDrawHelper.DrawRectangle(_state.DebugPlayerBox, Color.Green);
+
+
         if (_state.PlayerHitBox != null)
         {
             DebugDrawHelper.DrawRectangle(_state.PlayerHitBox.Value, Color.Yellow);
@@ -81,13 +85,13 @@ public class DrawComponent : IDrawComponent
         {
             _state.Endboss.Draw(obj);
         }
-        
+
         // Draw FlyingEnemy
         foreach (FlyingEnemy flyingEnemy in _state.FlyingEnemies)
         {
             flyingEnemy.DrawFlyingEnemy();
         }
-        
+
 
         ErrorCode errorCode = GL.GetError();
         if (errorCode != ErrorCode.NoError)

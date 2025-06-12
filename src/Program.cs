@@ -30,7 +30,7 @@ internal static class Program
         _translationKeys = new KeyGroup(new List<Keys> { Keys.A, Keys.D, Keys.W, Keys.S });
         _rotationKeys = new KeyGroup(new List<Keys> { Keys.Q, Keys.E });
         _scaleKeys = new KeyGroup(new List<Keys> { Keys.Z, Keys.X });
-        _playerKeys = new KeyGroup(new List<Keys> { Keys.Up, Keys.Right, Keys.Down, Keys.Left, Keys.Space, Keys.F });
+        _playerKeys = new KeyGroup(new List<Keys> { Keys.A, Keys.D, Keys.W, Keys.S, Keys.F });
         _startKey = new KeyGroup(new List<Keys> { Keys.Enter });
 
         var drawComponent = new DrawComponent(_state, _textureManager);

@@ -1,5 +1,7 @@
+using System.Drawing;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
+using OpenTKLib;
 using SpaceHunter.Models;
 
 namespace SpaceHunter;
@@ -76,16 +78,26 @@ public class CollisionHandler
     {
         if (_damageCooldown > 0f) return; //No Damge while invincible
 
-        if (enemyBoxes.Any(box => TwoBoxCollisionCheck(_state.PlayerBox, box)))
-        {
-            _state.PlayerHealth -= ConstantBalancingValues.EnemyDamage;
-            _damageCooldown = ConstantBalancingValues.InvincibleDuration;
-            _state.IsPlayerHurt = true;
-            _state.PlayerHurtTimer = 1.0;
-            Console.WriteLine("Player took damage!");
+        Box2 playerBox = _state.PlayerBox;
+        playerBox =  ShrinkBox(playerBox, .5f);
+        _state.DebugPlayerBox = playerBox;
 
+        foreach (var enemybox in enemyBoxes)
+        {
+            Box2 shrinkenemybox = ShrinkBox(enemybox, .4f);
+
+            if (TwoBoxCollisionCheck(playerBox, shrinkenemybox))
+            {
+                _state.PlayerHealth -= ConstantBalancingValues.EnemyDamage;
+                _damageCooldown = ConstantBalancingValues.InvincibleDuration;
+                _state.IsPlayerHurt = true;
+                _state.PlayerHurtTimer = 1.0;
+                Console.WriteLine("Player took damage!");
+                break;
+            }
         }
     }
+
     private void CheckLaserCollisions()
     {
         if (_damageCooldown > 0f) return;
@@ -105,6 +117,7 @@ public class CollisionHandler
                 }
             }
         }
+
         if (_state.Endboss != null)
         {
             foreach (var laser in _state.Endboss.LaserBeams)
@@ -129,15 +142,21 @@ public class CollisionHandler
         if (_state.Endboss != null)
         {
             CheckCollisionWithEnemies(new[] { _state.Endboss.Bounds });
-        }        
+        }
+
         CheckLaserCollisions();
     }
-    
+
     public static bool TwoBoxCollisionCheck(Box2 a, Box2 b)
     {
         bool xCollision = !(a.Max.X <= b.Min.X || a.Min.X >= b.Max.X);
         bool yCollision = !(a.Max.Y <= b.Min.Y || a.Min.Y >= b.Max.Y);
 
         return xCollision && yCollision;
+    }
+
+    private static Box2 ShrinkBox(Box2 box, float scale)
+    {
+        return box.Scaled(new Vector2(scale, scale), box.Center);
     }
 }
