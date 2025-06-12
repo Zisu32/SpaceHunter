@@ -79,16 +79,22 @@ public class CollisionHandler
         if (_damageCooldown > 0f) return; //No Damge while invincible
 
         Box2 playerBox = _state.PlayerBox;
-        playerBox =  ShrinkBox(playerBox, .8f);
+        playerBox =  ShrinkBox(playerBox, .5f);
         _state.DebugPlayerBox = playerBox;
 
-        if (enemyBoxes.Any(box => TwoBoxCollisionCheck(playerBox, box)))
+        foreach (var enemybox in enemyBoxes)
         {
-            _state.PlayerHealth -= ConstantBalancingValues.EnemyDamage;
-            _damageCooldown = ConstantBalancingValues.InvincibleDuration;
-            _state.IsPlayerHurt = true;
-            _state.PlayerHurtTimer = 1.0;
-            Console.WriteLine("Player took damage!");
+            Box2 shrinkenemybox = ShrinkBox(enemybox, .4f);
+
+            if (TwoBoxCollisionCheck(playerBox, shrinkenemybox))
+            {
+                _state.PlayerHealth -= ConstantBalancingValues.EnemyDamage;
+                _damageCooldown = ConstantBalancingValues.InvincibleDuration;
+                _state.IsPlayerHurt = true;
+                _state.PlayerHurtTimer = 1.0;
+                Console.WriteLine("Player took damage!");
+                break;
+            }
         }
     }
 
