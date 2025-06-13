@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <Folder Include="Assets\Enemy\endboss\" />
+      <Folder Include="Assets\VideoFrames\" />
     </ItemGroup>
 
 </Project>

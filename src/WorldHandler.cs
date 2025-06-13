@@ -16,22 +16,38 @@ public class WorldHandler
 
     private readonly List<Vector2> _groundEnemyPositions = new()
     {
-        new Vector2(10f, 0.7f),
-        new Vector2(20f, 0.7f),
-        new Vector2(30f, 0.7f),
+        new Vector2(15f, 0.7f),
+        new Vector2(35f, 0.7f),
+        new Vector2(50f, 0.7f),
+        new Vector2(100f, 0.7f),
+        new Vector2(120f, 0.7f),
+        new Vector2(130f, 0.7f),
+        new Vector2(160f, 0.7f),
+        new Vector2(170f, 0.7f),
+        new Vector2(195f, 0.7f),
+        new Vector2(220f, 0.7f)
     };
 
     private readonly List<Vector2> _flyingEnemyPositions = new()
     {
-        new Vector2(12f, 1.5f),
-        new Vector2(22f, 1.5f),
-        new Vector2(32f, 1.5f),
-        new Vector2(42f, 1.5f),
+        new Vector2(65f, 1.5f),
+        new Vector2(80f, 1.5f),
+        new Vector2(90f, 1.5f),
+        new Vector2(115f, 1.5f),
+        new Vector2(125f, 1.5f),
+        new Vector2(150f, 1.5f),
+        new Vector2(180f, 1.5f),
+        new Vector2(190f, 1.5f),
+        new Vector2(200f, 1.5f)
     };
 
     private readonly List<Vector2> _heartPositions = new()
     {
-        new Vector2(15f, 2f),
+        new Vector2(40f, 2f),
+        new Vector2(85f, 2f),
+        new Vector2(150f, 2f),
+        new Vector2(200f, 2f),
+        new Vector2(230f, 2f),
     };
 
     public WorldHandler(Camera camera, GameState state, KeyGroup playerKeys, Keyboard keyboard,

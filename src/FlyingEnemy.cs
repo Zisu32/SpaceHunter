@@ -26,7 +26,7 @@ public class FlyingEnemy
     private bool _chasingPlayer = false;
     private const float PatrolDistance = 8f;
     private const float PlayerDetectionRange = 4f;
-    private const float ChaseSpeed = 2.5f;
+    private const float ChaseSpeed = 4f;
 
     public Box2 Bounds => _position;
 

@@ -45,7 +45,7 @@ public class DrawComponent : IDrawComponent
         _collisionHandler.UpdateCooldown(obj);
 
         //Draw Background First
-        _textureManager.DrawBackground(_state.CurrentLevel);
+        _textureManager.DrawBackground(_state.CurrentLevel, _state.LevelWidth);
 
         //Draw health bar
         _healthbar.DrawHealthBar(_state.PlayerHealth, ConstantBalancingValues.MaxPlayerHealth);

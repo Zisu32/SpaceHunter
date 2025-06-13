@@ -52,22 +52,30 @@ public class TextureManager
     static uint rows = 1;
     
     private static readonly Vector4 redTint = new Vector4(1f, 0f, 0f, 1f);
-    public static readonly Box2 PortalRectangle = new Box2(64f, 0f, 66f, 6f);
+    public static readonly Box2 PortalRectangle = new Box2(238f, 0f, 240f, 6f);
     public static readonly Box2 EndbossRectangle = new Box2(45f, 0f, 48f, 7f);
     public static readonly Box2 FlyingEnemyRectangle = new Box2(3f, 0f, 4f, 4f);
     public static readonly Box2 StaticEnemyRectangle = new Box2(3f, 0f, 4f, 3f);
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16*5f, 10*1.5f);
     public static readonly Box2 MenuRectangle = new Box2(0f, 0f, 4 * 3f, 4 * 3f);
 
-    public void DrawBackground(int CurrentLevel)
+    public void DrawBackground(int currentLevel, float levelWidth)
     {
-        if (CurrentLevel == 1)
+        Texture2D backgroundTexture = currentLevel == 1 ? _background : _background2;
+        float backgroundWidth = BackgroundRectangle.Size.X;
+
+        int repeatCount = (int)MathF.Ceiling(levelWidth / backgroundWidth);
+
+        for (int i = 0; i < repeatCount; i++)
         {
-            TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background.Handle);
-        }
-        else
-        {
-            TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background2.Handle);
+            var offsetRectangle = new Box2(
+                BackgroundRectangle.Min.X + i * backgroundWidth,
+                BackgroundRectangle.Min.Y,
+                BackgroundRectangle.Max.X + i * backgroundWidth,
+                BackgroundRectangle.Max.Y
+            );
+
+            TextureHelper.DrawRectangularTexture(offsetRectangle, backgroundTexture.Handle);
         }
     }
 
@@ -75,13 +83,19 @@ public class TextureManager
     {
         if (_transitionTextures.Count == 0) return;
 
-        // Berechne den Frame basierend auf der verbleibenden Zeit (5 Sekunden gesamt)
         double progress = 1 - (transitionTimer / 5.0);
-        int frameIndex = (int)(progress * 120); // 0-120 (da 121 Frames)
+        int frameIndex = (int)(progress * 120);
         frameIndex = Math.Clamp(frameIndex, 0, _transitionTextures.Count - 1);
 
-        TextureHelper.DrawRectangularTexture(BackgroundRectangle, _transitionTextures[frameIndex].Handle);
+        Texture2D frame = _transitionTextures[frameIndex];
+
+        // Use original image width and height
+        var box = new Box2(0, 0, frame.Width/3f, frame.Height/3f);
+        TextureHelper.DrawRectangularTexture(box, frame.Handle);
     }
+
+
+
 
     public void DrawMenuScreen()
     {
@@ -151,7 +165,6 @@ public class TextureManager
         clockCounter += clock;
         if (clockCounter > 0.25)
         {
-            // Console.WriteLine("Col: " + columns);
             spriteId = (spriteId + 1) % columns;
             clockCounter = 0;
         }

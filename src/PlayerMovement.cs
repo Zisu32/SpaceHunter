@@ -54,8 +54,7 @@ public class PlayerMovement
         if (
             MathF.Abs(_playerSpeed) < 0.005f // playerSpeed small
             || playerBoxMin.X + _playerSpeed < 0f // out of bound 0
-            || playerBoxMax.X + _playerSpeed >=
-            TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2) // out of bounds max
+            || playerBoxMax.X + _playerSpeed >= _state.LevelWidth)
         {
             _playerSpeed = 0;
         }
@@ -75,7 +74,6 @@ public class PlayerMovement
         #endregion
 
         // attack
-
         if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0 && !_state.PlayerInAir)
         {
             _attackTime = ConstantBalancingValues.AttackDuration;
@@ -192,8 +190,7 @@ public class PlayerMovement
         }
         else if (_playerKeys.PressedKeys.Contains(Keys.D))
         {
-            // 5f is size of player Box
-            if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2)
+            if (playerBoxMax.X >= _state.LevelWidth)
             {
                 return;
             }
@@ -229,7 +226,7 @@ public class PlayerMovement
 
         // clamp camera to not show black background
         float minCameraX = 0f;
-        float maxCameraX = TextureManager.BackgroundRectangle.Max.X - _camera.ScreenWidth;
+        float maxCameraX = _state.LevelWidth - _camera.ScreenWidth;
         float screenLeft = -cameraCenter.X;
 
         if (screenLeft < minCameraX)
