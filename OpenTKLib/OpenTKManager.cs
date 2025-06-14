@@ -12,18 +12,20 @@ public class OpenTKManager
     private readonly GameWindow _window;
     private bool _windowRunning;
     private readonly IDrawComponent _drawComponent;
+    private readonly double _targetFrametime;
     private double _timeSinceLastGameUpdate = 0;
 
-    public OpenTKManager(IDrawComponent drawComponent)
+    public OpenTKManager(IDrawComponent drawComponent, int framerate)
     {
         _drawComponent = drawComponent;
+        _targetFrametime = 1.0 / framerate;
         _drawComponent.Camera = this.Camera;
         _window = new GameWindow(GameWindowSettings.Default, new NativeWindowSettings
         {
             Profile = ContextProfile.Compatability, Flags = ContextFlags.Default
         })
         {
-            VSync = VSyncMode.On
+            VSync = VSyncMode.Off
         };
 
         // window resize event
@@ -71,11 +73,12 @@ public class OpenTKManager
         {
             return;
         }
+
         _windowRunning = true;
-        
+
         _drawComponent.Initialize();
         _window.RenderFrame += Draw;
-        
+
         _window.Run();
     }
 
@@ -85,7 +88,7 @@ public class OpenTKManager
     {
         Matrix4 cameraCameraMatrix = Camera.CameraMatrix;
         GL.LoadMatrix(ref cameraCameraMatrix);
-        
+
         if (ClearScreenBeforeDraw)
         {
             ClearWindow();
@@ -95,6 +98,20 @@ public class OpenTKManager
 
         // Swap displayed buffer
         _window.SwapBuffers();
+
+
+        // frame limiter
+
+        double sleepTime = _targetFrametime - frameArgs.Time;
+
+        if (sleepTime > 0)
+        {
+            Thread.Sleep((int)(sleepTime * 1000)); // Convert seconds to milliseconds
+        }
+        else
+        {
+            Console.WriteLine("frame took too long");
+        }
     }
 
     private void Update(FrameEventArgs frameArgs)
