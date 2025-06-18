@@ -10,8 +10,10 @@ namespace SpaceHunter;
 
 public class TextureManager
 {
-    // In TextureManager.cs
+    
     private List<Texture2D> _transitionTextures = new();
+    private bool _deathAnimationDone = false;
+
 
     // TODO, find better way to handle loaded Textures
     private Texture2D _background;
@@ -110,44 +112,50 @@ public class TextureManager
     public void DrawPlayerTex(Box2 position, PlayerState playerState, FrameEventArgs obj, bool isHurt)
     {
         Texture2D texture2D;
-        bool playOnce = false;
         switch (playerState)
         {
             case PlayerState.idle_r:
                 texture2D = _player_idle_r;
                 columns = 4;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.idle_l:
                 texture2D = _player_idle_l;
                 columns = 4;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.run_r:
                 texture2D = _player_run_r;
                 columns = 6;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.run_l:
                 texture2D = _player_run_l;
                 columns = 6;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.jump_r:
                 texture2D = _player_jump_r;
                 columns = 6;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.jump_l:
                 texture2D = _player_jump_l;
                 columns = 6;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.attack_r:
                 texture2D = _player_attack_r;
                 columns = 8;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.attack_l:
                 texture2D = _player_attack_l;
                 columns = 8;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.death:
                 texture2D = _player_death;
-                playOnce = true;
                 columns = 6;
                 break;
 
@@ -155,18 +163,33 @@ public class TextureManager
                 throw new InvalidOperationException("unknown player state:" + playerState);
         }
 
-        // TODO, reset animation progress on start of new animation 
-        // Attack looks weird without this
-        // TODO, play Death anim (and others maybe) only once
-        // use playOnce var
-
-        // Zeitberechnung für Animation der Sprites
         float clock = (float)(obj.Time);
         clockCounter += clock;
-        if (clockCounter > 0.25)
+
+        if (playerState == PlayerState.death)
         {
-            spriteId = (spriteId + 1) % columns;
-            clockCounter = 0;
+            if (!_deathAnimationDone)
+            {
+                if (clockCounter > 0.25)
+                {
+                    spriteId++;
+                    clockCounter = 0;
+
+                    if (spriteId >= columns)
+                    {
+                        spriteId = columns - 1;  // letzten Frame behalten
+                        _deathAnimationDone = true;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (clockCounter > 0.25)
+            {
+                spriteId = (spriteId + 1) % columns;
+                clockCounter = 0;
+            }
         }
 
         if (isHurt)
