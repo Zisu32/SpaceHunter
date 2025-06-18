@@ -101,13 +101,13 @@ public class PlayerMovement
                     _state.PlayerBox.Max.Y);
             }
 
-            _state.PlayerHitBox = new Box2(hitBoxMin, hitBoxMax);
+            _state.PlayerAttackBox = new Box2(hitBoxMin, hitBoxMax);
 
             _attackTime -= frameArgs.Time;
         }
         else // _attackTime <= 0
         {
-            _state.PlayerHitBox = null;
+            _state.PlayerAttackBox = null;
         }
 
         #region Animation

@@ -57,9 +57,9 @@ public class DrawComponent : IDrawComponent
         DebugDrawHelper.DrawRectangle(_state.DebugPlayerBox, Color.Green);
 
 
-        if (_state.PlayerHitBox != null)
+        if (_state.PlayerAttackBox != null)
         {
-            DebugDrawHelper.DrawRectangle(_state.PlayerHitBox.Value, Color.Yellow);
+            DebugDrawHelper.DrawRectangle(_state.PlayerAttackBox.Value, Color.Yellow);
         }
 
         //Draw Enemies
