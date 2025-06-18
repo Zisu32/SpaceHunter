@@ -17,14 +17,17 @@ public class PlayerMovement
     private float _velocityY = 0f;
     private const float Gravity = -85f;
     private const float JumpVelocity = 37f;
+    private bool _interruptAttack = false;
     private bool _isJumpKeyHeld = false;
-    
+
     private float _playerSpeed;
     private const float PlayerSpeedAdd = 0.005f;
     private static float _playerSpeedDiv = 1.1f;
     private double _attackTime;
+    private double _attackCooldown = 0;
+
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
-    
+
     public PlayerMovement(GameState state, KeyGroup playerKeys, Keyboard keyboard, Camera camera)
     {
         _state = state;
@@ -37,11 +40,24 @@ public class PlayerMovement
     {
         #region Movement
 
-        // movement stopped while attacking
+        ProcessKeys();
+
+        if (_interruptAttack)
+        {
+            _attackTime = 0;
+            _state.PlayerAttackBox = null;
+            _interruptAttack = false;
+        }
+
+        if (_attackCooldown > 0)
+        {
+            _attackCooldown -= frameArgs.Time;
+            if (_attackCooldown < 0)
+                _attackCooldown = 0;
+        }
+
         if (_attackTime <= 0)
         {
-            ProcessKeys();
-
             if (_state.PlayerInAir)
             {
                 JumpMovement(frameArgs);
@@ -52,8 +68,8 @@ public class PlayerMovement
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
         if (
-            MathF.Abs(_playerSpeed) < 0.005f // playerSpeed small
-            || playerBoxMin.X + _playerSpeed < 0f // out of bound 0
+            MathF.Abs(_playerSpeed) < 0.005f
+            || playerBoxMin.X + _playerSpeed < 0f
             || playerBoxMax.X + _playerSpeed >= _state.LevelWidth)
         {
             _playerSpeed = 0;
@@ -61,7 +77,6 @@ public class PlayerMovement
 
         if (_playerSpeed != 0)
         {
-            // moves player
             playerBoxMin.X += _playerSpeed;
             playerBoxMax.X += _playerSpeed;
             Console.WriteLine($"Player Speed: {_playerSpeed:N4} MinBox:{playerBoxMin.X}");
@@ -73,13 +88,12 @@ public class PlayerMovement
 
         #endregion
 
-        // attack
-        if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0 && !_state.PlayerInAir)
+        if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0 && _attackCooldown <= 0 && !_state.PlayerInAir)
         {
             _attackTime = ConstantBalancingValues.AttackDuration;
-            _playerKeys.RemovePressed(Keys.F); // F has to be pressed multiple times, for multiple attacks
+            _attackCooldown = .7; // 0.7 Sec
+            _playerKeys.RemovePressed(Keys.F);
 
-            // stop movement
             _playerSpeed = 0;
         }
 
@@ -95,7 +109,6 @@ public class PlayerMovement
             }
             else
             {
-                // just use Player to right as default case
                 hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
                 hitBoxMax = new Vector2(_state.PlayerBox.Max.X + ConstantBalancingValues.AttackBoxLength,
                     _state.PlayerBox.Max.Y);
@@ -105,7 +118,7 @@ public class PlayerMovement
 
             _attackTime -= frameArgs.Time;
         }
-        else // _attackTime <= 0
+        else
         {
             _state.PlayerAttackBox = null;
         }
@@ -114,37 +127,41 @@ public class PlayerMovement
 
         if (_attackTime > 0)
         {
-            _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.attack_l : PlayerState.attack_r;
-            return;
+            _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+                ? PlayerState.attack_l
+                : PlayerState.attack_r;
         }
-
-        if (_state.PlayerBox.Min.Y < 0.0001f)
+        else if (_state.PlayerBox.Min.Y < 0.0001f)
         {
             if (_playerSpeed == 0)
             {
-                // idle animation
-                _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.idle_l : PlayerState.idle_r;
+                _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+                    ? PlayerState.idle_l
+                    : PlayerState.idle_r;
             }
             else
             {
-                // player run Animation
-                _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.run_l : PlayerState.run_r;
+                _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+                    ? PlayerState.run_l
+                    : PlayerState.run_r;
             }
         }
-        else // jump
+        else
         {
-            _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.jump_l : PlayerState.jump_r;
+            _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+                ? PlayerState.jump_l
+                : PlayerState.jump_r;
         }
 
         #endregion
     }
+
 
     private void JumpMovement(FrameEventArgs frameArgs)
     {
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
-        // If jump key is released and player is moving upward, increase gravity to cut jump short
         if (!_isJumpKeyHeld && _velocityY > 0)
         {
             _velocityY += Gravity * 3f * (float)frameArgs.Time; // stronger gravity to cut jump
@@ -175,6 +192,14 @@ public class PlayerMovement
 
     private void ProcessKeys()
     {
+        bool isMoving = _playerKeys.PressedKeys.Any(k =>
+            k == Keys.A || k == Keys.D || k == Keys.W);
+
+        if (_attackTime > 0 && isMoving)
+        {
+            _interruptAttack = true;
+        }
+
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
 
@@ -208,6 +233,7 @@ public class PlayerMovement
                 _velocityY = JumpVelocity;
                 _state.PlayerState = PlayerState.jump_r;
             }
+
             _isJumpKeyHeld = true;
         }
         else
