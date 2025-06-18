@@ -7,8 +7,9 @@ public class GameState
     #region Player Fields
 
     public Box2 PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY);
-    public Box2 PlayerHitBox => PlayerBox.Scaled(new Vector2(ConstantBalancingValues.PlayerHitBoxScale, ConstantBalancingValues.PlayerHitBoxScale), PlayerBox.Center);
-    public Box2 DebugPlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY);
+    public Box2 PlayerHitBox => PlayerBox
+        .Scaled(ConstantBalancingValues.PlayerHitBoxScale, PlayerBox.Center );
+    public Box2 DebugPlayerBox => PlayerHitBox;
 
     public Box2? PlayerAttackBox = null;
 

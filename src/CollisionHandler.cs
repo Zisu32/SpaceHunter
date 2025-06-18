@@ -79,7 +79,6 @@ public class CollisionHandler
         if (_damageCooldown > 0f) return; //No Damge while invincible
 
         Box2 playerBox = _state.PlayerHitBox;
-        _state.DebugPlayerBox = playerBox;
 
         foreach (var enemybox in enemyBoxes)
         {
