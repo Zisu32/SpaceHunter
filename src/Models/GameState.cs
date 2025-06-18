@@ -8,7 +8,7 @@ public class GameState
 
     public Box2 PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY);
     public Box2 PlayerHitBox => PlayerBox
-        .Scaled(ConstantBalancingValues.PlayerHitBoxScale, PlayerBox.Center );
+        .Scaled(ConstantBalancingValues.PlayerHitBoxScale, PlayerBox.Center + new Vector2(0f, 2f));
     public Box2 DebugPlayerBox => PlayerHitBox;
 
     public Box2? PlayerAttackBox = null;
