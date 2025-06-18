@@ -90,7 +90,7 @@ public class TextureManager
         Texture2D frame = _transitionTextures[frameIndex];
 
         // Use original image width and height
-        var box = new Box2(0, 0, frame.Width/3f, frame.Height/3f);
+        var box = new Box2(0, 0, 12f, 12f);
         TextureHelper.DrawRectangularTexture(box, frame.Handle);
     }
 

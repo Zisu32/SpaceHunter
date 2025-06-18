@@ -37,7 +37,7 @@ public class GameState
 
     public WorldHandler WorldHandler { get; set; }
 
-    public bool IsShowingLevelTransition { get; set; }
+    public bool IsShowingLevelTransition { get; set; } 
     public double LevelTransitionTimer { get; set; }
 
     // Neue Level-Logik
