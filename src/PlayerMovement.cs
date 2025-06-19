@@ -20,9 +20,9 @@ public class PlayerMovement
     private bool _isJumpKeyHeld = false;
 
     private float _playerSpeed;
-    private const float Acceleration = 15f;
-    // private const float Deceleration = 10f;
-    private const float PlayerSpeedDiv = 1f;
+    private const float Acceleration = 30;
+    private const float Deceleration = 10f;
+    private const float PlayerSpeedDiv = 1;
     private double _attackTime;
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
 
@@ -170,7 +170,10 @@ public class PlayerMovement
         }
 
         // _playerAcceleration -= Deceleration * deltaTime;
-        _playerSpeed /= PlayerSpeedDiv * deltaTime;
+        Console.WriteLine($"Speed sub: {PlayerSpeedDiv * deltaTime:N4}");
+        // TODO, make use absolute values, insted of just working in one direction
+        _playerSpeed -= Deceleration * deltaTime;
+        // _playerSpeed /= PlayerSpeedDiv * deltaTime;
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
     }
