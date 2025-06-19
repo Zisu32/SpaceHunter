@@ -130,23 +130,5 @@ internal static class Program
                 }
             }
         }
-
-        // Camera debug
-        Scale();
-    }
-
-    private static void Scale()
-    {
-        if (_scaleKeys.PressedKeys.Contains(Keys.Z))
-        {
-            _camera.Scale += .1f;
-        }
-
-        if (_scaleKeys.PressedKeys.Contains(Keys.X))
-        {
-            _camera.Scale -= .1f;
-        }
-
-        Console.WriteLine($"Scale = {_camera.Scale}");
     }
 }
