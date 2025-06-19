@@ -18,13 +18,14 @@ public class PlayerMovement
     private const float Gravity = -85f;
     private const float JumpVelocity = 37f;
     private bool _isJumpKeyHeld = false;
-    
+
     private float _playerSpeed;
-    private const float PlayerSpeedAdd = 0.005f;
-    private static float _playerSpeedDiv = 1.1f;
+    private const float Acceleration = 15f;
+    // private const float Deceleration = 10f;
+    private const float PlayerSpeedDiv = 1f;
     private double _attackTime;
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
-    
+
     public PlayerMovement(GameState state, KeyGroup playerKeys, Keyboard keyboard, Camera camera)
     {
         _state = state;
@@ -35,12 +36,10 @@ public class PlayerMovement
 
     public void Update(FrameEventArgs frameArgs)
     {
-        #region Movement
-
         // movement stopped while attacking
         if (_attackTime <= 0)
         {
-            ProcessKeys();
+            ReadJumpKeyAndMoveCamera();
 
             if (_state.PlayerInAir)
             {
@@ -48,33 +47,9 @@ public class PlayerMovement
             }
         }
 
-        Vector2 playerBoxMin = _state.PlayerBox.Min;
-        Vector2 playerBoxMax = _state.PlayerBox.Max;
+        WalkingMovement(frameArgs);
 
-        if (
-            MathF.Abs(_playerSpeed) < 0.005f // playerSpeed small
-            || playerBoxMin.X + _playerSpeed < 0f // out of bound 0
-            || playerBoxMax.X + _playerSpeed >=
-            TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2) // out of bounds max
-        {
-            _playerSpeed = 0;
-        }
-
-        if (_playerSpeed != 0)
-        {
-            // moves player
-            playerBoxMin.X += _playerSpeed;
-            playerBoxMax.X += _playerSpeed;
-            Console.WriteLine($"Player Speed: {_playerSpeed:N4} MinBox:{playerBoxMin.X}");
-        }
-
-        _playerSpeed /= _playerSpeedDiv;
-
-        _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
-
-        #endregion
-
-        // attack
+        #region Attack
 
         if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0 && !_state.PlayerInAir)
         {
@@ -112,6 +87,8 @@ public class PlayerMovement
             _state.PlayerHitBox = null;
         }
 
+        #endregion
+
         #region Animation
 
         if (_attackTime > 0)
@@ -139,6 +116,63 @@ public class PlayerMovement
         }
 
         #endregion
+    }
+
+    private void WalkingMovement(FrameEventArgs frameArgs)
+    {
+        Vector2 playerBoxMin = _state.PlayerBox.Min;
+        Vector2 playerBoxMax = _state.PlayerBox.Max;
+        float deltaTime = (float)frameArgs.Time;
+
+        // read keys and apply 'acceleration'
+        if (_playerKeys.PressedKeys.Contains(Keys.A))
+        {
+            if (playerBoxMin.X < 0)
+            {
+                return;
+            }
+
+            Console.WriteLine("speed sub");
+            _playerSpeed -= Acceleration * deltaTime;
+            _playerDirection = SimpleDirection.LEFT;
+        }
+        else if (_playerKeys.PressedKeys.Contains(Keys.D))
+        {
+            if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2)
+            {
+                return;
+            }
+
+            Console.WriteLine("speed add");
+            _playerSpeed += Acceleration * deltaTime;
+            _playerDirection = SimpleDirection.RIGHT;
+        }
+
+        Console.WriteLine($"playerSpeed: {_playerSpeed:N4}");
+
+        // apply velocity 
+        if ( // if player is not moving or out of bounds, instantly stop
+            MathF.Abs(_playerSpeed) < 0.005f // playerSpeed small
+            || playerBoxMin.X + _playerSpeed < 0f // out of bound 0
+            || playerBoxMax.X + _playerSpeed >=
+            TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2) // out of bounds max
+        {
+            Console.WriteLine("Speed reset");
+            _playerSpeed = 0;
+        }
+
+        if (_playerSpeed != 0)
+        {
+            // moves player
+            playerBoxMin.X += _playerSpeed * deltaTime;
+            playerBoxMax.X += _playerSpeed * deltaTime;
+            // Console.WriteLine($"Player Speed: {_playerSpeed:N4} MinBox:{playerBoxMin.X}");
+        }
+
+        // _playerAcceleration -= Deceleration * deltaTime;
+        _playerSpeed /= PlayerSpeedDiv * deltaTime;
+
+        _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
     }
 
     private void JumpMovement(FrameEventArgs frameArgs)
@@ -175,32 +209,9 @@ public class PlayerMovement
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
     }
 
-    private void ProcessKeys()
+    private void ReadJumpKeyAndMoveCamera()
     {
         Vector2 playerBoxMin = _state.PlayerBox.Min;
-        Vector2 playerBoxMax = _state.PlayerBox.Max;
-
-        if (_playerKeys.PressedKeys.Contains(Keys.A))
-        {
-            if (playerBoxMin.X < 0)
-            {
-                return;
-            }
-
-            _playerSpeed -= PlayerSpeedAdd;
-            _playerDirection = SimpleDirection.LEFT;
-        }
-        else if (_playerKeys.PressedKeys.Contains(Keys.D))
-        {
-            // 5f is size of player Box
-            if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2)
-            {
-                return;
-            }
-
-            _playerSpeed += PlayerSpeedAdd;
-            _playerDirection = SimpleDirection.RIGHT;
-        }
 
         // Update jump key held status and start jump if needed
         if (_playerKeys.PressedKeys.Contains(Keys.W))
@@ -211,6 +222,7 @@ public class PlayerMovement
                 _velocityY = JumpVelocity;
                 _state.PlayerState = PlayerState.jump_r;
             }
+
             _isJumpKeyHeld = true;
         }
         else

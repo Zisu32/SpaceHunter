@@ -83,7 +83,7 @@ internal static class Program
             return;
         }
 
-        Console.WriteLine($"Player Health: {_state.PlayerHealth}");
+        // Console.WriteLine($"Player Health: {_state.PlayerHealth}");
 
         _worldHandler.Update(frameArgs);
         _collisionHandler.UpdateCooldown(frameArgs);
