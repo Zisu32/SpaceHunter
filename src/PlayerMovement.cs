@@ -20,9 +20,8 @@ public class PlayerMovement
     private bool _isJumpKeyHeld = false;
 
     private float _playerSpeed;
-    private const float Acceleration = 30;
-    private const float Deceleration = 10f;
-    private const float PlayerSpeedDiv = 1;
+    private const float Acceleration = 55;
+    private const float DecelerationPercent = 98;
     private double _attackTime;
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
 
@@ -124,6 +123,10 @@ public class PlayerMovement
         Vector2 playerBoxMax = _state.PlayerBox.Max;
         float deltaTime = (float)frameArgs.Time;
 
+        // TODO, without vsync this is way too small
+        float accelValue = Acceleration * deltaTime;
+        Console.WriteLine($"accelValue: {accelValue}");
+
         // read keys and apply 'acceleration'
         if (_playerKeys.PressedKeys.Contains(Keys.A))
         {
@@ -132,8 +135,8 @@ public class PlayerMovement
                 return;
             }
 
-            Console.WriteLine("speed sub");
-            _playerSpeed -= Acceleration * deltaTime;
+            // Console.WriteLine("speed sub");
+            _playerSpeed -= accelValue;
             _playerDirection = SimpleDirection.LEFT;
         }
         else if (_playerKeys.PressedKeys.Contains(Keys.D))
@@ -143,37 +146,37 @@ public class PlayerMovement
                 return;
             }
 
-            Console.WriteLine("speed add");
-            _playerSpeed += Acceleration * deltaTime;
+            // Console.WriteLine("speed add");
+            _playerSpeed += accelValue;
             _playerDirection = SimpleDirection.RIGHT;
         }
 
-        Console.WriteLine($"playerSpeed: {_playerSpeed:N4}");
+        float playerMoveDistance = _playerSpeed * deltaTime;
 
         // apply velocity 
         if ( // if player is not moving or out of bounds, instantly stop
             MathF.Abs(_playerSpeed) < 0.005f // playerSpeed small
-            || playerBoxMin.X + _playerSpeed < 0f // out of bound 0
-            || playerBoxMax.X + _playerSpeed >=
+            || playerBoxMin.X + playerMoveDistance < 0f // out of bound 0
+            || playerBoxMax.X + playerMoveDistance >=
             TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2) // out of bounds max
         {
-            Console.WriteLine("Speed reset");
             _playerSpeed = 0;
         }
 
         if (_playerSpeed != 0)
         {
             // moves player
-            playerBoxMin.X += _playerSpeed * deltaTime;
-            playerBoxMax.X += _playerSpeed * deltaTime;
-            // Console.WriteLine($"Player Speed: {_playerSpeed:N4} MinBox:{playerBoxMin.X}");
+            playerBoxMin.X += playerMoveDistance;
+            playerBoxMax.X += playerMoveDistance;
         }
 
-        // _playerAcceleration -= Deceleration * deltaTime;
-        Console.WriteLine($"Speed sub: {PlayerSpeedDiv * deltaTime:N4}");
-        // TODO, make use absolute values, insted of just working in one direction
-        _playerSpeed -= Deceleration * deltaTime;
-        // _playerSpeed /= PlayerSpeedDiv * deltaTime;
+        float decelValue = (DecelerationPercent / 100) * (1 - deltaTime);
+
+        Console.WriteLine($"Deceleration: {decelValue}");
+
+        _playerSpeed *= decelValue;
+
+        // Console.WriteLine($"playerSpeed: {_playerSpeed}");
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
     }
@@ -237,7 +240,6 @@ public class PlayerMovement
         Vector2 cameraCenter = _camera.Center;
 
         // prevent the camera from moving outside of background
-        Console.WriteLine($"playerBoxMin.X: {playerBoxMin.X}, val: {playerBoxMin.X - _camera.ScreenWidth / 2}");
 
         // calculate camera X to center player
         cameraCenter.X = -playerBoxMin.X + _camera.ScreenWidth / 2 - TextureSizes.PlayerSizeX / 2;
@@ -251,13 +253,11 @@ public class PlayerMovement
         {
             // snap to background start
             cameraCenter.X = -minCameraX;
-            Console.WriteLine("Camera clamped to left edge");
         }
         else if (screenLeft > maxCameraX)
         {
             // snap to background end
             cameraCenter.X = -maxCameraX;
-            Console.WriteLine("Camera clamped to right edge");
         }
 
         _camera.Center = cameraCenter;
