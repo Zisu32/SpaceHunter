@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -21,7 +22,7 @@ public class PlayerMovement
 
     private float _playerSpeed;
     private const float Acceleration = 55;
-    private const float DecelerationPercent = 98;
+    private const float DecelerationPercent = .98f;
     private double _attackTime;
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
 
@@ -117,15 +118,35 @@ public class PlayerMovement
         #endregion
     }
 
+    // TODO remove
+    // frame time debug
+    private Stopwatch _stopwatch = new Stopwatch();
+    private double _accelerationAmount = 0;
+
     private void WalkingMovement(FrameEventArgs frameArgs)
     {
+        // TODO playerSpeed Cap
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
         float deltaTime = (float)frameArgs.Time;
-
-        // TODO, without vsync this is way too small
         float accelValue = Acceleration * deltaTime;
-        Console.WriteLine($"accelValue: {accelValue}");
+        
+        if (_playerKeys.PressedKeys.Contains(Keys.D) && !_stopwatch.IsRunning)
+        {
+            _stopwatch.Start();
+        }else if (_stopwatch.IsRunning && _playerKeys.PressedKeys.Contains(Keys.D))
+        {
+            _accelerationAmount += accelValue;
+        }else if (!_playerKeys.PressedKeys.Contains(Keys.D) && _stopwatch.IsRunning)
+        {
+            _stopwatch.Stop();
+
+            double accelPerMs = _accelerationAmount / _stopwatch.ElapsedMilliseconds;
+            Console.WriteLine($"accelPerMs: {accelPerMs}");
+        }
+        
+        
+        // Console.WriteLine($"accelValue: {accelValue}");
 
         // read keys and apply 'acceleration'
         if (_playerKeys.PressedKeys.Contains(Keys.A))
@@ -151,6 +172,10 @@ public class PlayerMovement
             _playerDirection = SimpleDirection.RIGHT;
         }
 
+        float deccelValue = (Acceleration - 25) * deltaTime * Math.Sign(_playerSpeed) * -1;
+
+        _playerSpeed += deccelValue;
+
         float playerMoveDistance = _playerSpeed * deltaTime;
 
         // apply velocity 
@@ -169,14 +194,6 @@ public class PlayerMovement
             playerBoxMin.X += playerMoveDistance;
             playerBoxMax.X += playerMoveDistance;
         }
-
-        float decelValue = (DecelerationPercent / 100) * (1 - deltaTime);
-
-        Console.WriteLine($"Deceleration: {decelValue}");
-
-        _playerSpeed *= decelValue;
-
-        // Console.WriteLine($"playerSpeed: {_playerSpeed}");
 
         _state.PlayerBox = new Box2(playerBoxMin, playerBoxMax);
     }
