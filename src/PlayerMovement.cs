@@ -119,10 +119,6 @@ public class PlayerMovement
         #endregion
     }
 
-    // TODO remove
-    // frame time debug
-    private Stopwatch _stopwatch = new Stopwatch();
-    private double _accelerationAmount = 0;
 
     private void WalkingMovement(FrameEventArgs frameArgs)
     {
@@ -131,23 +127,6 @@ public class PlayerMovement
         float deltaTime = (float)frameArgs.Time;
         float accelValue = Acceleration * deltaTime;
         
-        if (_playerKeys.PressedKeys.Contains(Keys.D) && !_stopwatch.IsRunning)
-        {
-            _stopwatch.Start();
-        }else if (_stopwatch.IsRunning && _playerKeys.PressedKeys.Contains(Keys.D))
-        {
-            _accelerationAmount += accelValue;
-        }else if (!_playerKeys.PressedKeys.Contains(Keys.D) && _stopwatch.IsRunning)
-        {
-            _stopwatch.Stop();
-
-            double accelPerMs = _accelerationAmount / _stopwatch.ElapsedMilliseconds;
-            Console.WriteLine($"accelPerMs: {accelPerMs}");
-        }
-        
-        
-        // Console.WriteLine($"accelValue: {accelValue}");
-
         // read keys and apply 'acceleration'
         if (_playerKeys.PressedKeys.Contains(Keys.A))
         {
@@ -156,7 +135,6 @@ public class PlayerMovement
                 return;
             }
 
-            // Console.WriteLine("speed sub");
             _playerSpeed -= accelValue;
             _playerDirection = SimpleDirection.LEFT;
         }
@@ -167,7 +145,6 @@ public class PlayerMovement
                 return;
             }
 
-            // Console.WriteLine("speed add");
             _playerSpeed += accelValue;
             _playerDirection = SimpleDirection.RIGHT;
         }
@@ -175,20 +152,18 @@ public class PlayerMovement
         float deccelValue = Deceleration * deltaTime * Math.Sign(_playerSpeed) * -1;
 
         _playerSpeed += deccelValue;
-        Console.WriteLine($"playerSpeed: {_playerSpeed}");
 
         // cap player speed
         if (Math.Abs(_playerSpeed) > MaxSpeed)
         {
             _playerSpeed = MaxSpeed * Math.Sign(_playerSpeed);
-            Console.WriteLine("playerSpeed: cap");
         }
         
         float playerMoveDistance = _playerSpeed * deltaTime;
 
         // apply velocity 
         if ( // if player is not moving or out of bounds, instantly stop
-            MathF.Abs(_playerSpeed) < 0.005f // playerSpeed small
+            MathF.Abs(_playerSpeed) < 0.1f // playerSpeed small
             || playerBoxMin.X + playerMoveDistance < 0f // out of bound 0
             || playerBoxMax.X + playerMoveDistance >=
             TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2) // out of bounds max
