@@ -22,6 +22,7 @@ public class PlayerMovement
 
     private float _playerSpeed;
     private const float Acceleration = 55;
+    private const float Deceleration = 30;
     private const float MaxSpeed = 15;
     private double _attackTime;
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
@@ -171,7 +172,7 @@ public class PlayerMovement
             _playerDirection = SimpleDirection.RIGHT;
         }
 
-        float deccelValue = (Acceleration - 25) * deltaTime * Math.Sign(_playerSpeed) * -1;
+        float deccelValue = Deceleration * deltaTime * Math.Sign(_playerSpeed) * -1;
 
         _playerSpeed += deccelValue;
         Console.WriteLine($"playerSpeed: {_playerSpeed}");
