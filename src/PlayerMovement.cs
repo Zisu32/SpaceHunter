@@ -22,7 +22,7 @@ public class PlayerMovement
 
     private float _playerSpeed;
     private const float Acceleration = 55;
-    private const float DecelerationPercent = .98f;
+    private const float MaxSpeed = 15;
     private double _attackTime;
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
 
@@ -125,7 +125,6 @@ public class PlayerMovement
 
     private void WalkingMovement(FrameEventArgs frameArgs)
     {
-        // TODO playerSpeed Cap
         Vector2 playerBoxMin = _state.PlayerBox.Min;
         Vector2 playerBoxMax = _state.PlayerBox.Max;
         float deltaTime = (float)frameArgs.Time;
@@ -175,7 +174,15 @@ public class PlayerMovement
         float deccelValue = (Acceleration - 25) * deltaTime * Math.Sign(_playerSpeed) * -1;
 
         _playerSpeed += deccelValue;
+        Console.WriteLine($"playerSpeed: {_playerSpeed}");
 
+        // cap player speed
+        if (Math.Abs(_playerSpeed) > MaxSpeed)
+        {
+            _playerSpeed = MaxSpeed * Math.Sign(_playerSpeed);
+            Console.WriteLine("playerSpeed: cap");
+        }
+        
         float playerMoveDistance = _playerSpeed * deltaTime;
 
         // apply velocity 
