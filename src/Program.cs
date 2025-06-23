@@ -76,7 +76,6 @@ internal static class Program
 
         if ((_state.IsGameOver || _state.IsGameWon) && _startKey.PressedKeys.Contains(Keys.Enter))
         {
-           
             _state.ResetGame();
             _camera.Center = Vector2.Zero;
             return;

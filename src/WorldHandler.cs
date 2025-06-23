@@ -102,7 +102,7 @@ public class WorldHandler
             _state.FlyingEnemies.Add(flying);
         }
     }
-    
+
     public void SpawnEndboss()
     {
         if (_state.CurrentLevel == 2)
@@ -112,13 +112,21 @@ public class WorldHandler
                 TextureManager.EndbossRectangle,
                 _textureManager
             );
+
+            // Game won, if boss dead
+            _state.Endboss.OnDeath += (_, _) =>
+            {
+                Console.WriteLine(">>> Victory! Game won!");
+                _state.IsGameWon = true;
+                _state.IsGameStarted = false;
+            };
         }
         else
         {
-            _state.Endboss = null; // Clear Endboss if it's not level 2
+            _state.Endboss = null;
         }
-
     }
+
 
     private void SpawnHearts(int count)
     {

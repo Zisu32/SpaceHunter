@@ -61,6 +61,7 @@ public class TextureManager
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16*4.5f, 10*1.5f);
     public static readonly Box2 MenuRectangle = new Box2(0f, 0f, 4 * 3f, 4 * 3f);
     public static readonly Box2 EndScreenRectangle = new Box2(0f, 0f, 12f, 12f);
+    public static readonly Box2 VictoryScreenRectangle = new Box2(0f, 0f, 12f, 12f);
 
     public void DrawBackground(int CurrentLevel)
     {
@@ -97,7 +98,7 @@ public class TextureManager
     }
     public void DrawVictoryScreen()
     {
-        TextureHelper.DrawRectangularTexture(EndScreenRectangle, _victoryscreen.Handle);
+        TextureHelper.DrawRectangularTexture(VictoryScreenRectangle, _victoryscreen.Handle);
     }
 
     public void DrawEnemy(Box2 position)
