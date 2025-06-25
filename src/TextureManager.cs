@@ -19,6 +19,8 @@ public class TextureManager
     private Texture2D _background;
     private Texture2D _background2;
     private Texture2D _background_transition;
+    private Texture2D _victoryscreen;
+    private Texture2D _gameoverscreen;
     private Texture2D _menuscreen;
     private Texture2D _healthbar;
     public Texture2D _portalTexture;
@@ -60,6 +62,8 @@ public class TextureManager
     public static readonly Box2 StaticEnemyRectangle = new Box2(3f, 0f, 4f, 3f);
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16*5f, 10*1.5f);
     public static readonly Box2 MenuRectangle = new Box2(0f, 0f, 4 * 3f, 4 * 3f);
+    public static readonly Box2 EndScreenRectangle = new Box2(0f, 0f, 12f, 12f);
+
 
     public void DrawBackground(int currentLevel, float levelWidth)
     {
@@ -96,12 +100,18 @@ public class TextureManager
         TextureHelper.DrawRectangularTexture(box, frame.Handle);
     }
 
-
-
-
     public void DrawMenuScreen()
     {
         TextureHelper.DrawRectangularTexture(MenuRectangle, _menuscreen.Handle);
+    }
+    
+    public void DrawGameOver()
+    {
+        TextureHelper.DrawRectangularTexture(EndScreenRectangle, _gameoverscreen.Handle);
+    }
+    public void DrawVictory()
+    {
+        TextureHelper.DrawRectangularTexture(EndScreenRectangle, _victoryscreen.Handle);
     }
 
     public void DrawEnemy(Box2 position)
@@ -239,6 +249,8 @@ public class TextureManager
         _endbossHurtL = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Hurt-l-resized.png");
         _endbossHurtR = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Hurt-r-resized.png");
         _endbossDeath = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Enemy.endboss.Infantryman.Death-l-resized.png");
+        _victoryscreen = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Screen.VictoryScreen.png");
+        _gameoverscreen = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Screen.GameOver.png");
         _heart = TextureHelper.LoadNonFilteringTexture("SpaceHunter.Assets.Heart.heart.png");
 
         // Initialize all VideoFrames

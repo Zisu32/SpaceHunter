@@ -34,6 +34,17 @@ public class DrawComponent : IDrawComponent
             _textureManager.DrawLevelTransition(_state.LevelTransitionTimer);
             return;
         }
+        if (_state.IsGameOver)
+        {
+            DrawGameOverScreen();
+            return;
+        }
+
+        if (_state.IsGameWon)
+        {
+            DrawVictoryScreen();
+            return;
+        }
 
         if (!_state.IsGameStarted)
         {
@@ -96,6 +107,17 @@ public class DrawComponent : IDrawComponent
         ErrorCode errorCode = GL.GetError();
         if (errorCode != ErrorCode.NoError)
             Console.WriteLine($"OpenGL Error: {errorCode}");
+    }
+    // Victory Screen
+    private void DrawVictoryScreen()
+    {
+        _textureManager.DrawVictory();  
+    }
+
+    // DeathScreen
+    private void DrawGameOverScreen()
+    {
+        _textureManager.DrawGameOver();
     }
 
     private void DrawMenu()
