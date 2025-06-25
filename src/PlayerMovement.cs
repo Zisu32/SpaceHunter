@@ -126,7 +126,8 @@ public class PlayerMovement
         Vector2 playerBoxMax = _state.PlayerBox.Max;
         float deltaTime = (float)frameArgs.Time;
         float accelValue = Acceleration * deltaTime;
-        
+        bool isWalking = false;
+
         // read keys and apply 'acceleration'
         if (_playerKeys.PressedKeys.Contains(Keys.A))
         {
@@ -137,6 +138,7 @@ public class PlayerMovement
 
             _playerSpeed -= accelValue;
             _playerDirection = SimpleDirection.LEFT;
+            isWalking = true;
         }
         else if (_playerKeys.PressedKeys.Contains(Keys.D))
         {
@@ -147,6 +149,7 @@ public class PlayerMovement
 
             _playerSpeed += accelValue;
             _playerDirection = SimpleDirection.RIGHT;
+            isWalking = true;
         }
 
         float deccelValue = Deceleration * deltaTime * Math.Sign(_playerSpeed) * -1;
@@ -158,12 +161,19 @@ public class PlayerMovement
         {
             _playerSpeed = MaxSpeed * Math.Sign(_playerSpeed);
         }
-        
+
         float playerMoveDistance = _playerSpeed * deltaTime;
 
+        // "Starthilfe"
+        if (_playerSpeed == 0 && isWalking)
+        {
+            _playerSpeed += 0.06f;
+        }
+
+        Console.WriteLine($"accel: {accelValue} decel: {deccelValue} moveDistance: {playerMoveDistance}");
         // apply velocity 
         if ( // if player is not moving or out of bounds, instantly stop
-            MathF.Abs(_playerSpeed) < 0.1f // playerSpeed small
+            MathF.Abs(_playerSpeed) < 0.05f // playerSpeed small
             || playerBoxMin.X + playerMoveDistance < 0f // out of bound 0
             || playerBoxMax.X + playerMoveDistance >=
             TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2) // out of bounds max

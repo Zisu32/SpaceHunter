@@ -35,7 +35,7 @@ internal static class Program
 
         var drawComponent = new DrawComponent(_state, _textureManager);
 
-        _manager = new OpenTKManager(drawComponent, 60);
+        _manager = new OpenTKManager(drawComponent);
 
         _camera = _manager.Camera;
         _camera.Scale = 6f;

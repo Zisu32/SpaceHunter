@@ -12,14 +12,10 @@ public class OpenTKManager
     private readonly GameWindow _window;
     private bool _windowRunning;
     private readonly IDrawComponent _drawComponent;
-    private readonly double _targetFrametime;
-    private double _timeSinceLastGameUpdate = 0;
 
-    public OpenTKManager(IDrawComponent drawComponent, int framerate)
+    public OpenTKManager(IDrawComponent drawComponent)
     {
         _drawComponent = drawComponent;
-        _targetFrametime = 1.0 / framerate;
-        GameUpdateDelay = _targetFrametime;
         
         _drawComponent.Camera = this.Camera;
         _window = new GameWindow(GameWindowSettings.Default, new NativeWindowSettings
@@ -27,7 +23,7 @@ public class OpenTKManager
             Profile = ContextProfile.Compatability, Flags = ContextFlags.Default
         })
         {
-            VSync = VSyncMode.On
+            VSync = VSyncMode.Off
         };
 
         // window resize event
@@ -65,7 +61,6 @@ public class OpenTKManager
 
     public Keyboard Keyboard { get; }
 
-    public double GameUpdateDelay { get; set; }
 
     public bool ClearScreenBeforeDraw { get; set; } = true;
 
@@ -100,33 +95,10 @@ public class OpenTKManager
 
         // Swap displayed buffer
         _window.SwapBuffers();
-
-
-        // frame limiter
-        // double sleepTime = _targetFrametime - frameArgs.Time;
-        //
-        // if (sleepTime > 0)
-        // {
-        //     Thread.Sleep((int)(sleepTime * 1000)); // Convert seconds to milliseconds
-        // }
-        // else
-        // {
-        //     Console.WriteLine("frame took too long");
-        // }
     }
 
     private void Update(FrameEventArgs frameArgs)
     {
-        // _timeSinceLastGameUpdate += frameArgs.Time;
-        //
-        // if (!(_timeSinceLastGameUpdate > GameUpdateDelay))
-        // {
-        //     return;
-        // }
-        //
-        // // Console.WriteLine($"Running gameCycle after {_timeSinceLastGameUpdate}s");
-        // _timeSinceLastGameUpdate = 0;
-
         GameStateUpdateEvent?.Invoke(this, frameArgs);
     }
 }
