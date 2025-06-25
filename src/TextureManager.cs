@@ -15,7 +15,6 @@ public class TextureManager
     private bool _deathAnimationDone = false;
 
 
-    // TODO, find better way to handle loaded Textures
     private Texture2D _background;
     private Texture2D _background2;
     private Texture2D _background_transition;

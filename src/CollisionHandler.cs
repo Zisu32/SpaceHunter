@@ -16,8 +16,6 @@ public class CollisionHandler
         _state = state;
     }
 
-    // TODO, method for finding collision with enemy projectile
-
     public void UpdateCooldown(FrameEventArgs frameArgs)
     {
         if (_damageCooldown > 0f)
@@ -38,7 +36,6 @@ public class CollisionHandler
             return;
         }
 
-        // TODO LINQ first?
         foreach (Enemy enemy in _state.Enemies)
         {
             if (TwoBoxCollisionCheck(_state.PlayerAttackBox.Value, enemy.Box))

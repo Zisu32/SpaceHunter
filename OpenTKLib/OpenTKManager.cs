@@ -30,7 +30,7 @@ public class OpenTKManager
         _window.Resize += resizeArgs =>
         {
             GL.Viewport(0, 0, resizeArgs.Width, resizeArgs.Height);
-            ClearWindow();
+            GL.Clear(ClearBufferMask.ColorBufferBit);
         };
 
         // close window on Escape   
@@ -49,12 +49,6 @@ public class OpenTKManager
         Keyboard = new Keyboard(this, _window);
         _window.KeyDown += Keyboard.KeyDown;
         _window.KeyUp += Keyboard.KeyUp;
-    }
-
-    // TODO, can probably be inlined
-    private static void ClearWindow()
-    {
-        GL.Clear(ClearBufferMask.ColorBufferBit);
     }
 
     public Camera Camera { get; } = new Camera();
@@ -88,7 +82,7 @@ public class OpenTKManager
 
         if (ClearScreenBeforeDraw)
         {
-            ClearWindow();
+            GL.Clear(ClearBufferMask.ColorBufferBit);
         }
 
         _drawComponent.Draw(frameArgs);

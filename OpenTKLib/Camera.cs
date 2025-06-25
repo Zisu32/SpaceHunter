@@ -3,7 +3,6 @@ using Zenseless.OpenTK;
 
 namespace OpenTKLib;
 
-// TODO aspect ratio functionality
 public class Camera
 {
     private Vector2 _center = Vector2.Zero;
