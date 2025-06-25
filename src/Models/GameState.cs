@@ -7,9 +7,11 @@ public class GameState
     #region Player Fields
 
     public Box2 PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY);
-    public Box2 DebugPlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY);
+    public Box2 PlayerHitBox => PlayerBox
+        .Scaled(ConstantBalancingValues.PlayerHitBoxScale, PlayerBox.Center + new Vector2(0f, 2f));
+    public Box2 DebugPlayerBox => PlayerHitBox;
 
-    public Box2? PlayerHitBox = null;
+    public Box2? PlayerAttackBox = null;
 
     public bool PlayerAlive => PlayerHealth > 0;
 
@@ -27,13 +29,15 @@ public class GameState
     public readonly List<Heart> Hearts = new();
     public readonly List<FlyingEnemy> FlyingEnemies = new();
     public readonly List<Enemy> Enemies = new();
+    public float LevelWidth { get; set; } = 250f;
+
     public Endboss? Endboss { get; set; }
     public bool PlayerInAir = false;
     public bool IsGameStarted = false;
 
     public WorldHandler WorldHandler { get; set; }
 
-    public bool IsShowingLevelTransition { get; set; }
+    public bool IsShowingLevelTransition { get; set; } 
     public double LevelTransitionTimer { get; set; }
 
     // Neue Level-Logik

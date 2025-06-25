@@ -18,7 +18,7 @@ public class Enemy
     public readonly List<Box2> LaserBeams = new();
     public float _laserCooldown = LaserCooldownTime; // asnchron shooting
     public const float LaserCooldownTime = 5f; // Fires every 2 seconds
-    public const float LaserSpeed = 10f; // Laser speed per second
+    public const float LaserSpeed = 7f; // Laser speed per second
     
     public readonly double IdleMovementDelay;
     public bool IdleMoving = false;

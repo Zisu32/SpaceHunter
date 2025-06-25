@@ -83,7 +83,7 @@ internal static class Program
             return;
         }
 
-        Console.WriteLine($"Player Health: {_state.PlayerHealth}");
+        // Console.WriteLine($"Player Health: {_state.PlayerHealth}");
 
         _worldHandler.Update(frameArgs);
         _collisionHandler.UpdateCooldown(frameArgs);
@@ -130,23 +130,5 @@ internal static class Program
                 }
             }
         }
-
-        // Camera debug
-        Scale();
-    }
-
-    private static void Scale()
-    {
-        if (_scaleKeys.PressedKeys.Contains(Keys.Z))
-        {
-            _camera.Scale += .1f;
-        }
-
-        if (_scaleKeys.PressedKeys.Contains(Keys.X))
-        {
-            _camera.Scale -= .1f;
-        }
-
-        Console.WriteLine($"Scale = {_camera.Scale}");
     }
 }

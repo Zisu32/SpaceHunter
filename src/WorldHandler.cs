@@ -11,9 +11,44 @@ public class WorldHandler
     private readonly GameState _state;
     private readonly KeyGroup _playerKeys;
     private readonly Keyboard _keyboard;
-    private readonly Random _random;
     private readonly TextureManager _textureManager;
     private readonly CollisionHandler _collisionHandler;
+
+    private readonly List<Vector2> _groundEnemyPositions = new()
+    {
+        new Vector2(15f, 0.7f),
+        new Vector2(35f, 0.7f),
+        new Vector2(50f, 0.7f),
+        new Vector2(100f, 0.7f),
+        new Vector2(120f, 0.7f),
+        new Vector2(130f, 0.7f),
+        new Vector2(160f, 0.7f),
+        new Vector2(170f, 0.7f),
+        new Vector2(195f, 0.7f),
+        new Vector2(220f, 0.7f)
+    };
+
+    private readonly List<Vector2> _flyingEnemyPositions = new()
+    {
+        new Vector2(65f, 1.5f),
+        new Vector2(80f, 1.5f),
+        new Vector2(90f, 1.5f),
+        new Vector2(115f, 1.5f),
+        new Vector2(125f, 1.5f),
+        new Vector2(150f, 1.5f),
+        new Vector2(180f, 1.5f),
+        new Vector2(190f, 1.5f),
+        new Vector2(200f, 1.5f)
+    };
+
+    private readonly List<Vector2> _heartPositions = new()
+    {
+        new Vector2(40f, 2f),
+        new Vector2(85f, 2f),
+        new Vector2(150f, 2f),
+        new Vector2(200f, 2f),
+        new Vector2(230f, 2f),
+    };
 
     public WorldHandler(Camera camera, GameState state, KeyGroup playerKeys, Keyboard keyboard,
         TextureManager textureManager, CollisionHandler collisionHandler)
@@ -22,36 +57,22 @@ public class WorldHandler
         _state = state;
         _playerKeys = playerKeys;
         _keyboard = keyboard;
-        _random = new Random();
         _textureManager = textureManager;
         _collisionHandler = collisionHandler;
     }
 
     public void SpawnInitial()
     {
-        List<Vector2> usedPositions = new();
-        SpawnGroundEnemies(3, usedPositions);
-        SpawnFlyingEnemies(4, usedPositions);
-        SpawnHearts(1);
+        SpawnGroundEnemies();
+        SpawnFlyingEnemies();
+        SpawnHearts();
         SpawnPortal();
     }
 
-    private void SpawnGroundEnemies(int count, List<Vector2> existing)
+    private void SpawnGroundEnemies()
     {
-        float minDistance = 3.0f;
-
-        for (int i = 0; i < count; i++)
+        foreach (var pos in _groundEnemyPositions)
         {
-            Vector2 pos;
-            int tries = 0;
-            do
-            {
-                pos = GetRandomGroundEnemyStartPosition();
-                tries++;
-            } while (IsTooClose(pos, existing, minDistance) && tries < 20);
-
-            existing.Add(pos);
-
             var enemy = new Enemy(2, 0.5)
             {
                 Box = new Box2(
@@ -72,24 +93,10 @@ public class WorldHandler
         }
     }
 
-
-
-    private void SpawnFlyingEnemies(int count, List<Vector2> existing)
+    private void SpawnFlyingEnemies()
     {
-        float minDistance = 2f;
-
-        for (int i = 0; i < count; i++)
+        foreach (var pos in _flyingEnemyPositions)
         {
-            Vector2 pos;
-            int tries = 0;
-            do
-            {
-                pos = GetRandomFlyingEnemyStartPosition();
-                tries++;
-            } while (IsTooClose(pos, existing, minDistance) && tries < 20);
-
-            existing.Add(pos);
-
             Box2 startBox = new Box2(
                 pos.X,
                 pos.Y,
@@ -102,30 +109,13 @@ public class WorldHandler
             _state.FlyingEnemies.Add(flying);
         }
     }
-    
-    public void SpawnEndboss()
-    {
-        if (_state.CurrentLevel == 2)
-        {
-            _state.Endboss = new Endboss(
-                _state,
-                TextureManager.EndbossRectangle,
-                _textureManager
-            );
-        }
-        else
-        {
-            _state.Endboss = null; // Clear Endboss if it's not level 2
-        }
-    }
 
-    private void SpawnHearts(int count)
+    private void SpawnHearts()
     {
-        for (int i = 0; i < count; i++)
+        foreach (var pos in _heartPositions)
         {
-            Vector2 randomPos = GetRandomHeartStartPosition();
-            Console.WriteLine($"Spawning heart at {randomPos}");
-            _state.Hearts.Add(new Heart(randomPos, _textureManager._heart));
+            Console.WriteLine($"Spawning heart at {pos}");
+            _state.Hearts.Add(new Heart(pos, _textureManager._heart));
         }
     }
 
@@ -138,25 +128,20 @@ public class WorldHandler
         );
     }
 
-    private Vector2 GetRandomFlyingEnemyStartPosition()
+    public void SpawnEndboss()
     {
-        float x = (float)(_random.NextDouble() * 45f) + 5f;
-        float y = 1f;
-        return new Vector2(x, y);
-    }
-
-    private Vector2 GetRandomGroundEnemyStartPosition()
-    {
-        float x = (float)(_random.NextDouble() * 45f) + 5f;
-        float y = 0.7f;
-        return new Vector2(x, y);
-    }
-
-    private Vector2 GetRandomHeartStartPosition()
-    {
-        float x = (float)(_random.NextDouble() * 45f) + 5f;
-        float y = 2f;
-        return new Vector2(x, y);
+        if (_state.CurrentLevel == 2)
+        {
+            _state.Endboss = new Endboss(
+                _state,
+                TextureManager.EndbossRectangle,
+                _textureManager
+            );
+        }
+        else
+        {
+            _state.Endboss = null;
+        }
     }
 
     private void EnemyDeath(object? sender, EventArgs e)
@@ -177,25 +162,11 @@ public class WorldHandler
         Console.WriteLine("Flying enemy died!");
     }
 
-    private bool IsTooClose(Vector2 newPos, List<Vector2> existingPositions, float minDistance)
-    {
-        foreach (var pos in existingPositions)
-        {
-            float distance = (pos - newPos).Length;
-            if (distance < minDistance)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
     public void Update(FrameEventArgs frameArgs)
     {
         _state.Enemies.ForEach(enemy => enemy.Update((float)frameArgs.Time));
         _state.FlyingEnemies.ForEach(enemy => enemy.Update((float)frameArgs.Time, _state.PlayerBox));
-        _state.Hearts.ForEach(enemy => enemy.Update((float)frameArgs.Time));
+        _state.Hearts.ForEach(heart => heart.Update((float)frameArgs.Time));
         _state.Portal?.Update((float)frameArgs.Time, _state.Enemies, _state.FlyingEnemies, _state.PlayerBox);
         _state.Endboss?.Update((float)frameArgs.Time, _state.PlayerBox);
 

@@ -31,10 +31,11 @@ public class Portal
         IsVisible = false;
     }
 
+
     public void Update(float deltaTime, IReadOnlyCollection<Enemy> enemies, IReadOnlyCollection<FlyingEnemy> flyingEnemies, Box2 playerBox)
     {
         IsVisible = !enemies.Any() && !flyingEnemies.Any() && _state.CurrentLevel == 1;
-        Console.WriteLine($"Portal visible: {IsVisible}");
+        // Console.WriteLine($"Portal visible: {IsVisible}");
 
         // Animate
         _animationTimer += deltaTime;
@@ -49,6 +50,7 @@ public class Portal
         {
             Console.WriteLine("Enter Portal");
             _state.IsShowingLevelTransition = true;
+            _state.PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY); // Spieler zurücksetzen
             _state.LevelTransitionTimer = 5.0;
             PlayerEntered = true;
             //_state.NextLevel();

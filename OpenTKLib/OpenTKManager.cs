@@ -12,11 +12,11 @@ public class OpenTKManager
     private readonly GameWindow _window;
     private bool _windowRunning;
     private readonly IDrawComponent _drawComponent;
-    private double _timeSinceLastGameUpdate = 0;
 
     public OpenTKManager(IDrawComponent drawComponent)
     {
         _drawComponent = drawComponent;
+        
         _drawComponent.Camera = this.Camera;
         _window = new GameWindow(GameWindowSettings.Default, new NativeWindowSettings
         {
@@ -61,7 +61,6 @@ public class OpenTKManager
 
     public Keyboard Keyboard { get; }
 
-    public double GameUpdateDelay { get; set; }
 
     public bool ClearScreenBeforeDraw { get; set; } = true;
 
@@ -71,11 +70,12 @@ public class OpenTKManager
         {
             return;
         }
+
         _windowRunning = true;
-        
+
         _drawComponent.Initialize();
         _window.RenderFrame += Draw;
-        
+
         _window.Run();
     }
 
@@ -85,7 +85,7 @@ public class OpenTKManager
     {
         Matrix4 cameraCameraMatrix = Camera.CameraMatrix;
         GL.LoadMatrix(ref cameraCameraMatrix);
-        
+
         if (ClearScreenBeforeDraw)
         {
             ClearWindow();
@@ -99,16 +99,6 @@ public class OpenTKManager
 
     private void Update(FrameEventArgs frameArgs)
     {
-        _timeSinceLastGameUpdate += frameArgs.Time;
-
-        if (!(_timeSinceLastGameUpdate > GameUpdateDelay))
-        {
-            return;
-        }
-
-        // Console.WriteLine($"Running gameCycle after {_timeSinceLastGameUpdate}s");
-        _timeSinceLastGameUpdate = 0;
-
         GameStateUpdateEvent?.Invoke(this, frameArgs);
     }
 }

@@ -1,3 +1,6 @@
+
+using OpenTK.Mathematics;
+
 namespace SpaceHunter;
 
 public static class ConstantBalancingValues
@@ -9,5 +12,6 @@ public static class ConstantBalancingValues
     public const double InvincibleDuration = 1.0; // seconds
     public const double AttackDuration = 0.5; // seconds
     public const int AttackDamage = 10;
-    public const float AttackBoxLength = 0.4f; 
+    public const float AttackBoxLength = 0.6f;
+    public static readonly Vector2 PlayerHitBoxScale = new Vector2(0.5f, 0.9f);
 }
