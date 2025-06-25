@@ -118,9 +118,9 @@ public class CollisionHandler
 
         if (_state.Endboss != null)
         {
-            foreach (var laser in _state.Endboss.LaserBeams)
+            foreach (var (box, _, _) in _state.Endboss.LaserBeams)
             {
-                if (TwoBoxCollisionCheck(_state.PlayerHitBox, laser))
+                if (TwoBoxCollisionCheck(_state.PlayerHitBox, box))
                 {
                     _state.PlayerHealth -= 20;
                     _damageCooldown = ConstantBalancingValues.InvincibleDuration;
