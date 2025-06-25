@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -18,15 +17,18 @@ public class PlayerMovement
     private float _velocityY = 0f;
     private const float Gravity = -85f;
     private const float JumpVelocity = 37f;
+    private bool _interruptAttack = false;
     private bool _isJumpKeyHeld = false;
-
+    
     private float _playerSpeed;
     private const float Acceleration = 85;
     private const float Deceleration = 55;
     private const float MaxSpeed = 7;
     private double _attackTime;
-    private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
+    private double _attackCooldown = 0;
 
+    private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
+    
     public PlayerMovement(GameState state, KeyGroup playerKeys, Keyboard keyboard, Camera camera)
     {
         _state = state;
@@ -37,11 +39,29 @@ public class PlayerMovement
 
     public void Update(FrameEventArgs frameArgs)
     {
+        #region Movement
+
         // movement stopped while attacking
         if (_attackTime <= 0)
         {
             ReadJumpKeyAndMoveCamera();
 
+        if (_interruptAttack)
+        {
+            _attackTime = 0;
+            _state.PlayerAttackBox = null;
+            _interruptAttack = false;
+        }
+
+        if (_attackCooldown > 0)
+        {
+            _attackCooldown -= frameArgs.Time;
+            if (_attackCooldown < 0)
+                _attackCooldown = 0;
+        }
+
+        if (_attackTime <= 0)
+        {
             if (_state.PlayerInAir)
             {
                 JumpMovement(frameArgs);
@@ -55,9 +75,9 @@ public class PlayerMovement
         if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0 && !_state.PlayerInAir)
         {
             _attackTime = ConstantBalancingValues.AttackDuration;
-            _playerKeys.RemovePressed(Keys.F); // F has to be pressed multiple times, for multiple attacks
+            _attackCooldown = .7; // 0.7 Sec
+            _playerKeys.RemovePressed(Keys.F);
 
-            // stop movement
             _playerSpeed = 0;
         }
 
@@ -73,19 +93,18 @@ public class PlayerMovement
             }
             else
             {
-                // just use Player to right as default case
                 hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
                 hitBoxMax = new Vector2(_state.PlayerBox.Max.X + ConstantBalancingValues.AttackBoxLength,
                     _state.PlayerBox.Max.Y);
             }
 
-            _state.PlayerHitBox = new Box2(hitBoxMin, hitBoxMax);
+            _state.PlayerAttackBox = new Box2(hitBoxMin, hitBoxMax);
 
             _attackTime -= frameArgs.Time;
         }
         else // _attackTime <= 0
         {
-            _state.PlayerHitBox = null;
+            _state.PlayerAttackBox = null;
         }
 
         #endregion
@@ -94,26 +113,30 @@ public class PlayerMovement
 
         if (_attackTime > 0)
         {
-            _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.attack_l : PlayerState.attack_r;
-            return;
+            _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+                ? PlayerState.attack_l
+                : PlayerState.attack_r;
         }
-
-        if (_state.PlayerBox.Min.Y < 0.0001f)
+        else if (_state.PlayerBox.Min.Y < 0.0001f)
         {
             if (_playerSpeed == 0)
             {
-                // idle animation
-                _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.idle_l : PlayerState.idle_r;
+                _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+                    ? PlayerState.idle_l
+                    : PlayerState.idle_r;
             }
             else
             {
-                // player run Animation
-                _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.run_l : PlayerState.run_r;
+                _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+                    ? PlayerState.run_l
+                    : PlayerState.run_r;
             }
         }
-        else // jump
+        else
         {
-            _state.PlayerState = _playerDirection == SimpleDirection.LEFT ? PlayerState.jump_l : PlayerState.jump_r;
+            _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+                ? PlayerState.jump_l
+                : PlayerState.jump_r;
         }
 
         #endregion
@@ -227,6 +250,14 @@ public class PlayerMovement
 
     private void ReadJumpKeyAndMoveCamera()
     {
+        bool isMoving = _playerKeys.PressedKeys.Any(k =>
+            k == Keys.A || k == Keys.D || k == Keys.W);
+
+        if (_attackTime > 0 && isMoving)
+        {
+            _interruptAttack = true;
+        }
+
         Vector2 playerBoxMin = _state.PlayerBox.Min;
 
         // Update jump key held status and start jump if needed
@@ -238,7 +269,6 @@ public class PlayerMovement
                 _velocityY = JumpVelocity;
                 _state.PlayerState = PlayerState.jump_r;
             }
-
             _isJumpKeyHeld = true;
         }
         else
@@ -250,24 +280,27 @@ public class PlayerMovement
         Vector2 cameraCenter = _camera.Center;
 
         // prevent the camera from moving outside of background
+        Console.WriteLine($"playerBoxMin.X: {playerBoxMin.X}, val: {playerBoxMin.X - _camera.ScreenWidth / 2}");
 
         // calculate camera X to center player
         cameraCenter.X = -playerBoxMin.X + _camera.ScreenWidth / 2 - TextureSizes.PlayerSizeX / 2;
 
         // clamp camera to not show black background
         float minCameraX = 0f;
-        float maxCameraX = TextureManager.BackgroundRectangle.Max.X - _camera.ScreenWidth;
+        float maxCameraX = _state.LevelWidth - _camera.ScreenWidth;
         float screenLeft = -cameraCenter.X;
 
         if (screenLeft < minCameraX)
         {
             // snap to background start
             cameraCenter.X = -minCameraX;
+            Console.WriteLine("Camera clamped to left edge");
         }
         else if (screenLeft > maxCameraX)
         {
             // snap to background end
             cameraCenter.X = -maxCameraX;
+            Console.WriteLine("Camera clamped to right edge");
         }
 
         _camera.Center = cameraCenter;

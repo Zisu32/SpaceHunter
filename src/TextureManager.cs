@@ -10,8 +10,10 @@ namespace SpaceHunter;
 
 public class TextureManager
 {
-    // In TextureManager.cs
+    
     private List<Texture2D> _transitionTextures = new();
+    private bool _deathAnimationDone = false;
+
 
     // TODO, find better way to handle loaded Textures
     private Texture2D _background;
@@ -52,22 +54,30 @@ public class TextureManager
     static uint rows = 1;
     
     private static readonly Vector4 redTint = new Vector4(1f, 0f, 0f, 1f);
-    public static readonly Box2 PortalRectangle = new Box2(64f, 0f, 66f, 6f);
+    public static readonly Box2 PortalRectangle = new Box2(238f, 0f, 240f, 6f);
     public static readonly Box2 EndbossRectangle = new Box2(45f, 0f, 48f, 7f);
     public static readonly Box2 FlyingEnemyRectangle = new Box2(3f, 0f, 4f, 4f);
     public static readonly Box2 StaticEnemyRectangle = new Box2(3f, 0f, 4f, 3f);
-    public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16*4.5f, 10*1.5f);
+    public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16*5f, 10*1.5f);
     public static readonly Box2 MenuRectangle = new Box2(0f, 0f, 4 * 3f, 4 * 3f);
 
-    public void DrawBackground(int CurrentLevel)
+    public void DrawBackground(int currentLevel, float levelWidth)
     {
-        if (CurrentLevel == 1)
+        Texture2D backgroundTexture = currentLevel == 1 ? _background : _background2;
+        float backgroundWidth = BackgroundRectangle.Size.X;
+
+        int repeatCount = (int)MathF.Ceiling(levelWidth / backgroundWidth);
+
+        for (int i = 0; i < repeatCount; i++)
         {
-            TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background.Handle);
-        }
-        else
-        {
-            TextureHelper.DrawRectangularTexture(BackgroundRectangle, _background2.Handle);
+            var offsetRectangle = new Box2(
+                BackgroundRectangle.Min.X + i * backgroundWidth,
+                BackgroundRectangle.Min.Y,
+                BackgroundRectangle.Max.X + i * backgroundWidth,
+                BackgroundRectangle.Max.Y
+            );
+
+            TextureHelper.DrawRectangularTexture(offsetRectangle, backgroundTexture.Handle);
         }
     }
 
@@ -75,13 +85,19 @@ public class TextureManager
     {
         if (_transitionTextures.Count == 0) return;
 
-        // Berechne den Frame basierend auf der verbleibenden Zeit (5 Sekunden gesamt)
         double progress = 1 - (transitionTimer / 5.0);
-        int frameIndex = (int)(progress * 120); // 0-120 (da 121 Frames)
+        int frameIndex = (int)(progress * 120);
         frameIndex = Math.Clamp(frameIndex, 0, _transitionTextures.Count - 1);
 
-        TextureHelper.DrawRectangularTexture(BackgroundRectangle, _transitionTextures[frameIndex].Handle);
+        Texture2D frame = _transitionTextures[frameIndex];
+
+        // Use original image width and height
+        var box = new Box2(0, 0, 12f, 12f);
+        TextureHelper.DrawRectangularTexture(box, frame.Handle);
     }
+
+
+
 
     public void DrawMenuScreen()
     {
@@ -96,44 +112,50 @@ public class TextureManager
     public void DrawPlayerTex(Box2 position, PlayerState playerState, FrameEventArgs obj, bool isHurt)
     {
         Texture2D texture2D;
-        bool playOnce = false;
         switch (playerState)
         {
             case PlayerState.idle_r:
                 texture2D = _player_idle_r;
                 columns = 4;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.idle_l:
                 texture2D = _player_idle_l;
                 columns = 4;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.run_r:
                 texture2D = _player_run_r;
                 columns = 6;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.run_l:
                 texture2D = _player_run_l;
                 columns = 6;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.jump_r:
                 texture2D = _player_jump_r;
                 columns = 6;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.jump_l:
                 texture2D = _player_jump_l;
                 columns = 6;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.attack_r:
                 texture2D = _player_attack_r;
                 columns = 8;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.attack_l:
                 texture2D = _player_attack_l;
                 columns = 8;
+                _deathAnimationDone = false;
                 break;
             case PlayerState.death:
                 texture2D = _player_death;
-                playOnce = true;
                 columns = 6;
                 break;
 
@@ -141,19 +163,33 @@ public class TextureManager
                 throw new InvalidOperationException("unknown player state:" + playerState);
         }
 
-        // TODO, reset animation progress on start of new animation 
-        // Attack looks weird without this
-        // TODO, play Death anim (and others maybe) only once
-        // use playOnce var
-
-        // Zeitberechnung für Animation der Sprites
         float clock = (float)(obj.Time);
         clockCounter += clock;
-        if (clockCounter > 0.25)
+
+        if (playerState == PlayerState.death)
         {
-            // Console.WriteLine("Col: " + columns);
-            spriteId = (spriteId + 1) % columns;
-            clockCounter = 0;
+            if (!_deathAnimationDone)
+            {
+                if (clockCounter > 0.25)
+                {
+                    spriteId++;
+                    clockCounter = 0;
+
+                    if (spriteId >= columns)
+                    {
+                        spriteId = columns - 1;  // letzten Frame behalten
+                        _deathAnimationDone = true;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (clockCounter > 0.25)
+            {
+                spriteId = (spriteId + 1) % columns;
+                clockCounter = 0;
+            }
         }
 
         if (isHurt)

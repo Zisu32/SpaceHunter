@@ -33,7 +33,7 @@ public class CollisionHandler
 
     private void PlayerAttackCheck()
     {
-        if (_state.PlayerHitBox == null)
+        if (_state.PlayerAttackBox == null)
         {
             return;
         }
@@ -41,7 +41,7 @@ public class CollisionHandler
         // TODO LINQ first?
         foreach (Enemy enemy in _state.Enemies)
         {
-            if (TwoBoxCollisionCheck(_state.PlayerHitBox.Value, enemy.Box))
+            if (TwoBoxCollisionCheck(_state.PlayerAttackBox.Value, enemy.Box))
             {
                 enemy.Health -= ConstantBalancingValues.AttackDamage;
                 Console.WriteLine("Enemy took damage");
@@ -53,7 +53,7 @@ public class CollisionHandler
 
         foreach (FlyingEnemy flyingEnemy in _state.FlyingEnemies)
         {
-            if (TwoBoxCollisionCheck(_state.PlayerHitBox.Value, flyingEnemy.Bounds))
+            if (TwoBoxCollisionCheck(_state.PlayerAttackBox.Value, flyingEnemy.Bounds))
             {
                 flyingEnemy.Health -= ConstantBalancingValues.AttackDamage;
                 Console.WriteLine("Flying took enemy damage");
@@ -65,7 +65,7 @@ public class CollisionHandler
 
         if (_state.Endboss != null)
         {
-            if (TwoBoxCollisionCheck(_state.PlayerHitBox.Value, _state.Endboss.Bounds))
+            if (TwoBoxCollisionCheck(_state.PlayerAttackBox.Value, _state.Endboss.Bounds))
             {
                 _state.Endboss.Health -= ConstantBalancingValues.AttackDamage;
                 Console.WriteLine("Endboss took damage");
@@ -78,9 +78,7 @@ public class CollisionHandler
     {
         if (_damageCooldown > 0f) return; //No Damge while invincible
 
-        Box2 playerBox = _state.PlayerBox;
-        playerBox =  ShrinkBox(playerBox, .5f);
-        _state.DebugPlayerBox = playerBox;
+        Box2 playerBox = _state.PlayerHitBox;
 
         foreach (var enemybox in enemyBoxes)
         {
@@ -106,7 +104,7 @@ public class CollisionHandler
         {
             foreach (var laser in enemy.LaserBeams)
             {
-                if (TwoBoxCollisionCheck(_state.PlayerBox, laser))
+                if (TwoBoxCollisionCheck(_state.PlayerHitBox, laser))
                 {
                     _state.PlayerHealth -= 10;
                     _damageCooldown = ConstantBalancingValues.InvincibleDuration;
@@ -122,7 +120,7 @@ public class CollisionHandler
         {
             foreach (var laser in _state.Endboss.LaserBeams)
             {
-                if (TwoBoxCollisionCheck(_state.PlayerBox, laser))
+                if (TwoBoxCollisionCheck(_state.PlayerHitBox, laser))
                 {
                     _state.PlayerHealth -= 20;
                     _damageCooldown = ConstantBalancingValues.InvincibleDuration;
