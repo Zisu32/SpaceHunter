@@ -19,7 +19,7 @@ public class PlayerMovement
     private const float JumpVelocity = 37f;
     private bool _interruptAttack = false;
     private bool _isJumpKeyHeld = false;
-    
+
     private float _playerSpeed;
     private const float Acceleration = 85;
     private const float Deceleration = 55;
@@ -28,7 +28,7 @@ public class PlayerMovement
     private double _attackCooldown = 0;
 
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
-    
+
     public PlayerMovement(GameState state, KeyGroup playerKeys, Keyboard keyboard, Camera camera)
     {
         _state = state;
@@ -39,107 +39,106 @@ public class PlayerMovement
 
     public void Update(FrameEventArgs frameArgs)
     {
-        #region Movement
-
         // movement stopped while attacking
         if (_attackTime <= 0)
         {
             ReadJumpKeyAndMoveCamera();
 
-        if (_interruptAttack)
-        {
-            _attackTime = 0;
-            _state.PlayerAttackBox = null;
-            _interruptAttack = false;
-        }
-
-        if (_attackCooldown > 0)
-        {
-            _attackCooldown -= frameArgs.Time;
-            if (_attackCooldown < 0)
-                _attackCooldown = 0;
-        }
-
-        if (_attackTime <= 0)
-        {
-            if (_state.PlayerInAir)
+            if (_interruptAttack)
             {
-                JumpMovement(frameArgs);
+                _attackTime = 0;
+                _state.PlayerAttackBox = null;
+                _interruptAttack = false;
             }
-        }
 
-        WalkingMovement(frameArgs);
-
-        #region Attack
-
-        if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0 && !_state.PlayerInAir)
-        {
-            _attackTime = ConstantBalancingValues.AttackDuration;
-            _attackCooldown = .7; // 0.7 Sec
-            _playerKeys.RemovePressed(Keys.F);
-
-            _playerSpeed = 0;
-        }
-
-        if (_attackTime > 0)
-        {
-            Vector2 hitBoxMin;
-            Vector2 hitBoxMax;
-            if (_playerDirection == SimpleDirection.LEFT)
+            if (_attackCooldown > 0)
             {
-                hitBoxMin = new Vector2(_state.PlayerBox.Min.X, _state.PlayerBox.Min.Y);
-                hitBoxMax = new Vector2(_state.PlayerBox.Min.X - ConstantBalancingValues.AttackBoxLength,
-                    _state.PlayerBox.Max.Y);
+                _attackCooldown -= frameArgs.Time;
+                if (_attackCooldown < 0)
+                    _attackCooldown = 0;
+            }
+
+            if (_attackTime <= 0)
+            {
+                if (_state.PlayerInAir)
+                {
+                    JumpMovement(frameArgs);
+                }
+            }
+
+            WalkingMovement(frameArgs);
+
+            #region Attack
+
+            if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0 && !_state.PlayerInAir)
+            {
+                _attackTime = ConstantBalancingValues.AttackDuration;
+                _attackCooldown = .7; // 0.7 Sec
+                _playerKeys.RemovePressed(Keys.F);
+
+                _playerSpeed = 0;
+            }
+
+            if (_attackTime > 0)
+            {
+                Vector2 hitBoxMin;
+                Vector2 hitBoxMax;
+                if (_playerDirection == SimpleDirection.LEFT)
+                {
+                    hitBoxMin = new Vector2(_state.PlayerBox.Min.X, _state.PlayerBox.Min.Y);
+                    hitBoxMax = new Vector2(_state.PlayerBox.Min.X - ConstantBalancingValues.AttackBoxLength,
+                        _state.PlayerBox.Max.Y);
+                }
+                else
+                {
+                    hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
+                    hitBoxMax = new Vector2(_state.PlayerBox.Max.X + ConstantBalancingValues.AttackBoxLength,
+                        _state.PlayerBox.Max.Y);
+                }
+
+                _state.PlayerAttackBox = new Box2(hitBoxMin, hitBoxMax);
+
+                _attackTime -= frameArgs.Time;
+            }
+            else // _attackTime <= 0
+            {
+                _state.PlayerAttackBox = null;
+            }
+
+            #endregion
+
+            #region Animation
+
+            if (_attackTime > 0)
+            {
+                _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+                    ? PlayerState.attack_l
+                    : PlayerState.attack_r;
+            }
+            else if (_state.PlayerBox.Min.Y < 0.0001f)
+            {
+                if (_playerSpeed == 0)
+                {
+                    _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+                        ? PlayerState.idle_l
+                        : PlayerState.idle_r;
+                }
+                else
+                {
+                    _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+                        ? PlayerState.run_l
+                        : PlayerState.run_r;
+                }
             }
             else
             {
-                hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
-                hitBoxMax = new Vector2(_state.PlayerBox.Max.X + ConstantBalancingValues.AttackBoxLength,
-                    _state.PlayerBox.Max.Y);
-            }
-
-            _state.PlayerAttackBox = new Box2(hitBoxMin, hitBoxMax);
-
-            _attackTime -= frameArgs.Time;
-        }
-        else // _attackTime <= 0
-        {
-            _state.PlayerAttackBox = null;
-        }
-
-        #endregion
-
-        #region Animation
-
-        if (_attackTime > 0)
-        {
-            _state.PlayerState = _playerDirection == SimpleDirection.LEFT
-                ? PlayerState.attack_l
-                : PlayerState.attack_r;
-        }
-        else if (_state.PlayerBox.Min.Y < 0.0001f)
-        {
-            if (_playerSpeed == 0)
-            {
                 _state.PlayerState = _playerDirection == SimpleDirection.LEFT
-                    ? PlayerState.idle_l
-                    : PlayerState.idle_r;
+                    ? PlayerState.jump_l
+                    : PlayerState.jump_r;
             }
-            else
-            {
-                _state.PlayerState = _playerDirection == SimpleDirection.LEFT
-                    ? PlayerState.run_l
-                    : PlayerState.run_r;
-            }
-        }
-        else
-        {
-            _state.PlayerState = _playerDirection == SimpleDirection.LEFT
-                ? PlayerState.jump_l
-                : PlayerState.jump_r;
-        }
 
-        #endregion
+            #endregion
+        }
     }
 
 
@@ -269,6 +268,7 @@ public class PlayerMovement
                 _velocityY = JumpVelocity;
                 _state.PlayerState = PlayerState.jump_r;
             }
+
             _isJumpKeyHeld = true;
         }
         else
