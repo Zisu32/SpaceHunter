@@ -62,6 +62,13 @@ internal static class Program
 
     private static void GameUpdate(object? sender, FrameEventArgs frameArgs)
     {
+        // Restart game from GameOver screen
+        if (_state.IsGameOver && _startKey.PressedKeys.Contains(Keys.Enter))
+        {
+            _state.ResetGame();
+            return;
+        }
+        
         if (_state.IsShowingLevelTransition)
         {
             _state.LevelTransitionTimer -= frameArgs.Time;
@@ -82,9 +89,7 @@ internal static class Program
         {
             return;
         }
-
-        // Console.WriteLine($"Player Health: {_state.PlayerHealth}");
-
+        
         _worldHandler.Update(frameArgs);
         _collisionHandler.UpdateCooldown(frameArgs);
 
@@ -95,8 +100,11 @@ internal static class Program
         }
         else
         {
-            _state.PlayerState = PlayerState.death;
             Console.WriteLine("dead");
+            _camera.Center = Vector2.Zero; // zentiert camera damit man screen sehen kann
+            _state.PlayerState = PlayerState.death;
+            _state.IsGameOver = true;
+            _state.IsGameStarted = false;
         }
 
         // Player hurt
@@ -107,6 +115,18 @@ internal static class Program
             {
                 _state.IsPlayerHurt = false;
                 _state.PlayerHurtTimer = 0;
+            }
+        }
+        
+        // Player Victory
+        if (_state.IsGameWon)
+        {
+            Console.WriteLine("Game won!"); 
+            _camera.Center = Vector2.Zero;
+            if (_startKey.PressedKeys.Contains(Keys.Enter))
+            {
+                _state.IsGameStarted = false;
+                _state.ResetGame();
             }
         }
 

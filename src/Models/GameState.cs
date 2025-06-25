@@ -7,8 +7,10 @@ public class GameState
     #region Player Fields
 
     public Box2 PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY);
+
     public Box2 PlayerHitBox => PlayerBox
         .Scaled(ConstantBalancingValues.PlayerHitBoxScale, PlayerBox.Center + new Vector2(0f, 2f));
+
     public Box2 DebugPlayerBox => PlayerHitBox;
 
     public Box2? PlayerAttackBox = null;
@@ -34,10 +36,11 @@ public class GameState
     public Endboss? Endboss { get; set; }
     public bool PlayerInAir = false;
     public bool IsGameStarted = false;
-
+    public bool IsGameOver { get; set; } = false;
+    public bool IsGameWon { get; set; } = false;
     public WorldHandler WorldHandler { get; set; }
 
-    public bool IsShowingLevelTransition { get; set; } 
+    public bool IsShowingLevelTransition { get; set; }
     public double LevelTransitionTimer { get; set; }
 
     // Neue Level-Logik
@@ -60,5 +63,28 @@ public class GameState
             CurrentLevel = 1;
             IsGameStarted = false; // Zurück zum Hauptmenü
         }
+    }
+
+    public void ResetGame()
+    {
+        PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY); // Spieler zurücksetzen
+        IsGameOver = false;
+        IsGameWon = false;
+        IsGameStarted = true;
+
+        CurrentLevel = 1;
+        PlayerHealth = ConstantBalancingValues.MaxPlayerHealth;
+        PlayerBox = new Box2(0, 0, TextureSizes.PlayerSizeX, TextureSizes.PlayerSizeY);
+        IsPlayerHurt = false;
+        PlayerHurtTimer = 0;
+        PlayerInAir = false;
+
+        Enemies.Clear();
+        FlyingEnemies.Clear();
+        Hearts.Clear();
+        Portal = null;
+        Endboss = null;
+
+        WorldHandler.SpawnInitial();
     }
 }

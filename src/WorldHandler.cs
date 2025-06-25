@@ -127,8 +127,8 @@ public class WorldHandler
             _textureManager._portalTexture
         );
     }
-
-    public void SpawnEndboss()
+    
+     public void SpawnEndboss()
     {
         if (_state.CurrentLevel == 2)
         {
@@ -137,12 +137,19 @@ public class WorldHandler
                 TextureManager.EndbossRectangle,
                 _textureManager
             );
+            // Game won, if boss dead
+            _state.Endboss.OnDeath += (_, _) =>
+            {
+                _state.IsGameWon = true;
+                _state.IsGameStarted = false;
+            };
         }
         else
         {
             _state.Endboss = null;
         }
     }
+    
 
     private void EnemyDeath(object? sender, EventArgs e)
     {
