@@ -56,7 +56,7 @@ public class TextureManager
     
     private static readonly Vector4 redTint = new Vector4(1f, 0f, 0f, 1f);
     public static readonly Box2 PortalRectangle = new Box2(238f, 0f, 240f, 6f);
-    public static readonly Box2 EndbossRectangle = new Box2(45f, 0f, 48f, 7f);
+    public static readonly Box2 EndbossRectangle = new Box2(45f, 0f, 47f, 6f);
     public static readonly Box2 FlyingEnemyRectangle = new Box2(3f, 0f, 4f, 4f);
     public static readonly Box2 StaticEnemyRectangle = new Box2(3f, 0f, 4f, 3f);
     public static readonly Box2 BackgroundRectangle = new Box2(0f, 0f, 16*5f, 10*1.5f);

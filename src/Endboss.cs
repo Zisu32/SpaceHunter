@@ -25,7 +25,7 @@ public class Endboss
     private double _hurtTimer = 0;
     private const double HurtDuration = 0.5;
     private const float AttackRange = 2.5f;
-    private const float ShootRange = 20f;
+    private const float ShootRange = 7f;
     private const float FollowSpeed = 5f;
 
     private double _animationLockTimer = 0;
@@ -148,9 +148,9 @@ public class Endboss
     {
         var laser = new Box2(
             toLeft ? _position.Min.X - 0.5f : _position.Max.X,
-            _position.Center.Y - 0.2f,
+            _position.Center.Y + 1.1f,
             toLeft ? _position.Min.X : _position.Max.X + 0.5f,
-            _position.Center.Y + 0.2f
+            _position.Center.Y + 1.2f
         );
 
         LaserBeams.Add((laser, toLeft, _position.Center.X));
