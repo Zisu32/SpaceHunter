@@ -39,105 +39,108 @@ public class PlayerMovement
 
     public void Update(FrameEventArgs frameArgs)
     {
-        if (_attackTime > 0 && _interruptAttack)
+    if (_attackTime > 0 && _interruptAttack)
+    {
+        _attackTime = 0;
+        _state.PlayerAttackBox = null;
+        _interruptAttack = false;
+
+        _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+            ? PlayerState.idle_l
+            : PlayerState.idle_r;
+
+        return;
+    }
+    
+    ReadJumpKeyAndMoveCamera();
+    
+    if (_attackCooldown > 0)
+    {
+        _attackCooldown -= frameArgs.Time;
+        if (_attackCooldown < 0)
+            _attackCooldown = 0;
+    }
+
+    bool isMoving = _playerKeys.PressedKeys.Any(k =>
+        k == Keys.A || k == Keys.D || k == Keys.W);
+
+    // Angriff starten nur wenn keine Bewegungstaste gedrückt wird
+    if (_playerKeys.PressedKeys.Contains(Keys.F) &&
+        _attackTime <= 0 &&
+        _attackCooldown <= 0 &&
+        !_state.PlayerInAir &&
+        !isMoving)
+    {
+        _attackTime = ConstantBalancingValues.AttackDuration;
+        _attackCooldown = 0.7;
+        _playerKeys.RemovePressed(Keys.F);
+
+        _playerSpeed = 0;
+
+        _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+            ? PlayerState.attack_l
+            : PlayerState.attack_r;
+    }
+
+    if (_attackTime > 0)
+    {
+        Vector2 hitBoxMin;
+        Vector2 hitBoxMax;
+
+        if (_playerDirection == SimpleDirection.LEFT)
+        {
+            hitBoxMin = new Vector2(_state.PlayerBox.Min.X, _state.PlayerBox.Min.Y);
+            hitBoxMax = new Vector2(_state.PlayerBox.Min.X - ConstantBalancingValues.AttackBoxLength,
+                _state.PlayerBox.Max.Y);
+        }
+        else
+        {
+            hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
+            hitBoxMax = new Vector2(_state.PlayerBox.Max.X + ConstantBalancingValues.AttackBoxLength,
+                _state.PlayerBox.Max.Y);
+        }
+
+        _state.PlayerAttackBox = new Box2(hitBoxMin, hitBoxMax);
+
+        _attackTime -= frameArgs.Time;
+        if (_attackTime <= 0)
         {
             _attackTime = 0;
             _state.PlayerAttackBox = null;
-            _interruptAttack = false;
+        }
 
-            // Reset animation state to idle when interrupting
+        return;
+    }
+    
+    if (_state.PlayerInAir)
+    {
+        JumpMovement(frameArgs);
+    }
+
+    WalkingMovement(frameArgs);
+
+    if (_state.PlayerBox.Min.Y < 0.0001f) // auf dem Boden
+    {
+        if (_playerSpeed == 0)
+        {
             _state.PlayerState = _playerDirection == SimpleDirection.LEFT
                 ? PlayerState.idle_l
                 : PlayerState.idle_r;
-
-            return;
-        }
-
-        ReadJumpKeyAndMoveCamera();
-
-        if (_attackCooldown > 0)
-        {
-            _attackCooldown -= frameArgs.Time;
-            if (_attackCooldown < 0)
-                _attackCooldown = 0;
-        }
-
-        if (_playerKeys.PressedKeys.Contains(Keys.F) && _attackTime <= 0 && _attackCooldown <= 0 && !_state.PlayerInAir)
-        {
-            _attackTime = ConstantBalancingValues.AttackDuration;
-            _attackCooldown = 0.7;
-            _playerKeys.RemovePressed(Keys.F);
-
-            _playerSpeed = 0;
-
-            _state.PlayerState = _playerDirection == SimpleDirection.LEFT
-                ? PlayerState.attack_l
-                : PlayerState.attack_r;
-        }
-        
-        if (_attackTime > 0)
-        {
-            Vector2 hitBoxMin;
-            Vector2 hitBoxMax;
-
-            if (_playerDirection == SimpleDirection.LEFT)
-            {
-                hitBoxMin = new Vector2(_state.PlayerBox.Min.X, _state.PlayerBox.Min.Y);
-                hitBoxMax = new Vector2(_state.PlayerBox.Min.X - ConstantBalancingValues.AttackBoxLength,
-                    _state.PlayerBox.Max.Y);
-            }
-            else
-            {
-                hitBoxMin = new Vector2(_state.PlayerBox.Max.X, _state.PlayerBox.Min.Y);
-                hitBoxMax = new Vector2(_state.PlayerBox.Max.X + ConstantBalancingValues.AttackBoxLength,
-                    _state.PlayerBox.Max.Y);
-            }
-
-            _state.PlayerAttackBox = new Box2(hitBoxMin, hitBoxMax);
-
-            _attackTime -= frameArgs.Time;
-            if (_attackTime <= 0)
-            {
-                _attackTime = 0;
-                _state.PlayerAttackBox = null;
-            }
-
-            return;
-        }
-
-        // Movement and jump if not attacking
-        if (_state.PlayerInAir)
-        {
-            JumpMovement(frameArgs);
-        }
-
-        WalkingMovement(frameArgs);
-
-        // Set animation
-        if (_state.PlayerBox.Min.Y < 0.0001f) // On the ground
-        {
-            if (_playerSpeed == 0)
-            {
-                _state.PlayerState = _playerDirection == SimpleDirection.LEFT
-                    ? PlayerState.idle_l
-                    : PlayerState.idle_r;
-            }
-            else
-            {
-                _state.PlayerState = _playerDirection == SimpleDirection.LEFT
-                    ? PlayerState.run_l
-                    : PlayerState.run_r;
-            }
         }
         else
         {
             _state.PlayerState = _playerDirection == SimpleDirection.LEFT
-                ? PlayerState.jump_l
-                : PlayerState.jump_r;
+                ? PlayerState.run_l
+                : PlayerState.run_r;
         }
     }
-
-
+    else
+    {
+        _state.PlayerState = _playerDirection == SimpleDirection.LEFT
+            ? PlayerState.jump_l
+            : PlayerState.jump_r;
+    }
+}
     private void WalkingMovement(FrameEventArgs frameArgs)
     {
         Vector2 playerBoxMin = _state.PlayerBox.Min;
