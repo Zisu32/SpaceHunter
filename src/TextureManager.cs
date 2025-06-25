@@ -96,9 +96,9 @@ public class TextureManager
     {
         TextureHelper.DrawRectangularTexture(EndScreenRectangle, _gameoverscreen.Handle);
     }
-    public void DrawVictoryScreen()
+    public void DrawVictory()
     {
-        TextureHelper.DrawRectangularTexture(VictoryScreenRectangle, _victoryscreen.Handle);
+        TextureHelper.DrawRectangularTexture(EndScreenRectangle, _victoryscreen.Handle);
     }
 
     public void DrawEnemy(Box2 position)

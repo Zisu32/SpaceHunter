@@ -107,6 +107,12 @@ internal static class Program
             _state.IsGameStarted = false;
         }
 
+        if (_state.IsGameWon)
+        {
+            _camera.Center = Vector2.Zero;
+            _state.IsGameStarted = false;
+        }
+
         if (_state.IsPlayerHurt)
         {
             _state.PlayerHurtTimer -= frameArgs.Time;

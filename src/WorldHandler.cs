@@ -116,7 +116,7 @@ public class WorldHandler
             // Game won, if boss dead
             _state.Endboss.OnDeath += (_, _) =>
             {
-                Console.WriteLine(">>> Victory! Game won!");
+                Console.WriteLine(">>> Victory! Game won!");                
                 _state.IsGameWon = true;
                 _state.IsGameStarted = false;
             };

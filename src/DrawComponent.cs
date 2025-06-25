@@ -108,8 +108,7 @@ public class DrawComponent : IDrawComponent
 
     private void DrawVictoryScreen()
     {
-        Console.WriteLine("Camera.Center: " + Camera.Center);
-        _textureManager.DrawVictoryScreen();  
+        _textureManager.DrawVictory();  
     }
 
 
