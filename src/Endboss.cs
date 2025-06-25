@@ -33,7 +33,7 @@ public class Endboss
     private const float FrameDuration = 0.15f;
 
     // Laser
-    public readonly List<Box2> LaserBeams = new();
+    public readonly List<(Box2 box, bool movingLeft, float startX)> LaserBeams = new();
     private float _laserCooldown = 5f;
     private const float LaserCooldownTime = 5f;
     private const float LaserSpeed = 10f;
@@ -152,7 +152,8 @@ public class Endboss
             toLeft ? _position.Min.X : _position.Max.X + 0.5f,
             _position.Center.Y + 0.2f
         );
-        LaserBeams.Add(laser);
+
+        LaserBeams.Add((laser, toLeft, _position.Center.X));
         Console.WriteLine("Endboss Fired laser!");
     }
 
@@ -160,27 +161,28 @@ public class Endboss
     {
         for (int i = LaserBeams.Count - 1; i >= 0; i--)
         {
-            var laser = LaserBeams[i];
+            var (box, movingLeft, startX) = LaserBeams[i];
             float speed = LaserSpeed * deltaTime;
-            bool movingLeft = laser.Max.X < _position.Center.X;
+            float direction = movingLeft ? -1f : 1f;
 
             var moved = new Box2(
-                laser.Min.X + (movingLeft ? -speed : speed),
-                laser.Min.Y,
-                laser.Max.X + (movingLeft ? -speed : speed),
-                laser.Max.Y
+                box.Min.X + speed * direction,
+                box.Min.Y,
+                box.Max.X + speed * direction,
+                box.Max.Y
             );
 
-            if (Math.Abs(moved.Center.X - _position.Center.X) > 20f)
+            if (Math.Abs(moved.Center.X - startX) > 30f)
             {
                 LaserBeams.RemoveAt(i);
             }
             else
             {
-                LaserBeams[i] = moved;
+                LaserBeams[i] = (moved, movingLeft, startX);
             }
         }
     }
+
 
     public void Update(float deltaTime, Box2 playerBox)
     {
@@ -325,9 +327,9 @@ public class Endboss
         DebugDrawHelper.DrawRectangle(_position, Color.Cyan);
         DrawHealthBarAboveHead(_position, _health, ConstantBalancingValues.EndbossHealth);
         
-        foreach (var laser in LaserBeams)
+        foreach (var (box, _, _) in LaserBeams)
         {
-            DebugDrawHelper.DrawRectangle(laser, Color.Cyan);
+            DebugDrawHelper.DrawRectangle(box, Color.Cyan);
         }
     }
 }
