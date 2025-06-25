@@ -160,7 +160,7 @@ public class PlayerMovement
         }
         else if (_playerKeys.PressedKeys.Contains(Keys.D))
         {
-            if (playerBoxMax.X >= TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2)
+            if (playerBoxMax.X >= _state.LevelWidth)
             {
                 return;
             }
@@ -188,13 +188,12 @@ public class PlayerMovement
             _playerSpeed += 0.06f;
         }
 
-        Console.WriteLine($"accel: {accelValue} decel: {deccelValue} moveDistance: {playerMoveDistance}");
+        // Console.WriteLine($"accel: {accelValue} decel: {deccelValue} moveDistance: {playerMoveDistance}");
         // apply velocity 
         if ( // if player is not moving or out of bounds, instantly stop
             MathF.Abs(_playerSpeed) < 0.05f // playerSpeed small
             || playerBoxMin.X + playerMoveDistance < 0f // out of bound 0
-            || playerBoxMax.X + playerMoveDistance >=
-            TextureManager.BackgroundRectangle.Max.X + TextureSizes.PlayerSizeX / 2) // out of bounds max
+            || playerBoxMax.X + playerMoveDistance >= _state.LevelWidth) // out of bounds max
         {
             _playerSpeed = 0;
         }
@@ -276,7 +275,6 @@ public class PlayerMovement
         Vector2 cameraCenter = _camera.Center;
 
         // prevent the camera from moving outside of background
-        Console.WriteLine($"playerBoxMin.X: {playerBoxMin.X}, val: {playerBoxMin.X - _camera.ScreenWidth / 2}");
 
         // calculate camera X to center player
         cameraCenter.X = -playerBoxMin.X + _camera.ScreenWidth / 2 - TextureSizes.PlayerSizeX / 2;
