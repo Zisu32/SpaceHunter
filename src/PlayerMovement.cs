@@ -21,9 +21,9 @@ public class PlayerMovement
     private bool _isJumpKeyHeld = false;
 
     private float _playerSpeed;
-    private const float Acceleration = 55;
-    private const float Deceleration = 30;
-    private const float MaxSpeed = 15;
+    private const float Acceleration = 85;
+    private const float Deceleration = 55;
+    private const float MaxSpeed = 7;
     private double _attackTime;
     private SimpleDirection _playerDirection = SimpleDirection.RIGHT;
 

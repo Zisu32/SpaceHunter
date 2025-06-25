@@ -23,7 +23,7 @@ public class OpenTKManager
             Profile = ContextProfile.Compatability, Flags = ContextFlags.Default
         })
         {
-            VSync = VSyncMode.Off
+            VSync = VSyncMode.On
         };
 
         // window resize event
