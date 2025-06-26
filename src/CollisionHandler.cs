@@ -92,6 +92,23 @@ public class CollisionHandler
             }
         }
     }
+    private void CheckPlayerHitByEndboss()
+    {
+        if (_damageCooldown > 0f || _state.Endboss == null) return;
+
+        Box2 playerBox = _state.PlayerHitBox;
+        Box2 endbossBox = _state.Endboss.Bounds;
+
+        if (TwoBoxCollisionCheck(playerBox, endbossBox))
+        {
+            _state.PlayerHealth -= ConstantBalancingValues.EndbossDamage;  // Use Endboss damage constant
+            _damageCooldown = ConstantBalancingValues.InvincibleDuration;
+            _state.IsPlayerHurt = true;
+            _state.PlayerHurtTimer = 1.0;
+            Console.WriteLine("Player hit by Endboss!");
+        }
+    }
+
 
     private void CheckLaserCollisions()
     {
@@ -138,7 +155,7 @@ public class CollisionHandler
         {
             CheckCollisionWithEnemies(new[] { _state.Endboss.Bounds });
         }
-
+        CheckPlayerHitByEndboss();
         CheckLaserCollisions();
     }
 

@@ -11,164 +11,90 @@ namespace SpaceHunter;
 public class Endboss
 {
     private readonly GameState _state;
-    private readonly TextureManager _textureManager;
+    private readonly TextureManager _textures;
     private Box2 _position;
-    private EndbossState _currentState = EndbossState.idle_l;
-    private float _animationTimer;
-    private uint _currentFrame;
-    private uint _columns;
-    private uint _rows;
-    private int _health = ConstantBalancingValues.EndbossHealth;
+
+    private int _health;
     private double _invincibleTimer = 0;
-    private const double InvincibleDuration = 2;
-    private double _attackCooldown = 0;
-    private double _hurtTimer = 0;
-    private const double HurtDuration = 0.5;
-    private const float AttackRange = 2.5f;
-    private const float ShootRange = 7f;
-    private const float FollowSpeed = 5f;
 
-    private double _animationLockTimer = 0;
-    private bool IsLocked => _animationLockTimer > 0;
+    private EndbossState _currentState = EndbossState.idle_l;
+    private int _frame = 0;
+    private float _animationTimer = 0f;
+
     private const float FrameDuration = 0.15f;
-
-    // Laser
-    public readonly List<(Box2 box, bool movingLeft, float startX)> LaserBeams = new();
-    private float _laserCooldown = 5f;
-    private const float LaserCooldownTime = 5f;
+    private const float FollowSpeed = 4f;
+    private const float AttackRange = 1.5f;
+    private const float ShootRange = 6f;
     private const float LaserSpeed = 10f;
 
-    private bool _movingLeft = true;
-    public Box2 Bounds => _position;
+    private float _meleeCooldownTimer = 0f;
+    private const float MeleeAttackCooldown = 1f;
 
     public event EventHandler? OnDeath;
-    public Endboss(GameState state, Box2 position, TextureManager textureManager)
+    public readonly List<(Box2 box, bool movingLeft, float startX)> LaserBeams = new();
+
+    public Box2 Bounds => _position;
+    private bool _isDying = false;
+    private bool _isHurt = false;
+
+    public Endboss(GameState state, Box2 startPos, TextureManager textures)
     {
         _state = state;
-        _position = position;
-        _textureManager = textureManager;
-        SetAnimationState(EndbossState.idle_l);
+        _textures = textures;
+        _position = startPos;
+        _health = ConstantBalancingValues.EndbossHealth;
     }
+
     public int Health
     {
         get => _health;
         set
         {
-            if (_invincibleTimer > 0 || _health <= 0) return; // ignore damage if invincible or dead
-
-            if (value < _health) // took damage
-            {
-                _hurtTimer = HurtDuration;
-                _invincibleTimer = InvincibleDuration;
-                SetAnimationState(_position.Center.X > _state.PlayerBox.Center.X ? EndbossState.hurt_l : EndbossState.hurt_r);
-            }
+            if (_invincibleTimer > 0 || _health <= 0) return;
 
             _health = value;
+            _invincibleTimer = ConstantBalancingValues.InvincibleDuration;
 
-            Console.WriteLine($"Endboss new health: {_health}");
+            _isHurt = true;
+            _frame = 0;
+            _animationTimer = 0;
 
-            if (_health <= 0 && _currentState != EndbossState.death)
+            if (_health <= 0)
             {
-                SetAnimationState(EndbossState.death);
-                _hurtTimer = 0;
-            }
-        }
-    }
-
-    private void SetAnimationState(EndbossState state)
-    {
-        _currentState = state;
-        _currentFrame = 0;
-        _animationTimer = 0;
-
-        switch (state)
-        {
-            case EndbossState.idle_r:
-            case EndbossState.idle_l:
-                _columns = 2;
-                _rows = 1;
-                break;
-            case EndbossState.walk_r:
-            case EndbossState.walk_l:
-                _columns = 6;
-                _rows = 1;
-                break;
-            case EndbossState.attack_r:
-            case EndbossState.attack_l:
-                _columns = 3;
-                _rows = 1;
-                break;
-            case EndbossState.hurt_r:
-            case EndbossState.hurt_l:
-                _columns = 4;
-                _rows = 1;
-                break;
-            case EndbossState.shoot_r:
-            case EndbossState.shoot_l:
-                _columns = 7;
-                _rows = 1;
-                break;
-            case EndbossState.death:
-                _columns = 5;
-                _rows = 1;
-                break;
-        }
-
-        // Lock duration for all animations to allow them to finish
-        _animationLockTimer = FrameDuration * _columns;
-    }
-
-    private void Animate(float deltaTime)
-    {
-        _animationTimer += deltaTime;
-
-        if (_animationTimer > FrameDuration)
-        {
-            _animationTimer = 0f;
-
-            if (_currentState == EndbossState.death)
-            {
-                // Play death animation only once
-                if (_currentFrame < _columns - 1)
-                {
-                    _currentFrame++;
-                }
-                // Don't reset to 0 — stay on last frame
+                _currentState = EndbossState.death;
+                _frame = 0;
+                _animationTimer = 0;
+                _isDying = true;
             }
             else
             {
-                // Loop other animations
-                _currentFrame = (_currentFrame + 1) % _columns;
+                _currentState = _currentState.ToString().EndsWith("_r") ? EndbossState.hurt_r : EndbossState.hurt_l;
             }
         }
     }
 
-
-    private void ShootLaser(bool toLeft)
+    private void ShootLaser(bool left)
     {
         var laser = new Box2(
-            toLeft ? _position.Min.X - 0.5f : _position.Max.X,
-            _position.Center.Y + 1.1f,
-            toLeft ? _position.Min.X : _position.Max.X + 0.5f,
+            left ? _position.Min.X - 0.25f : _position.Max.X,
+            _position.Center.Y + 1.15f,
+            left ? _position.Min.X : _position.Max.X + 0.25f,
             _position.Center.Y + 1.2f
         );
 
-        LaserBeams.Add((laser, toLeft, _position.Center.X));
-        Console.WriteLine("Endboss Fired laser!");
+        LaserBeams.Add((laser, left, _position.Center.X));
     }
 
     private void UpdateLasers(float deltaTime)
     {
         for (int i = LaserBeams.Count - 1; i >= 0; i--)
         {
-            var (box, movingLeft, startX) = LaserBeams[i];
-            float speed = LaserSpeed * deltaTime;
-            float direction = movingLeft ? -1f : 1f;
-
+            var (box, left, startX) = LaserBeams[i];
+            float dir = left ? -1f : 1f;
             var moved = new Box2(
-                box.Min.X + speed * direction,
+                box.Min.X + dir * LaserSpeed * deltaTime,
                 box.Min.Y,
-                box.Max.X + speed * direction,
+                box.Max.X + dir * LaserSpeed * deltaTime,
                 box.Max.Y
             );
 
@@ -178,158 +104,135 @@ public class Endboss
             }
             else
             {
-                LaserBeams[i] = (moved, movingLeft, startX);
+                LaserBeams[i] = (moved, left, startX);
             }
         }
     }
-
 
     public void Update(float deltaTime, Box2 playerBox)
     {
+        UpdateLasers(deltaTime);
+
         if (_invincibleTimer > 0)
-        {
             _invincibleTimer -= deltaTime;
-        }
-        
-        if (_currentState == EndbossState.death)
+
+        if (_meleeCooldownTimer > 0) 
+            _meleeCooldownTimer -= deltaTime;
+
+        if (_isDying)
         {
-            if (!IsLocked)
-            {
+            Animate(deltaTime);
+            if (_frame >= GetFrameCount(_currentState) - 1)
                 OnDeath?.Invoke(this, EventArgs.Empty);
-            }
-
-            Animate(deltaTime);
-            _animationLockTimer -= deltaTime;
             return;
         }
 
-        if (_hurtTimer > 0)
+        if (_isHurt)
         {
-            _hurtTimer -= deltaTime;
-            if (_hurtTimer <= 0)
-            {
-                var walkState = _movingLeft ? EndbossState.walk_l : EndbossState.walk_r;
-                SetAnimationState(walkState);
-            }
-
             Animate(deltaTime);
+            if (_frame >= GetFrameCount(_currentState) - 1)
+                _isHurt = false;
             return;
         }
 
-        if (IsLocked)
+        float dx = playerBox.Center.X - _position.Center.X;
+        bool movingLeft = dx < 0;
+        float distance = Math.Abs(dx);
+
+        if (distance <= AttackRange)
         {
-            _animationLockTimer -= deltaTime;
-            Animate(deltaTime);
-            return;
-        }
+            _currentState = movingLeft ? EndbossState.attack_l : EndbossState.attack_r;
 
-        _attackCooldown -= deltaTime;
-        _laserCooldown -= deltaTime;
-
-        float playerX = playerBox.Center.X;
-        float bossX = _position.Center.X;
-        float distance = Math.Abs(playerX - bossX);
-        bool playerLeft = playerX < bossX;
-        bool performedAction = false;
-
-        if (distance <= AttackRange && _attackCooldown <= 0f)
-        {
-            SetAnimationState(playerLeft ? EndbossState.attack_l : EndbossState.attack_r);
-            _attackCooldown = 3f;
-            _state.PlayerHealth -= 20;
-            _state.IsPlayerHurt = true;
-            _state.PlayerHurtTimer = 1.0;
-            Console.WriteLine("Endboss Melee attack!");
-            performedAction = true;
-        }
-        else if (distance <= ShootRange && _laserCooldown <= 0f)
-        {
-            SetAnimationState(playerLeft ? EndbossState.shoot_l : EndbossState.shoot_r);
-            ShootLaser(playerLeft);
-            _laserCooldown = LaserCooldownTime;
-            Console.WriteLine("Endboss Shooting laser!");
-            performedAction = true;
-        }
-
-        if (!performedAction && distance > AttackRange)
-        {
-            float direction = Math.Sign(playerX - bossX);
-            _movingLeft = direction < 0;
-
-            float move = direction * FollowSpeed * deltaTime;
-            Vector2 movement = new Vector2(move, 0);
-            _position = new Box2(_position.Min + movement, _position.Max + movement);
-
-            var walkState = _movingLeft ? EndbossState.walk_l : EndbossState.walk_r;
-            if (_currentState != walkState)
-            {
-                SetAnimationState(walkState);
+            if (_meleeCooldownTimer <= 0f) {
+                _state.PlayerHealth -= ConstantBalancingValues.EndbossDamage;
+                _meleeCooldownTimer = MeleeAttackCooldown;
             }
+        }
+        else if (distance <= ShootRange)
+        {
+            _currentState = movingLeft ? EndbossState.shoot_l : EndbossState.shoot_r;
+
+            if (_frame == 0)
+                ShootLaser(movingLeft);
+        }
+        else
+        {
+            _currentState = movingLeft ? EndbossState.walk_l : EndbossState.walk_r;
+            float dir = Math.Sign(dx);
+            var move = new Vector2(dir * FollowSpeed * deltaTime, 0);
+            _position = new Box2(_position.Min + move, _position.Max + move);
         }
 
         Animate(deltaTime);
-        UpdateLasers(deltaTime);
     }
-    private void DrawHealthBarAboveHead(Box2 bossPosition, int currentHealth, int maxHealth)
+
+    private void Animate(float deltaTime)
     {
-        float barWidth = bossPosition.Size.X * 0.5f;
-        float barHeight = 0.1f;
-        
-        float barX = bossPosition.Center.X - (barWidth / 2f); // Center the health bar above the boss
-        float barY = bossPosition.Max.Y + 0.2f; // vertical offset above head
+        _animationTimer += deltaTime;
+        if (_animationTimer >= FrameDuration)
+        {
+            _animationTimer = 0f;
+            _frame++;
 
-        Vector2 barMin = new Vector2(barX, barY);
-        Vector2 barMax = new Vector2(barX + barWidth, barY + barHeight);
-        Box2 backgroundBar = new Box2(barMin, barMax);
+            int frameCount = GetFrameCount(_currentState);
 
-        // Draw background
-        DebugDrawHelper.DrawRectangle(backgroundBar, Color.Black);
-
-        // Calculate health percent
-        float healthPercent = Math.Clamp((float)currentHealth / maxHealth, 0f, 1f);
-        float fillWidth = barWidth * healthPercent;
-
-        Vector2 fillMax = new Vector2(barMin.X + fillWidth, barMax.Y);
-        Box2 filledBar = new Box2(barMin, fillMax);
-
-        // Color interpolation from green to red
-        int r = (int)(255 * (1 - healthPercent));
-        int g = (int)(255 * healthPercent);
-        int b = 0;
-
-        Color healthColor = Color.FromArgb(r, g, b);
-
-        // Draw filled bar
-        DebugDrawHelper.DrawRectangle(filledBar, healthColor);
+            if (_frame >= frameCount)
+                _frame = (_isDying || _isHurt) ? frameCount - 1 : 0;
+        }
     }
 
-
+    private int GetFrameCount(EndbossState state)
+    {
+        return state switch
+        {
+            EndbossState.idle_l or EndbossState.idle_r => 2,
+            EndbossState.walk_l or EndbossState.walk_r => 6,
+            EndbossState.shoot_l or EndbossState.shoot_r => 7,
+            EndbossState.attack_l or EndbossState.attack_r => 3,
+            EndbossState.hurt_l or EndbossState.hurt_r => 4,
+            EndbossState.death => 5,
+            _ => 1
+        };
+    }
 
     public void Draw(FrameEventArgs args)
     {
-        Texture2D tex = _currentState switch
+        Texture2D texture = _currentState switch
         {
-            EndbossState.idle_l => _textureManager._endbossIdleL,
-            EndbossState.idle_r => _textureManager._endbossIdleR,
-            EndbossState.walk_l => _textureManager._endbossWalkL,
-            EndbossState.walk_r => _textureManager._endbossWalkR,
-            EndbossState.attack_l => _textureManager._endbossAttackL,
-            EndbossState.attack_r => _textureManager._endbossAttackR,
-            EndbossState.shoot_l => _textureManager._endbossShootL,
-            EndbossState.shoot_r => _textureManager._endbossShootR,
-            EndbossState.hurt_l => _textureManager._endbossHurtL,
-            EndbossState.hurt_r => _textureManager._endbossHurtR,
-            EndbossState.death => _textureManager._endbossDeath,
-            _ => throw new Exception("Invalid endboss state")
+            EndbossState.idle_l => _textures._endbossIdleL,
+            EndbossState.idle_r => _textures._endbossIdleR,
+            EndbossState.walk_l => _textures._endbossWalkL,
+            EndbossState.walk_r => _textures._endbossWalkR,
+            EndbossState.shoot_l => _textures._endbossShootL,
+            EndbossState.shoot_r => _textures._endbossShootR,
+            EndbossState.attack_l => _textures._endbossAttackL,
+            EndbossState.attack_r => _textures._endbossAttackR,
+            EndbossState.hurt_l => _textures._endbossHurtL,
+            EndbossState.hurt_r => _textures._endbossHurtR,
+            EndbossState.death => _textures._endbossDeath,
+            _ => _textures._endbossIdleL
         };
 
-        TextureHelper.DrawSprite(_position, tex.Handle, _currentFrame, _columns, _rows);
-        DebugDrawHelper.DrawRectangle(_position, Color.Cyan);
-        DrawHealthBarAboveHead(_position, _health, ConstantBalancingValues.EndbossHealth);
-        
-        foreach (var (box, _, _) in LaserBeams)
-        {
+        TextureHelper.DrawSprite(_position, texture.Handle, (uint)_frame, (uint)GetFrameCount(_currentState), 1);
+        DrawHealthBar();
+
+        foreach (var (box, _, _) in LaserBeams) 
             DebugDrawHelper.DrawRectangle(box, Color.Cyan);
-        }
+        DebugDrawHelper.DrawRectangle(_position, Color.Fuchsia);
+
+    }
+
+    private void DrawHealthBar()
+    {
+        float width = _position.Size.X * 0.5f;
+        float height = 0.05f;
+        var barMin = new Vector2(_position.Center.X - width / 2f, _position.Max.Y + 0.2f);
+        var barMax = new Vector2(barMin.X + width, barMin.Y + height);
+        DebugDrawHelper.DrawRectangle(new Box2(barMin, barMax), Color.Black);
+
+        float fill = Math.Clamp(_health / (float)ConstantBalancingValues.EndbossHealth, 0, 1);
+        var fillMax = new Vector2(barMin.X + width * fill, barMax.Y);
+        Color color = Color.FromArgb((int)(255 * (1 - fill)), (int)(255 * fill), 0);
+        DebugDrawHelper.DrawRectangle(new Box2(barMin, fillMax), color);
     }
 }
