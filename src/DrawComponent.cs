@@ -36,9 +36,13 @@ public class DrawComponent : IDrawComponent
         }
         if (_state.IsGameOver)
         {
-            DrawGameOverScreen();
+            if (_textureManager.DeathAnimationFinished)
+            {
+                DrawGameOverScreen();
+            }
             return;
         }
+
 
         if (_state.IsGameWon)
         {
