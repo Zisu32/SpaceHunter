@@ -210,6 +210,7 @@ public class TextureManager
             TextureHelper.DrawSprite(position, texture2D.Handle, spriteId, columns, rows);
         }
     }
+    public bool DeathAnimationFinished => _deathAnimationDone;
 
 
     public void Initialize()
