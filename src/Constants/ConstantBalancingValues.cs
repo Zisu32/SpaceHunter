@@ -5,7 +5,7 @@ namespace SpaceHunter;
 
 public static class ConstantBalancingValues
 {
-    public const int MaxPlayerHealth = 1000;
+    public const int MaxPlayerHealth = 150;
     public const int EnemyDamage = 10;
     public const int EnemyHealth = 10;
     public const int EndbossHealth = 50;
