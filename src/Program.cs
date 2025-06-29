@@ -101,10 +101,10 @@ internal static class Program
         else
         {
             Console.WriteLine("dead");
-            _camera.Center = Vector2.Zero; // zentiert camera damit man screen sehen kann
             _state.PlayerState = PlayerState.death;
             if (_textureManager.DeathAnimationFinished)
             {
+                _camera.Center = Vector2.Zero;
                 _state.IsGameOver = true;
                 _state.IsGameStarted = false;
             }
