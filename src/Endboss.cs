@@ -25,10 +25,10 @@ public class Endboss
     private const float FollowSpeed = 4f;
     private const float AttackRange = 1.5f;
     private const float ShootRange = 6f;
-    private const float LaserSpeed = 10f;
+    private const float LaserSpeed = 5f;
 
     private float _meleeCooldownTimer = 0f;
-    private const float MeleeAttackCooldown = 1f;
+    private const float MeleeAttackCooldown = 5f;
 
     public event EventHandler? OnDeath;
     public readonly List<(Box2 box, bool movingLeft, float startX)> LaserBeams = new();
