@@ -116,7 +116,7 @@ public class Endboss
         if (_invincibleTimer > 0)
             _invincibleTimer -= deltaTime;
 
-        if (_meleeCooldownTimer > 0) 
+        if (_meleeCooldownTimer > 0)
             _meleeCooldownTimer -= deltaTime;
 
         if (_isDying)
@@ -143,7 +143,8 @@ public class Endboss
         {
             _currentState = movingLeft ? EndbossState.attack_l : EndbossState.attack_r;
 
-            if (_meleeCooldownTimer <= 0f) {
+            if (_meleeCooldownTimer <= 0f)
+            {
                 _state.PlayerHealth -= ConstantBalancingValues.EndbossDamage;
                 _meleeCooldownTimer = MeleeAttackCooldown;
             }
@@ -216,9 +217,10 @@ public class Endboss
         TextureHelper.DrawSprite(_position, texture.Handle, (uint)_frame, (uint)GetFrameCount(_currentState), 1);
         DrawHealthBar();
 
-        foreach (var (box, _, _) in LaserBeams) 
+        foreach (var (box, _, _) in LaserBeams)
+        {
             DebugDrawHelper.DrawRectangle(box, Color.Cyan);
-        DebugDrawHelper.DrawRectangle(_position, Color.Fuchsia);
+        }
 
     }
 

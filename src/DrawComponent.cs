@@ -68,14 +68,6 @@ public class DrawComponent : IDrawComponent
         //Draw Player Sprite inside the Blue Rectangle
         _textureManager.DrawPlayerTex(_state.PlayerBox, _state.PlayerState, obj, _state.IsPlayerHurt);
         //Debug Boxes (Blue for Player, Yellow for Hitbox)
-        DebugDrawHelper.DrawRectangle(_state.PlayerBox, Color.Blue);
-        DebugDrawHelper.DrawRectangle(_state.DebugPlayerBox, Color.Green);
-
-
-        if (_state.PlayerAttackBox != null)
-        {
-            DebugDrawHelper.DrawRectangle(_state.PlayerAttackBox.Value, Color.Yellow);
-        }
 
         //Draw Enemies
         foreach (Enemy enemy in _state.Enemies)
